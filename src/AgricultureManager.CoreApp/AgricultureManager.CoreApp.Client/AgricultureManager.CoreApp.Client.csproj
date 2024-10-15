@@ -15,11 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AgricultureManager.Core.Application\AgricultureManager.Core.Application.csproj" />
     <ProjectReference Include="..\..\AgricultureManager.Infrastructure.Persistence\AgricultureManager.Infrastructure.Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Components\" />
-    <Folder Include="Pages\" />
+    <ProjectReference Include="..\..\AgricultureManager.SharedComponents\AgricultureManager.SharedComponents.csproj" />
   </ItemGroup>
 
   <ItemGroup>

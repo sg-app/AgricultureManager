@@ -1,0 +1,117 @@
+﻿@using AgricultureManager.Core.Application.Features.CompanyFeatures
+<h3>Betrieb</h3>
+
+@if (_data is not null)
+{
+    <RadzenTemplateForm Data="@_data" TItem="CompanyVm" Submit="@Submit">
+        <DataAnnotationsValidator />
+        <RadzenStack>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Betriebsnummer" Component="CompanyNumber" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="8">
+                    <RadzenTextBox Style="width: 100%;" Name="CompanyNumber" @bind-Value=_data.CompanyNumber />
+                    <ValidationMessage For="@(() => _data.CompanyNumber)" />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Betriebsname" Component="CompanyName" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="8">
+                    <RadzenTextBox Style="width: 100%;" Name="CompanyName" @bind-Value=_data.CompanyName />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Vorname" Component="FirstName" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="8">
+                    <RadzenTextBox Style="width: 100%;" Name="FirstName" @bind-Value=_data.FirstName />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Nachname" Component="LastName" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="8">
+                    <RadzenTextBox Style="width: 100%;" Name="LastName" @bind-Value=_data.LastName />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Straße" Component="Street" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="8">
+                    <RadzenTextBox Style="width: 100%;" Name="Street" @bind-Value=_data.Street />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Hausnummer" Component="Housenumber" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="8">
+                    <RadzenTextBox Style="width: 100%;" Name="Housenumber" @bind-Value=_data.Housenumber />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="PLZ" Component="Plz" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="8">
+                    <RadzenTextBox Style="width: 100%;" Name="Plz" @bind-Value=_data.Plz />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Stadt" Component="City" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="8">
+                    <RadzenTextBox Style="width: 100%;" Name="City" @bind-Value=_data.City />
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenStack>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" class="rz-mt-4 rz-mb-4">
+            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Icon="save" Text="Speichern" />
+            <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" Text="Abbruch" Click="@Cancel" />
+        </RadzenStack>
+    </RadzenTemplateForm>
+}
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    private CompanyVm? _data;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Mediator.Send(new GetCompanyCommand());
+        _data = response.Data ?? new();
+    }
+
+    async Task Submit(CompanyVm arg)
+    {
+        //
+        if (_data is not null)
+            await Mediator.Send(new AddCompanyCommand()
+                {
+                    CompanyNumber = arg.CompanyNumber,
+                    CompanyName = arg.CompanyName,
+                    FirstName = arg.FirstName,
+                    LastName = arg.LastName,
+                    Street = arg.Street,
+                    Housenumber = arg.Housenumber,
+                    Plz = arg.Plz,
+                    City = arg.City
+                });
+    }
+    void Cancel()
+    {
+        //
+    }
+
+    async Task SaveClickHandler(MouseEventArgs args)
+    {
+
+        //
+    }
+}

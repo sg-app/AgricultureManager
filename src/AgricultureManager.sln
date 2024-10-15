@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgricultureManager.CoreApp"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgricultureManager.CoreApp.Client", "AgricultureManager.CoreApp\AgricultureManager.CoreApp.Client\AgricultureManager.CoreApp.Client.csproj", "{5A53D0B6-CD91-4402-A784-C953BEB0D48B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgricultureManager.SharedComponents", "AgricultureManager.SharedComponents\AgricultureManager.SharedComponents.csproj", "{C39B422D-6984-433C-B7D6-AB67426F7692}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{5A53D0B6-CD91-4402-A784-C953BEB0D48B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A53D0B6-CD91-4402-A784-C953BEB0D48B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A53D0B6-CD91-4402-A784-C953BEB0D48B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C39B422D-6984-433C-B7D6-AB67426F7692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C39B422D-6984-433C-B7D6-AB67426F7692}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C39B422D-6984-433C-B7D6-AB67426F7692}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C39B422D-6984-433C-B7D6-AB67426F7692}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

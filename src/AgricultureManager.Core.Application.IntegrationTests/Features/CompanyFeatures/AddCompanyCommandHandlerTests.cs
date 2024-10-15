@@ -25,14 +25,14 @@ namespace AgricultureManager.Core.Application.IntegrationTests.Features.CompanyF
 
             // Assert
             result.Should().NotBeNull();
-            result.CompanyName.Should().Be(request.CompanyName);
-            result.FirstName.Should().Be(request.FirstName);
-            result.LastName.Should().Be(request.LastName);
-            result.Street.Should().Be(request.Street);
-            result.Housenumber.Should().Be(request.Housenumber);
-            result.Plz.Should().Be(request.Plz);
-            result.City.Should().Be(request.City);
-            result.CompanyNumber.Should().Be(request.CompanyNumber);
+            result.Data.CompanyName.Should().Be(request.CompanyName);
+            result.Data.FirstName.Should().Be(request.FirstName);
+            result.Data.LastName.Should().Be(request.LastName);
+            result.Data.Street.Should().Be(request.Street);
+            result.Data.Housenumber.Should().Be(request.Housenumber);
+            result.Data.Plz.Should().Be(request.Plz);
+            result.Data.City.Should().Be(request.City);
+            result.Data.CompanyNumber.Should().Be(request.CompanyNumber);
         }
     }
 }
