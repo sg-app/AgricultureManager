@@ -10,5 +10,8 @@ namespace AgricultureManager.Core.Domain.Entities
         public string? Detail { get; set; }
         [MaxLength(500)]
         public string? Comment { get; set; }
+
+        public virtual ICollection<FertilizerToDetail> FertilizerToDetails { get; set; } = [];
+        public virtual ICollection<FertilizerDetail> FertilizerDetails { get; set; } = [];
     }
 }

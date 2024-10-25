@@ -1,0 +1,25 @@
+﻿@page "/masterdata"
+<RadzenTabs>
+    <Tabs>
+        @if (_masterdataComponents is not null)
+        {
+            @foreach (var masterdataComponent in _masterdataComponents)
+            {
+                <RadzenTabsItem Text="@masterdataComponent.Title">
+                    <DynamicComponent Type="@masterdataComponent.GetType()" />
+                </RadzenTabsItem>
+            }
+        }
+    </Tabs>
+</RadzenTabs>
+
+@code {
+    [Inject] public IServiceProvider ServiceProvider { get; set; } = default!;
+
+    private IEnumerable<IMasterdata>? _masterdataComponents;
+    protected override Task OnInitializedAsync()
+    {
+        _masterdataComponents = ServiceProvider.GetServices<IMasterdata>();
+        return base.OnInitializedAsync();
+    }
+}

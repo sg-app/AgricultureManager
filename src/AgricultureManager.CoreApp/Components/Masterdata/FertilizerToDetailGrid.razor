@@ -1,0 +1,113 @@
+﻿@using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures
+@using AgricultureManager.Core.Application.Features.FertilizerToDetailFeatures
+<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+                Data="@_data"
+                TItem="FertilizerToDetailVm"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+    <Columns>
+
+        <RadzenDataGridColumn TItem="FertilizerToDetailVm" Title="Name">
+            <Template Context="item">
+                @item.FertilizerDetail.Name
+            </Template>
+            <EditTemplate Context="item">
+                <RadzenDropDown @bind-Value="item.FertilizerDetail" Data="@_fertilizerDetails" TextProperty="@(nameof(FertilizerDetailVm.Name))" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="FertilizerToDetailVm" Property="@(nameof(FertilizerToDetailVm.Quantity))" Title="Anteil">
+            <Template Context="item">
+                @item.Quantity %
+            </Template>
+            <EditTemplate Context="item">
+                <RadzenNumeric @bind-Value="item.Quantity" Step="1" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="FertilizerToDetailVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+    </Columns>
+
+</RadzenDataGrid>
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public IMapper Mapper { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
+
+    [Parameter] public FertilizerVm Fertilizer { get; set; } = default!;
+
+    private ICollection<FertilizerToDetailVm>? _data => Fertilizer.FertilizerToDetails;
+    private IList<FertilizerDetailVm>? _fertilizerDetails;
+    private RadzenDataGrid<FertilizerToDetailVm> _grid = default!;
+
+    private FertilizerToDetailVm? _itemToEditOriginal;
+
+    protected async override Task OnInitializedAsync()
+    {
+        // _data = (await Mediator.Send(new GetFertilizerListCommand())).Data;
+        _fertilizerDetails = (await Mediator.Send(new GetFertilizerDetailListCommand())).Data;
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+    }
+
+    private async Task DeleteRow(FertilizerToDetailVm item)
+    {
+        var dialogResponse = await DialogService.Confirm("Soll der Datensatz wirklich gelöscht werden?", "Datensatz löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+        if (dialogResponse is null || dialogResponse == false)
+            return;
+
+        var response = await Mediator.Send(new RemoveFertilizerToDetailCommand { FertilizerId = item.FertilizerId, FertilizerDetailId = item.FertilizerDetailId });
+        if (response.Success && _data is not null)
+            _data.Remove(item);
+        else
+            _grid.CancelEditRow(item);
+        await _grid.Reload();
+    }
+
+    private async Task InsertRow() =>
+        await _grid.InsertRow(new());
+
+    private async Task EditRow(FertilizerToDetailVm item)
+    {
+        _itemToEditOriginal = Mapper.Map<FertilizerToDetailVm>(item);
+        await _grid.EditRow(item);
+    }
+
+    private void CancelEditRow(FertilizerToDetailVm item)
+    {
+        _grid.CancelEditRow(item);
+        Mapper.Map(_itemToEditOriginal, item);
+        _itemToEditOriginal = null;
+    }
+
+    private async Task SaveRow(FertilizerToDetailVm item) =>
+        await _grid.UpdateRow(item);
+
+    private async Task OnUpdateRow(FertilizerToDetailVm item)
+    {
+        var cmd = new UpdateFertilizerToDetailCommand();
+        Mapper.Map(item, cmd);
+        var response = await Mediator.Send(cmd);
+        if (!response.Success)
+            await _grid.Reload();
+        _itemToEditOriginal = null;
+    }
+
+    private async Task OnCreateRow(FertilizerToDetailVm item)
+    {
+        var response = await Mediator.Send(new AddFertilizerToDetailCommand{FertilizerId = Fertilizer.Id, FertilizerDetailId = item.FertilizerDetail.Id, Quantity = item.Quantity});
+        if (response.Success && response.Data is not null)
+        {
+            item.FertilizerId = response.Data.FertilizerId;
+            item.FertilizerDetailId = response.Data.FertilizerDetailId;
+        }
+    }
+
+
+}

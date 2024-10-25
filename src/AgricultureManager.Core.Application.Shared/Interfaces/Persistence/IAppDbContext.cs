@@ -15,6 +15,8 @@ namespace AgricultureManager.Core.Application.Shared.Interfaces.Persistence
         DbSet<Culture> Culture { get; set; }
         DbSet<Fertilization> Fertilization { get; set; }
         DbSet<Fertilizer> Fertilizer { get; set; }
+        DbSet<FertilizerDetail> FertilizerDetail { get; set; }
+        DbSet<FertilizerToDetail> FertilizerToDetail { get; set; }
         DbSet<Field> Field { get; set; }
         DbSet<Harvest> Harvest { get; set; }
         DbSet<HarvestUnit> HarvestUnit { get; set; }

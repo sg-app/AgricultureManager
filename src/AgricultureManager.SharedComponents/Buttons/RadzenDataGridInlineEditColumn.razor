@@ -1,0 +1,28 @@
+﻿@typeparam TItem
+
+<RadzenDataGridColumn TItem="TItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+    <Template Context="item">
+        <RadzenButton Click="()=>EditRow.InvokeAsync(item)" Icon="edit_square" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" />
+        <RadzenButton Click="()=>DeleteRow.InvokeAsync(item)" Icon="delete" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Danger" />
+    </Template>
+    <EditTemplate Context="item">
+        <RadzenButton Click="()=>CancelEditRow.InvokeAsync(item)" Icon="close" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Info" />
+        <RadzenButton Click="()=>SaveRow.InvokeAsync(item)" Icon="save" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Success" />
+    </EditTemplate>
+</RadzenDataGridColumn>
+
+@code
+{
+    [Parameter]
+    public EventCallback<TItem> EditRow { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> DeleteRow { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> CancelEditRow { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> SaveRow { get; set; }
+
+}

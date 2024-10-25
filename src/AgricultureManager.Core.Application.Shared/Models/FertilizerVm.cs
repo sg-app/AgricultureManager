@@ -9,5 +9,7 @@ namespace AgricultureManager.Core.Application.Shared.Models
         public string? Detail { get; set; }
         [MaxLength(500)]
         public string? Comment { get; set; }
+
+        public ICollection<FertilizerToDetailVm> FertilizerToDetails { get; set; } = [];
     }
 }

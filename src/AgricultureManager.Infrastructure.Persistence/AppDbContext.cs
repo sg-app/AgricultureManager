@@ -9,6 +9,8 @@ namespace AgricultureManager.Infrastructure.Persistence
         public DbSet<Culture> Culture { get; set; }
         public DbSet<Fertilization> Fertilization { get; set; }
         public DbSet<Fertilizer> Fertilizer { get; set; }
+        public DbSet<FertilizerDetail> FertilizerDetail { get; set; }
+        public DbSet<FertilizerToDetail> FertilizerToDetail { get; set; }
         public DbSet<Field> Field { get; set; }
         public DbSet<Harvest> Harvest { get; set; }
         public DbSet<HarvestUnit> HarvestUnit { get; set; }
@@ -36,6 +38,11 @@ namespace AgricultureManager.Infrastructure.Persistence
 
             modelBuilder.Entity<YearField>()
                 .HasKey(k => new { k.HarvestYearId, k.FieldId });
+
+            modelBuilder.Entity<Fertilizer>()
+                .HasMany(f => f.FertilizerDetails)
+                .WithMany(f => f.Fertilizers)
+                .UsingEntity<FertilizerToDetail>();
         }
     }
 }

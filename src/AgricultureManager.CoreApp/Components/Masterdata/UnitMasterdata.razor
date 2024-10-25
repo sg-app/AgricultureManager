@@ -1,0 +1,25 @@
+﻿<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+                Data="@_data"
+                TItem="UnitVm"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+    <Columns>
+        <RadzenDataGridColumn TItem="UnitVm" Property="@(nameof(UnitVm.Name))" Title="Name">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Name" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Name)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="UnitVm" Property="@(nameof(UnitVm.Comment))" Title="Kommentar">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.Comment" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="UnitVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+    </Columns>
+</RadzenDataGrid>

@@ -121,6 +121,44 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                     b.ToTable("Fertilizer");
                 });
 
+            modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.FertilizerDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FertilizerDetail");
+                });
+
+            modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.FertilizerToDetail", b =>
+                {
+                    b.Property<Guid>("FertilizerDetailId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("FertilizerId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("FertilizerDetailId", "FertilizerId");
+
+                    b.HasIndex("FertilizerId");
+
+                    b.ToTable("FertilizerToDetail");
+                });
+
             modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.Field", b =>
                 {
                     b.Property<Guid>("Id")
@@ -539,6 +577,25 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                     b.Navigation("Unit");
                 });
 
+            modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.FertilizerToDetail", b =>
+                {
+                    b.HasOne("AgricultureManager.Core.Domain.Entities.FertilizerDetail", "FertilizerDetail")
+                        .WithMany("FertilizerToDetails")
+                        .HasForeignKey("FertilizerDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AgricultureManager.Core.Domain.Entities.Fertilizer", "Fertilizer")
+                        .WithMany("FertilizerToDetails")
+                        .HasForeignKey("FertilizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fertilizer");
+
+                    b.Navigation("FertilizerDetail");
+                });
+
             modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.Harvest", b =>
                 {
                     b.HasOne("AgricultureManager.Core.Domain.Entities.HarvestUnit", "HarvestUnit")
@@ -672,6 +729,16 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                     b.Navigation("Field");
 
                     b.Navigation("HarvestYear");
+                });
+
+            modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.Fertilizer", b =>
+                {
+                    b.Navigation("FertilizerToDetails");
+                });
+
+            modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.FertilizerDetail", b =>
+                {
+                    b.Navigation("FertilizerToDetails");
                 });
 #pragma warning restore 612, 618
         }

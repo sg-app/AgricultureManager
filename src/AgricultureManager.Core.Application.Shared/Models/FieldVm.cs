@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
+using System.ComponentModel.DataAnnotations;
 
 namespace AgricultureManager.Core.Application.Shared.Models
 {
-    public class FieldVm
+    public class FieldVm : IDeleteEntity
     {
         public Guid Id { get; set; }
         [MaxLength(45), Required]

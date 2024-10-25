@@ -1,0 +1,34 @@
+﻿<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+                Data="@_data"
+                TItem="PersonVm"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+    <Columns>
+        <RadzenDataGridColumn TItem="PersonVm" Property="@(nameof(PersonVm.Displayname))" Title="Name" Width="350px">
+            <EditTemplate Context="item">
+                <RadzenStack Orientation="Orientation.Horizontal">
+                    <RadzenTextBox @bind-Value="item.FirstName" Style="min-width:150px; width:50%" />
+                    <ValidationMessage For="@(()=>item.FirstName)" />
+                    <RadzenTextBox @bind-Value="item.LastName" Style="min-width:150px; width:50%" />
+                    <ValidationMessage For="@(()=>item.LastName)" />
+                </RadzenStack>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PersonVm" Property="@(nameof(PersonVm.JobTitle))" Title="Beruf">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.JobTitle" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.JobTitle)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PersonVm" Property="@(nameof(PersonVm.Comment))" Title="Kommentar">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.Comment" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="PersonVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+    </Columns>
+</RadzenDataGrid>

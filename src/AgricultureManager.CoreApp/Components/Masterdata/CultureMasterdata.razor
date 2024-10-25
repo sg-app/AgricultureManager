@@ -1,0 +1,38 @@
+﻿<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+                Data="@_data"
+                TItem="CultureVm"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+    <Columns>
+        <RadzenDataGridColumn TItem="CultureVm" Property="@(nameof(CultureVm.Name))" Title="Name">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Name" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Name)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CultureVm" Property="@(nameof(CultureVm.Code))" Title="Code" Width="100px">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.Code" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Code)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CultureVm" Property="@(nameof(CultureVm.ShortName))" Title="Kurzname" Width="100px">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.ShortName" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.ShortName)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CultureVm" Property="@(nameof(CultureVm.Comment))" Title="Kommentar">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.Comment" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="CultureVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+    </Columns>
+
+</RadzenDataGrid>

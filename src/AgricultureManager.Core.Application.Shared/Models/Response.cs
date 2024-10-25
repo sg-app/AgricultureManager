@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AgricultureManager.Core.Application.Shared.Models
+﻿namespace AgricultureManager.Core.Application.Shared.Models
 {
     public class Response<T> : ResponseLess
     {
@@ -36,6 +30,11 @@ namespace AgricultureManager.Core.Application.Shared.Models
         {
             Success = success;
         }
+        public ResponseLess(bool success, string message)
+        {
+            Success = success;
+            Message = message;
+        }
     }
 
     public class Response
@@ -56,6 +55,8 @@ namespace AgricultureManager.Core.Application.Shared.Models
             new(false, null);
         public static ResponseLess Fail() =>
            new(false);
+        public static ResponseLess Fail(string message) =>
+           new(false, message);
         public static Response<T> FailValidation<T>(IDictionary<string, string[]> validationErrors) =>
             new(false, null, validationErrors);
     }

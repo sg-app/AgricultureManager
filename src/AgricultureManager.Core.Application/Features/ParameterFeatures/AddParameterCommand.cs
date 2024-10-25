@@ -3,8 +3,6 @@ using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Core.Domain.Entities;
 using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace AgricultureManager.Core.Application.Features.ParameterFeatures
 {

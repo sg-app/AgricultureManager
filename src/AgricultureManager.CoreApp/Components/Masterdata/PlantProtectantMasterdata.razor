@@ -1,0 +1,31 @@
+﻿<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+                Data="@_data"
+                TItem="PlantProtectantVm"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+    <Columns>
+        <RadzenDataGridColumn TItem="PlantProtectantVm" Property="@(nameof(PlantProtectantVm.Name))" Title="Name">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Name" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Name)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PlantProtectantVm" Property="@(nameof(PlantProtectantVm.PlantProtectantType))" Title="Typ">
+            <EditTemplate Context="item">
+                <RadzenDropDown Data="@(Enum.GetValues(typeof(PlantProtectantTypeVm)).Cast<Enum>())" @bind-Value="item.PlantProtectantType" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PlantProtectantVm" Property="@(nameof(PlantProtectantVm.ActiveSubstance))" Title="Aktive Substanz">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.ActiveSubstance" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="PlantProtectantVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+    </Columns>
+
+</RadzenDataGrid>

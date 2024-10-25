@@ -1,0 +1,30 @@
+﻿<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+                Data="@_data"
+                TItem="FertilizerVm"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+
+    <Template Context="item">
+        <FertilizerToDetailGrid Fertilizer="item" />
+    </Template>
+    <Columns>
+        <RadzenDataGridColumn TItem="FertilizerVm" Property="@(nameof(FertilizerVm.Name))" Title="Name">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Name" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Name)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="FertilizerVm" Property="@(nameof(FertilizerVm.Comment))" Title="Kommentar">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.Comment" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="FertilizerVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+    </Columns>
+
+</RadzenDataGrid>

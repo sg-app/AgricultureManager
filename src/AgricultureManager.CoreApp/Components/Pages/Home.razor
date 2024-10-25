@@ -1,0 +1,23 @@
+﻿@page "/"
+@using AgricultureManager.Core.Application.Features.CompanyFeatures
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+
+@code{
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Mediator.Send(new GetCompanyCommand());
+        if (!response.Success)
+        {
+            NavigationManager.NavigateTo("/company/create");
+        }
+    }
+}

@@ -11,7 +11,7 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
-    <PackageReference Include="Radzen.Blazor" Version="5.2.12" />
+    <PackageReference Include="Radzen.Blazor" Version="5.3.5" />
   </ItemGroup>
 
   <ItemGroup>

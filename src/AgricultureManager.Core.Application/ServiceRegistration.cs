@@ -16,6 +16,7 @@ namespace AgricultureManager.Core.Application
             });
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
             return services;
         }
     }

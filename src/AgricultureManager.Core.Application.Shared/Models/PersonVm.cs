@@ -13,5 +13,7 @@ namespace AgricultureManager.Core.Application.Shared.Models
         public string? JobTitle { get; set; }
         [MaxLength(500)]
         public string? Comment { get; set; }
+
+        public string Displayname => $"{FirstName} {LastName}";
     }
 }
