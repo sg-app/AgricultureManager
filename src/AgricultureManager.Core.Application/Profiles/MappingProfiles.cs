@@ -107,10 +107,6 @@ namespace AgricultureManager.Core.Application.Profiles
             CreateMap<UnitVm, AddUnitCommand>();
             CreateMap<UnitVm, UpdateUnitCommand>();
 
-            CreateMap<YearField, YearFieldVm>();
-
-
-
         }
     }
 }

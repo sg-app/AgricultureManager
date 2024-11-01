@@ -1,6 +1,6 @@
 ﻿@typeparam TItem
 
-<RadzenDataGridColumn TItem="TItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+<RadzenDataGridColumn TItem="TItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
     <Template Context="item">
         <RadzenButton Click="()=>EditRow.InvokeAsync(item)" Icon="edit_square" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" />
         <RadzenButton Click="()=>DeleteRow.InvokeAsync(item)" Icon="delete" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Danger" />

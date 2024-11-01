@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -52,6 +53,22 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "FertilizerDetail",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Comment = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FertilizerDetail", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Field",
                 columns: table => new
                 {
@@ -76,8 +93,7 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Year = table.Column<string>(type: "varchar(4)", maxLength: 4, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CompanyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -189,26 +205,26 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "YearField",
+                name: "FertilizerToDetail",
                 columns: table => new
                 {
-                    HarvestYearId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    FieldId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    FertilizerId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    FertilizerDetailId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_YearField", x => new { x.HarvestYearId, x.FieldId });
+                    table.PrimaryKey("PK_FertilizerToDetail", x => new { x.FertilizerDetailId, x.FertilizerId });
                     table.ForeignKey(
-                        name: "FK_YearField_Field_FieldId",
-                        column: x => x.FieldId,
-                        principalTable: "Field",
+                        name: "FK_FertilizerToDetail_FertilizerDetail_FertilizerDetailId",
+                        column: x => x.FertilizerDetailId,
+                        principalTable: "FertilizerDetail",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_YearField_HarvestYear_HarvestYearId",
-                        column: x => x.HarvestYearId,
-                        principalTable: "HarvestYear",
+                        name: "FK_FertilizerToDetail_Fertilizer_FertilizerId",
+                        column: x => x.FertilizerId,
+                        principalTable: "Fertilizer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -219,13 +235,12 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    YearFieldId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    HarvestYearId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    FieldId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Name = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Area = table.Column<float>(type: "float", nullable: false),
-                    CultureId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    YearFieldHarvestYearId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    YearFieldFieldId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    CultureId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -237,10 +252,16 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_HarvestUnit_YearField_YearFieldHarvestYearId_YearFieldFieldId",
-                        columns: x => new { x.YearFieldHarvestYearId, x.YearFieldFieldId },
-                        principalTable: "YearField",
-                        principalColumns: new[] { "HarvestYearId", "FieldId" },
+                        name: "FK_HarvestUnit_Field_FieldId",
+                        column: x => x.FieldId,
+                        principalTable: "Field",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HarvestUnit_HarvestYear_HarvestYearId",
+                        column: x => x.HarvestYearId,
+                        principalTable: "HarvestYear",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -456,6 +477,11 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                 column: "UnitId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FertilizerToDetail_FertilizerId",
+                table: "FertilizerToDetail",
+                column: "FertilizerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Harvest_HarvestUnitId",
                 table: "Harvest",
                 column: "HarvestUnitId");
@@ -476,9 +502,14 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                 column: "CultureId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HarvestUnit_YearFieldHarvestYearId_YearFieldFieldId",
+                name: "IX_HarvestUnit_FieldId",
                 table: "HarvestUnit",
-                columns: new[] { "YearFieldHarvestYearId", "YearFieldFieldId" });
+                column: "FieldId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HarvestUnit_HarvestYearId",
+                table: "HarvestUnit",
+                column: "HarvestYearId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlantProtection_HarvestUnitId",
@@ -529,11 +560,6 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                 name: "IX_Seed_UnitId",
                 table: "Seed",
                 column: "UnitId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_YearField_FieldId",
-                table: "YearField",
-                column: "FieldId");
         }
 
         /// <inheritdoc />
@@ -541,6 +567,9 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Fertilization");
+
+            migrationBuilder.DropTable(
+                name: "FertilizerToDetail");
 
             migrationBuilder.DropTable(
                 name: "Harvest");
@@ -553,6 +582,9 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Seed");
+
+            migrationBuilder.DropTable(
+                name: "FertilizerDetail");
 
             migrationBuilder.DropTable(
                 name: "Fertilizer");
@@ -577,9 +609,6 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Culture");
-
-            migrationBuilder.DropTable(
-                name: "YearField");
 
             migrationBuilder.DropTable(
                 name: "Field");

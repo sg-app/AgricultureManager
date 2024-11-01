@@ -239,25 +239,24 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("CultureId")
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid>("FieldId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("HarvestYearId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
-                    b.Property<Guid>("YearFieldFieldId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("YearFieldHarvestYearId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("YearFieldId")
-                        .HasColumnType("char(36)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CultureId");
 
-                    b.HasIndex("YearFieldHarvestYearId", "YearFieldFieldId");
+                    b.HasIndex("FieldId");
+
+                    b.HasIndex("HarvestYearId");
 
                     b.ToTable("HarvestUnit");
                 });
@@ -266,9 +265,6 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("CompanyId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Year")
@@ -528,24 +524,6 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                     b.ToTable("Unit");
                 });
 
-            modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.YearField", b =>
-                {
-                    b.Property<Guid>("HarvestYearId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("FieldId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("HarvestYearId", "FieldId");
-
-                    b.HasIndex("FieldId");
-
-                    b.ToTable("YearField");
-                });
-
             modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.Fertilization", b =>
                 {
                     b.HasOne("AgricultureManager.Core.Domain.Entities.Fertilizer", "Fertilizer")
@@ -627,15 +605,23 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AgricultureManager.Core.Domain.Entities.YearField", "YearField")
-                        .WithMany()
-                        .HasForeignKey("YearFieldHarvestYearId", "YearFieldFieldId")
+                    b.HasOne("AgricultureManager.Core.Domain.Entities.Field", "Field")
+                        .WithMany("HarvestUnits")
+                        .HasForeignKey("FieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AgricultureManager.Core.Domain.Entities.HarvestYear", "HarvestYear")
+                        .WithMany("HarvestUnits")
+                        .HasForeignKey("HarvestYearId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Culture");
 
-                    b.Navigation("YearField");
+                    b.Navigation("Field");
+
+                    b.Navigation("HarvestYear");
                 });
 
             modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.PlantProtection", b =>
@@ -712,25 +698,6 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.YearField", b =>
-                {
-                    b.HasOne("AgricultureManager.Core.Domain.Entities.Field", "Field")
-                        .WithMany()
-                        .HasForeignKey("FieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AgricultureManager.Core.Domain.Entities.HarvestYear", "HarvestYear")
-                        .WithMany()
-                        .HasForeignKey("HarvestYearId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Field");
-
-                    b.Navigation("HarvestYear");
-                });
-
             modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.Fertilizer", b =>
                 {
                     b.Navigation("FertilizerToDetails");
@@ -739,6 +706,16 @@ namespace AgricultureManager.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.FertilizerDetail", b =>
                 {
                     b.Navigation("FertilizerToDetails");
+                });
+
+            modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.Field", b =>
+                {
+                    b.Navigation("HarvestUnits");
+                });
+
+            modelBuilder.Entity("AgricultureManager.Core.Domain.Entities.HarvestYear", b =>
+                {
+                    b.Navigation("HarvestUnits");
                 });
 #pragma warning restore 612, 618
         }

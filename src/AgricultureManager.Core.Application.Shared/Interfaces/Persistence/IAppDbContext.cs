@@ -29,8 +29,7 @@ namespace AgricultureManager.Core.Application.Shared.Interfaces.Persistence
         DbSet<SeedCategory> SeedCategory { get; set; }
         DbSet<SeedTechnology> SeedTechnology { get; set; }
         DbSet<Unit> Unit { get; set; }
-        DbSet<YearField> YearField { get; set; }
-
+        
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

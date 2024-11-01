@@ -1,0 +1,78 @@
+﻿@using AgricultureManager.Core.Application.Features.YearFieldFeatures
+
+
+<RadzenCheckBox TValue="bool" ValueChanged="OnAllowMultiSelectionChanged" Value=@_allowMultiSelectOnRowClick Name="AllowMultiSelection" />
+<RadzenLabel Text="Mehrfachauswahl" Component="AllowMultiSelection" />
+<div class="d-flex flex-wrap">
+    <RadzenDataGrid @ref="_grid"
+                    @bind-Value="_selectedItems"
+                    AllowSorting="true"
+                    Data="_data"
+                    TItem="HarvestUnitOverview"
+                    SelectionMode="@(_allowMultiSelectOnRowClick ? DataGridSelectionMode.Multiple : DataGridSelectionMode.Single)"
+                    IsLoading=@_isLoading
+                    LoadData="@LoadData"
+                    Density="Density.Compact">
+        <Columns>
+            @if (_allowMultiSelectOnRowClick)
+            {
+                <RadzenDataGridColumn OrderIndex="-1" Width="60px" Sortable="false" Filterable="false">
+                    <Template Context="data">
+                        <RadzenCheckBox TriState="false" Value="@(_selectedItems != null && _selectedItems.Contains(data))" TValue="bool" />
+                    </Template>
+                </RadzenDataGridColumn>
+            }
+            <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.HarvestUnitName))" Title="Name" />
+            <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.FieldName))" Title="Feld" />
+            <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.Area))" Title="Fläche">
+                <Template Context="data">
+                    @data.Area ha
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.CultureShortName))" Title="Kultur" />
+        </Columns>
+    </RadzenDataGrid>
+    @if (_selectedItems?.Count > 0)
+    {
+        @*    <SeedProcess HarvestUnits="@_selectedItems" />
+    <PlantProtectionProcess HarvestUnits="@_selectedItems" />
+    <FertilizationProcess HarvestUnits="@_selectedItems" />
+    <HarvestProcess HarvestUnits="@_selectedItems" /> *@
+    }
+
+</div>
+<style>
+    .rz-grid-table {
+        width: unset;
+    }
+</style>
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+
+    private IList<HarvestUnitOverview>? _data;
+    private IList<HarvestUnitOverview>? _selectedItems;
+    private HarvestUnitOverview? _selectedSingleItem => _selectedItems?.FirstOrDefault();
+    private bool _allowMultiSelectOnRowClick;
+    private RadzenDataGrid<HarvestUnitOverview>? _grid = default!;
+    private bool _isLoading;
+
+    private async Task LoadData(LoadDataArgs args)
+    {
+        _isLoading = true;
+        var response = await Mediator.Send(new GetHarvestUnitsFromYear(Guid.Parse("fc05d1a6-9837-11ef-8b99-00113229d201")));
+        _data = response.Data;
+        _isLoading = false;
+    }
+
+    private void OnAllowMultiSelectionChanged(bool state)
+    {
+        _allowMultiSelectOnRowClick = state;
+
+        if (!state)
+        {
+            _selectedItems = null;
+            _grid?.Reset();
+        }
+    }
+}

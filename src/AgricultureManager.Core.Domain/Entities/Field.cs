@@ -13,5 +13,7 @@ namespace AgricultureManager.Core.Domain.Entities
         public float Area { get; set; }
         [MaxLength(500)]
         public string? Comment { get; set; }
+
+        public virtual ICollection<HarvestUnit> HarvestUnits { get; set; } = default!;
     }
 }

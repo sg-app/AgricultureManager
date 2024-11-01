@@ -7,14 +7,18 @@ namespace AgricultureManager.Core.Domain.Entities
         [Key]
         public Guid Id { get; set; }
         [Required]
-        public Guid YearFieldId { get; set; }
+        public Guid HarvestYearId { get; set; }
+        [Required]
+        public Guid FieldId { get; set; }
+
         [MaxLength(150), Required]
         public string Name { get; set; } = string.Empty;
         public float Area { get; set; }
         [Required]
         public Guid CultureId { get; set; }
 
-        public virtual YearField YearField { get; set; } = default!;
+        public virtual HarvestYear HarvestYear { get; set; } = default!;
+        public virtual Field Field { get; set; } = default!;
         public virtual Culture Culture { get; set; } = default!;
     }
 }

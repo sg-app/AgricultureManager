@@ -23,7 +23,6 @@ namespace AgricultureManager.Infrastructure.Persistence
         public DbSet<SeedCategory> SeedCategory { get; set; }
         public DbSet<SeedTechnology> SeedTechnology { get; set; }
         public DbSet<Unit> Unit { get; set; }
-        public DbSet<YearField> YearField { get; set; }
 
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -35,9 +34,6 @@ namespace AgricultureManager.Infrastructure.Persistence
             modelBuilder.Entity<PlantProtectant>()
                 .Property(p => p.PlantProtectantType)
                 .HasConversion<string>();
-
-            modelBuilder.Entity<YearField>()
-                .HasKey(k => new { k.HarvestYearId, k.FieldId });
 
             modelBuilder.Entity<Fertilizer>()
                 .HasMany(f => f.FertilizerDetails)
