@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using AgricultureManager.Core.Application.Services;
+using AgricultureManager.Core.Application.Shared.Interfaces.Services;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -17,6 +19,7 @@ namespace AgricultureManager.Core.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
+            services.AddSingleton<IHarvestYearService, HarvestYearService>();
             return services;
         }
     }

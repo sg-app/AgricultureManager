@@ -1,11 +1,4 @@
-﻿using AgricultureManager.Core.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AgricultureManager.Core.Application.Shared.Models
+﻿namespace AgricultureManager.Core.Application.Shared.Models
 {
     public class FertilizerToDetailVm
     {

@@ -18,7 +18,7 @@ namespace AgricultureManager.Core.Application.Features.FertilizerToDetailFeature
 
             var entities = await dbContext.FertilizerToDetail
                 .AsNoTracking()
-                .Include(f=>f.FertilizerDetail)
+                .Include(f => f.FertilizerDetail)
                 .ToListAsync(cancellationToken);
 
             return Response.Success(mapper.Map<IList<FertilizerToDetailVm>>(entities));

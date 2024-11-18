@@ -3,6 +3,7 @@ using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerToDetailFeatures;
 using AgricultureManager.Core.Application.Features.FieldFeatures;
+using AgricultureManager.Core.Application.Features.HarvestYearFeatures;
 using AgricultureManager.Core.Application.Features.ParameterFeatures;
 using AgricultureManager.Core.Application.Features.PersonFeatures;
 using AgricultureManager.Core.Application.Features.PlantProtectantFeatures;
@@ -42,7 +43,7 @@ namespace AgricultureManager.Core.Application.Profiles
             CreateMap<FertilizerDetailVm, FertilizerDetailVm>();
             CreateMap<FertilizerDetailVm, AddFertilizerDetailCommand>();
             CreateMap<FertilizerDetailVm, UpdateFertilizerDetailCommand>();
-            
+
             CreateMap<FertilizerToDetail, FertilizerToDetailVm>();
             CreateMap<AddFertilizerToDetailCommand, FertilizerToDetail>();
             CreateMap<UpdateFertilizerToDetailCommand, FertilizerToDetail>();
@@ -62,6 +63,7 @@ namespace AgricultureManager.Core.Application.Profiles
             CreateMap<HarvestUnit, HarvestUnitVm>();
 
             CreateMap<HarvestYear, HarvestYearVm>();
+            CreateMap<AddHarvestYearCommand, HarvestYear>();
 
             CreateMap<Parameter, ParameterVm>();
             CreateMap<AddParameterCommand, Parameter>();
@@ -85,7 +87,7 @@ namespace AgricultureManager.Core.Application.Profiles
 
             CreateMap<Seed, SeedVm>();
 
-            
+
             CreateMap<SeedTechnology, SeedTechnologyVm>();
             CreateMap<AddSeedTechnologyCommand, SeedTechnology>();
             CreateMap<UpdateSeedTechnologyCommand, SeedTechnology>();

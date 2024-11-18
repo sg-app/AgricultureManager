@@ -1,0 +1,73 @@
+﻿@using AgricultureManager.Core.Application.Common
+@using AgricultureManager.Core.Application.Features.HarvestYearFeatures
+@using AgricultureManager.Core.Application.Shared.Interfaces.Services
+@using AgricultureManager.SharedComponents.Dialogs
+@using System.Text.RegularExpressions
+<RadzenDropDown TValue="HarvestYearVm" @bind-Value="_selectedHarvestYear" Data="@_harvestYears" TextProperty="@(nameof(HarvestYearVm.Year))" Change="HarvestYearChangedHandler" />
+
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public IHarvestYearService HarvestYearService { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
+    private IList<HarvestYearVm>? _harvestYears;
+    private HarvestYearVm? _selectedHarvestYear;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (_harvestYears is null)
+            await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+
+        var response = await Mediator.Send(new GetHarvestYearsCommand());
+        _harvestYears = response.Data;
+        var selectedYear = await HarvestYearService.GetSelectedYearAsync();
+        _selectedHarvestYear = selectedYear;
+        if (_harvestYears is not null)
+        {
+            _harvestYears.Insert(0, CustomItems.CreateNewYearItem);
+            await HarvestYearChangedHandler(_selectedHarvestYear!);
+        }
+        else if (response.Success && _harvestYears is null)
+        {
+            await LoadData();
+        }
+
+    }
+
+    private async Task HarvestYearChangedHandler(object item)
+    {
+        var harvestYear = item as HarvestYearVm;
+
+        if (harvestYear is null)
+            return;
+        else if (harvestYear.Id == CustomItems.CreateNewYearItem.Id)
+            await CreateNewYear();
+        else
+            await HarvestYearService.SetSelectedYearAsync(harvestYear);
+
+    }
+
+    private async Task CreateNewYear()
+    {
+        var dialogResult = await DialogService.OpenAsync<TextBoxDialog>(
+            "Neues Jahr anlegen",
+            new() { { nameof(TextBoxDialog.Title), "Jahr eingeben" } }
+        );
+
+        if (dialogResult is string year && !string.IsNullOrWhiteSpace(year) && Regex.IsMatch(year, @"^\d{4}$"))
+        {
+            var response = await Mediator.Send(new AddHarvestYearCommand() { Year = year });
+            if (response.Success && response.Data is not null)
+            {
+                _selectedHarvestYear = response.Data;
+                await HarvestYearChangedHandler(_selectedHarvestYear!);
+                await LoadData();
+            }
+        }
+    }
+}

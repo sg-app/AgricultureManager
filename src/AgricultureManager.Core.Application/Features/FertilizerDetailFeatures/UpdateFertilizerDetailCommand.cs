@@ -2,7 +2,6 @@
 using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
 using AutoMapper;
-using System.ComponentModel.DataAnnotations;
 
 namespace AgricultureManager.Core.Application.Features.FertilizerDetailFeatures
 {

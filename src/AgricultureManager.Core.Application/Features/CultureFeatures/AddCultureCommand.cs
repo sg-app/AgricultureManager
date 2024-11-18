@@ -3,7 +3,6 @@ using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Core.Domain.Entities;
 using AutoMapper;
-using System.ComponentModel.DataAnnotations;
 
 namespace AgricultureManager.Core.Application.Features.CultureFeatures
 {

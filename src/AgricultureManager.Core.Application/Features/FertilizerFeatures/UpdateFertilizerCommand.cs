@@ -1,9 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
 using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
-using AgricultureManager.Core.Domain.Entities;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace AgricultureManager.Core.Application.Features.FertilizerFeatures
 {

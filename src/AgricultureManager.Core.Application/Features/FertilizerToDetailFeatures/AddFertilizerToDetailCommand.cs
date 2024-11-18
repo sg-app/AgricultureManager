@@ -19,7 +19,7 @@ namespace AgricultureManager.Core.Application.Features.FertilizerToDetailFeature
             using var dbContext = dbContextFactory.CreateDbContext();
 
             var fertilizerToDetail = mapper.Map<FertilizerToDetail>(request);
-            
+
 
             await dbContext.FertilizerToDetail.AddAsync(fertilizerToDetail, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);

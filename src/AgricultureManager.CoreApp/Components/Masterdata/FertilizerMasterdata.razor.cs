@@ -1,12 +1,12 @@
-﻿using AgricultureManager.Core.Application.Features.FertilizerFeatures;
+﻿using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures;
+using AgricultureManager.Core.Application.Features.FertilizerFeatures;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Module.Api.Interfaces;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Components;
-using Radzen.Blazor;
 using Radzen;
-using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures;
+using Radzen.Blazor;
 
 namespace AgricultureManager.CoreApp.Components.Masterdata
 {

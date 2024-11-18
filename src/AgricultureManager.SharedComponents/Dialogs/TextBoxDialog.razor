@@ -1,0 +1,20 @@
+﻿<div>
+    <p class="mb-2">@Title</p>
+    <div class="row">
+        <div class="col">
+            <RadzenTextBox @bind-Value="Text" />
+        </div>
+    </div>
+    <div class="row pt-2">
+        <div class="col-md-12 text-right">
+            <RadzenButton Click="@((args) => DialogService.Close(Text))" ButtonStyle="Radzen.ButtonStyle.Secondary" Text="Abbruch" Style="width: 120px" class="mr-1" />
+            <RadzenButton Click="@((args) => DialogService.Close(Text))" Text="Ok" Style="width: 120px" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Titel";
+    [Parameter] public string? Text { get; set; }
+    [Inject] public DialogService DialogService { get; set; } = default!;
+}

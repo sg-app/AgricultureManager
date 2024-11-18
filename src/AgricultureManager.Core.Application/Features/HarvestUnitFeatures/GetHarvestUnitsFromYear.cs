@@ -1,13 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
 using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AgricultureManager.Core.Application.Features.YearFieldFeatures
 {
