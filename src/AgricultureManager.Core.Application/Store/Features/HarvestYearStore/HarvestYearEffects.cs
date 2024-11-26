@@ -13,7 +13,7 @@ using System.Text.Json;
 
 namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
 {
-    public class HarvestYearEffects(IServiceProvider serviceProvider, IMediator mediator, DialogService dialogService)
+    public class HarvestYearEffects(IServiceProvider serviceProvider, IMediator mediator)
     {
 
         [EffectMethod(typeof(LoadHarvestYearsAction))]

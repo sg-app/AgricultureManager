@@ -21,4 +21,8 @@
     <ProjectReference Include="..\AgricultureManager.Core.Domain\AgricultureManager.Core.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\Services\" />
+  </ItemGroup>
+
 </Project>

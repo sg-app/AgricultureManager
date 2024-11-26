@@ -1,10 +1,9 @@
-﻿@using AgricultureManager.Core.Application.Common
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@using AgricultureManager.Core.Application.Common
 @using AgricultureManager.Core.Application.Features.HarvestYearFeatures
-@using AgricultureManager.Core.Application.Shared.Interfaces.Services
 @using AgricultureManager.Core.Application.Store.Features.HarvestYearStore
 @using AgricultureManager.SharedComponents.Dialogs
 @using System.Text.RegularExpressions
-@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <RadzenDropDown TValue="HarvestYearVm"
                 Value="@HarvestYearState.Value.SelectedHarvestYear"
@@ -15,7 +14,6 @@
 
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
-    [Inject] public IHarvestYearService HarvestYearService { get; set; } = default!;
     [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
