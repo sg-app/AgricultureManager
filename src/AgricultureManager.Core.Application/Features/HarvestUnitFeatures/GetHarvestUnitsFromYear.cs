@@ -3,7 +3,7 @@ using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AgricultureManager.Core.Application.Features.YearFieldFeatures
+namespace AgricultureManager.Core.Application.Features.HarvestUnitFeatures
 {
     public record GetHarvestUnitsFromYear(Guid YearId) : IReq<List<HarvestUnitOverview>>;
 

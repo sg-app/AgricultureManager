@@ -2,8 +2,8 @@
 
 <RadzenDataGridColumn TItem="TItem" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
     <Template Context="item">
-        <RadzenButton Click="()=>EditRow.InvokeAsync(item)" Icon="edit_square" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" />
-        <RadzenButton Click="()=>DeleteRow.InvokeAsync(item)" Icon="delete" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Danger" />
+        <RadzenButton Click="()=>EditRow.InvokeAsync(item)" Icon="edit_square" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" Visible="@(!HideEditButton)" />
+        <RadzenButton Click="()=>DeleteRow.InvokeAsync(item)" Icon="delete" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Danger" Visible="@(!HideDeleteButton)" />
     </Template>
     <EditTemplate Context="item">
         <RadzenButton Click="()=>CancelEditRow.InvokeAsync(item)" Icon="close" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Info" />
@@ -24,5 +24,11 @@
 
     [Parameter]
     public EventCallback<TItem> SaveRow { get; set; }
+    
+    [Parameter]
+    public bool HideEditButton { get; set; }
+    
+    [Parameter]
+    public bool HideDeleteButton { get; set; }
 
 }

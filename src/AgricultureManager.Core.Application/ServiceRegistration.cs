@@ -1,6 +1,8 @@
 ﻿using AgricultureManager.Core.Application.Services;
 using AgricultureManager.Core.Application.Shared.Interfaces.Services;
 using FluentValidation;
+using Fluxor;
+using Fluxor.Blazor.Web.ReduxDevTools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -20,6 +22,15 @@ namespace AgricultureManager.Core.Application
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             services.AddSingleton<IHarvestYearService, HarvestYearService>();
+
+
+            services.AddFluxor(config => {
+                config.ScanAssemblies(Assembly.GetExecutingAssembly());
+#if DEBUG
+                config.UseReduxDevTools();
+#endif
+            });
+
             return services;
         }
     }

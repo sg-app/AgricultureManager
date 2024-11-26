@@ -1,0 +1,74 @@
+﻿@using AgricultureManager.Core.Application.Features.HarvestYearFeatures
+@using AgricultureManager.Core.Application.Store.Features.HarvestYearStore
+@implements IMasterdata
+<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+Data="@_data"
+TItem="HarvestYearVm"
+RowCreate="@OnCreateRow"
+EmptyText="Keine Daten gefunden."
+Density="Density.Compact"
+EditMode="DataGridEditMode.Single">
+    <Columns>
+        <RadzenDataGridColumn TItem="HarvestYearVm" Property="@(nameof(HarvestYearVm.Year))" Title="Jahr">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.Year" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Year)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="HarvestYearVm" DeleteRow="DeleteRow" SaveRow="SaveRow" CancelEditRow="CancelEditRow" HideEditButton="true" />
+    </Columns>
+</RadzenDataGrid>
+
+@code{
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+
+    private IList<HarvestYearVm>? _data;
+    private RadzenDataGrid<HarvestYearVm> _grid = default!;
+
+    public string Title => "Erntejahr";
+
+    protected async override Task OnInitializedAsync()
+    {
+        _data = (await Mediator.Send(new GetHarvestYearsCommand())).Data;
+    }
+
+    private async Task DeleteRow(HarvestYearVm item)
+    {
+        var dialogResponse = await DialogService.Confirm("Soll der Datensatz wirklich gelöscht werden?", "Datensatz löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+        if (dialogResponse is null || dialogResponse == false)
+            return;
+
+        var response = await Mediator.Send(new RemoveHarvestYearCommand { Id = item.Id });
+        if (response.Success && _data is not null)
+        {
+            _data.Remove(item);
+            Dispatcher.Dispatch(new LoadHarvestYearsAction());
+            Dispatcher.Dispatch(new GetCurrentHarvestYearAction());
+        }
+        else
+            _grid.CancelEditRow(item);
+        await _grid.Reload();
+    }
+    
+    private void CancelEditRow(HarvestYearVm item)
+    {
+        _grid.CancelEditRow(item);
+    }
+
+    private async Task InsertRow() =>
+            await _grid.InsertRow(new());
+
+    private async Task SaveRow(HarvestYearVm item) =>
+       await _grid.UpdateRow(item);
+
+    private async Task OnCreateRow(HarvestYearVm item)
+    {
+        var cmd = new AddHarvestYearCommand();
+        var response = await Mediator.Send(new AddHarvestYearCommand{Year = item.Year});
+        if (response.Success && response.Data is not null)
+            item.Id = response.Data.Id;
+    }
+}

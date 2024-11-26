@@ -1,55 +1,40 @@
 ﻿@using AgricultureManager.Core.Application.Common
 @using AgricultureManager.Core.Application.Features.HarvestYearFeatures
 @using AgricultureManager.Core.Application.Shared.Interfaces.Services
+@using AgricultureManager.Core.Application.Store.Features.HarvestYearStore
 @using AgricultureManager.SharedComponents.Dialogs
 @using System.Text.RegularExpressions
-<RadzenDropDown TValue="HarvestYearVm" @bind-Value="_selectedHarvestYear" Data="@_harvestYears" TextProperty="@(nameof(HarvestYearVm.Year))" Change="HarvestYearChangedHandler" />
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<RadzenDropDown TValue="HarvestYearVm"
+                Value="@HarvestYearState.Value.SelectedHarvestYear"
+                Data="@HarvestYearState.Value.HarvestYears"
+                TextProperty="@(nameof(HarvestYearVm.Year))"
+                ValueChanged="HarvestYearChangedHandler" />
 
 
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public IHarvestYearService HarvestYearService { get; set; } = default!;
+    [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
-    private IList<HarvestYearVm>? _harvestYears;
-    private HarvestYearVm? _selectedHarvestYear;
 
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        if (_harvestYears is null)
-            await LoadData();
+        base.OnInitialized();
+        Dispatcher.Dispatch(new LoadHarvestYearsAction());
+        Dispatcher.Dispatch(new GetCurrentHarvestYearAction());
     }
 
-    private async Task LoadData()
+    private async Task HarvestYearChangedHandler(HarvestYearVm harvestYear)
     {
-
-        var response = await Mediator.Send(new GetHarvestYearsCommand());
-        _harvestYears = response.Data;
-        var selectedYear = await HarvestYearService.GetSelectedYearAsync();
-        _selectedHarvestYear = selectedYear;
-        if (_harvestYears is not null)
-        {
-            _harvestYears.Insert(0, CustomItems.CreateNewYearItem);
-            await HarvestYearChangedHandler(_selectedHarvestYear!);
-        }
-        else if (response.Success && _harvestYears is null)
-        {
-            await LoadData();
-        }
-
-    }
-
-    private async Task HarvestYearChangedHandler(object item)
-    {
-        var harvestYear = item as HarvestYearVm;
-
         if (harvestYear is null)
             return;
         else if (harvestYear.Id == CustomItems.CreateNewYearItem.Id)
             await CreateNewYear();
         else
-            await HarvestYearService.SetSelectedYearAsync(harvestYear);
-
+            Dispatcher.Dispatch(new SaveSelectedHarvestYearAction(harvestYear));
     }
 
     private async Task CreateNewYear()
@@ -64,9 +49,8 @@
             var response = await Mediator.Send(new AddHarvestYearCommand() { Year = year });
             if (response.Success && response.Data is not null)
             {
-                _selectedHarvestYear = response.Data;
-                await HarvestYearChangedHandler(_selectedHarvestYear!);
-                await LoadData();
+                Dispatcher.Dispatch(new LoadHarvestYearsAction());
+                Dispatcher.Dispatch(new SaveSelectedHarvestYearAction(response.Data));
             }
         }
     }

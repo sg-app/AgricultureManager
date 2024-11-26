@@ -1,5 +1,7 @@
-﻿@using AgricultureManager.Core.Application.Features.YearFieldFeatures
+﻿@using AgricultureManager.Core.Application.Features.HarvestUnitFeatures
+@using AgricultureManager.Core.Application.Shared.Interfaces.Services
 
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <RadzenCheckBox TValue="bool" ValueChanged="OnAllowMultiSelectionChanged" Value=@_allowMultiSelectOnRowClick Name="AllowMultiSelection" />
 <RadzenLabel Text="Mehrfachauswahl" Component="AllowMultiSelection" />
@@ -49,19 +51,38 @@
 
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public IHarvestYearService HarvestYearService { get; set; } = default!;
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
 
     private IList<HarvestUnitOverview>? _data;
     private IList<HarvestUnitOverview>? _selectedItems;
     private HarvestUnitOverview? _selectedSingleItem => _selectedItems?.FirstOrDefault();
     private bool _allowMultiSelectOnRowClick;
-    private RadzenDataGrid<HarvestUnitOverview>? _grid = default!;
+    private RadzenDataGrid<HarvestUnitOverview> _grid = default!;
     private bool _isLoading;
+    private HarvestYearVm? _harvestYear;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        HarvestYearState.StateChanged += async (s, e) =>
+        {
+            _harvestYear = HarvestYearState.Value.SelectedHarvestYear;
+            await LoadData(new LoadDataArgs());
+            await _grid.Reload();
+        };
+        _harvestYear = HarvestYearState.Value.SelectedHarvestYear;
+    }
 
     private async Task LoadData(LoadDataArgs args)
     {
         _isLoading = true;
-        var response = await Mediator.Send(new GetHarvestUnitsFromYear(Guid.Parse("fc05d1a6-9837-11ef-8b99-00113229d201")));
-        _data = response.Data;
+        if (_harvestYear is not null)
+        {
+            var response = await Mediator.Send(new GetHarvestUnitsFromYear(_harvestYear.Id));
+            _data = response.Data;
+        }
         _isLoading = false;
     }
 
@@ -72,7 +93,7 @@
         if (!state)
         {
             _selectedItems = null;
-            _grid?.Reset();
+            _grid.Reset();
         }
     }
 }
