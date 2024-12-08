@@ -11,5 +11,9 @@ namespace AgricultureManager.Core.Application.Shared.Models
         public string? Comment { get; set; }
 
         public ICollection<FertilizerToDetailVm> FertilizerToDetails { get; set; } = [];
+
+
+        public string Details => string.Join(", ", FertilizerToDetails.Select(x => x.ToString()));
     }
 }
+

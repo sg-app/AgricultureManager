@@ -4,7 +4,7 @@ using MediatR;
 
 namespace AgricultureManager.Core.Application.Store.Features.SeedJobStore
 {
-    public class SeedJobEffects(IMediator mediator)
+    public class PlantProtectionEffects(IMediator mediator)
     {
         [EffectMethod]
         public async Task HandleLoadSeedJobDataAction(LoadSeedJobDataAction action, IDispatcher dispatcher)

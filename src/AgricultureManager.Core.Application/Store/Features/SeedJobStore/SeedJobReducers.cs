@@ -3,7 +3,7 @@ using Fluxor;
 
 namespace AgricultureManager.Core.Application.Store.Features.SeedJobStore
 {
-    public static class SeedJobReducers
+    public static class FertilizationJobReducers
     {
         [ReducerMethod]
         public static SeedJobState LoadSeedJobDataReducer(SeedJobState state, LoadSeedJobDataAction action)

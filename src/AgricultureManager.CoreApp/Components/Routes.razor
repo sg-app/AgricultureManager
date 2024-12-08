@@ -1,5 +1,7 @@
 ﻿@using AgricultureManager.Core.Application.Store.Features.CultureStore
+@using AgricultureManager.Core.Application.Store.Features.FertilizerStore
 @using AgricultureManager.Core.Application.Store.Features.PeopleStore
+@using AgricultureManager.Core.Application.Store.Features.PlantProtectantStore
 @using AgricultureManager.Core.Application.Store.Features.SeedCategoryStore
 @using AgricultureManager.Core.Application.Store.Features.SeedTechnologyStore
 @using AgricultureManager.Core.Application.Store.Features.UnitStore
@@ -20,5 +22,7 @@
         Dispatcher.Dispatch(new LoadCulturesDataAction());
         Dispatcher.Dispatch(new LoadUnitsDataAction());
         Dispatcher.Dispatch(new LoadPeoplesDataAction());
+        Dispatcher.Dispatch(new LoadFertilizersDataAction());
+        Dispatcher.Dispatch(new LoadPlantProtectantsDataAction());
     }
 }

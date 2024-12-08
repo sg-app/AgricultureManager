@@ -1,0 +1,217 @@
+﻿@inherits FluxorComponent
+@using AgricultureManager.Core.Application.Features.CultureFeatures
+@using AgricultureManager.Core.Application.Features.FertilizationFeatures
+@using AgricultureManager.Core.Application.Features.PersonFeatures
+@using AgricultureManager.Core.Application.Features.UnitFeatures
+@using AgricultureManager.Core.Application.Shared.Models.EditorModels
+@using AgricultureManager.Core.Application.Store.Features.FertilizationJobStore
+@if (_item is not null && _item.Details.Count > 0)
+{
+    <RadzenTemplateForm TItem="EditFertilizationVm" Data="_item" EditContext="@_editContexts[0]">
+        <DataAnnotationsValidator />
+        <div class="d-flex flex-row flex-wrap">
+            <div class="px-2">
+                <label for="Date" class="form-label">Datum</label>
+                <RadzenDatePicker class="d-flex" id="Date" @bind-Value="_item.Date" DateFormat="d" />
+            </div>
+            <div class="px-2">
+                <label for="Person" class="form-label">Anwender</label>
+                <RadzenDropDown class="form-control" id="Person" TValue="Guid?" Data="@PeopleState.Value.Peoples" TextProperty="DisplayName" ValueProperty="Id" @bind-Value="_item.PersonId" />
+            </div>
+        </div>
+        <div class="d-flex flex-row flex-wrap align-items-center">
+            <div class="px-2">
+                <label for="Culture" class="form-label">Dünger</label>
+                <RadzenDropDown class="form-control" id="Culture" TValue="Guid" Data="@FertilizerState.Value.Fertilizers" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.FertilizerId" />
+                <ValidationMessage For="@(()=>_item.FertilizerId)" />
+            </div>
+        </div>
+        <div class="d-flex flex-row flex-wrap">
+            <div class="px-2">
+                <label for="BBCH" class="form-label">BBCH</label>
+                <RadzenTextBox class="form-control" id="BBCH" @bind-Value="_item.BBCH" />
+                <ValidationMessage For="@(()=>_item.BBCH)" />
+            </div>
+        </div>
+    </RadzenTemplateForm>
+
+
+    @for (int i = 0; i < _item.Details.Count; i++)
+    {
+        var item = _item.Details[i];
+        var editContext = _editContexts[i + 1];
+        @if (HarvestUnitState.Value.SelectedHarvestUnits?.Count() > 1)
+        {
+            <h2 class="p-2 mt-3">@HarvestUnitState.Value.HarvestUnitsOverview.FirstOrDefault(f => f.Id == item.HarvestUnitId)?.HarvestUnitName - @HarvestUnitState.Value.HarvestUnitsOverview.FirstOrDefault(f => f.Id == item.HarvestUnitId)?.FieldName</h2>
+        }
+        <RadzenTemplateForm TItem="EditFertilizationDetailVm" Data="item" EditContext="editContext">
+            <DataAnnotationsValidator />
+            <div class="d-flex flex-row flex-wrap">
+                <div class="px-2">
+                    <label for="@($"Dosage{i}")" class="form-label">Dosierung</label>
+                    <RadzenNumeric class="form-control" id="@($"Dosage{i}")" TValue="double" Format="0.00" @bind-Value="item.Dosage" />
+                    <ValidationMessage For="@(()=>item.Dosage)" />
+                </div>
+            </div>
+            <div class="d-flex flex-row flex-wrap">
+                <div class="px-2 w-100">
+                    <label for="@($"Setting{i}")" class="form-label">Einstellung</label>
+                    <RadzenTextBox class="form-control" id="@($"Setting{i}")" @bind-Value="item.Setting" />
+                    <ValidationMessage For="@(()=>item.Setting)" />
+                </div>
+            </div>
+            <div class="d-flex">
+                <div class="px-2 w-100">
+                    <label for="@($"Comment{i}")" class="form-label">Kommentar</label>
+                    <RadzenTextArea class="form-control" id="@($"Comment{i}")" @bind-Value="item.Comment" />
+                    <ValidationMessage For="@(()=>item.Comment)" />
+                </div>
+            </div>
+        </RadzenTemplateForm>
+    }
+    <SaveCancelButton ButtonResult="OnSaveCancel" />
+}
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public IMapper Mapper { get; set; } = default!;
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
+    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
+    [Inject] public IState<FertilizerState> FertilizerState { get; set; } = default!;
+    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
+
+    [Parameter] public FertilizationVm? Item { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private EditFertilizationVm? _item;
+    private List<EditContext> _editContexts = new();
+
+    protected override void OnParametersSet()
+    {
+        _editContexts.Clear();
+        if (Item is not null)
+        {
+            PrepareEditOneItem();
+            return;
+        }
+
+        if (HarvestUnitState.Value.SelectedHarvestUnits?.Count() >= 1)
+            PrepareCreateItems();
+
+    }
+
+    private void PrepareEditOneItem()
+    {
+        _item = new EditFertilizationVm
+            {
+                Date = Item!.Date,
+                PersonId = Item.PersonId,
+                FertilizerId = Item.FertilizerId,
+                UnitId = Item.UnitId,
+                BBCH = Item.BBCH
+            };
+        var detail = new EditFertilizationDetailVm
+            {
+                Id = Item.Id,
+                HarvestUnitId = Item.HarvestUnitId,
+                Dosage = Item.Dosage,
+                Setting = Item.Setting,
+                Comment = Item.Comment
+            };
+        _item.Details.Add(detail);
+        _editContexts.Clear();
+        _editContexts.Add(new EditContext(_item));
+        _editContexts.Add(new EditContext(detail));
+    }
+
+    private void PrepareCreateItems()
+    {
+        _editContexts.Clear();
+        _item = new EditFertilizationVm
+            {
+                Date = DateTime.UtcNow,
+                UnitId = UnitState.Value.Units?.Where(f => f.Name == "dt/ha").FirstOrDefault()?.Id,
+            };
+        _editContexts.Add(new EditContext(_item));
+
+        foreach (var unit in HarvestUnitState.Value.SelectedHarvestUnits!)
+        {
+            var newItem = new EditFertilizationDetailVm
+                {
+                    HarvestUnitId = unit.Id,
+                    HarvestUnit = unit.HarvestUnit
+                };
+            _item.Details.Add(newItem);
+            _editContexts.Add(new EditContext(newItem));
+        }
+    }
+    private async Task OnSubmit()
+    {
+        if (_item is not null)
+        {
+            for (int i = 0; i < _item.Details.Count; i++)
+            {
+                if (_item.Details[i].Id == Guid.Empty)
+                {
+                    var cmd = new AddFertilizationCommand
+                        {
+                            HarvestUnitId = _item.Details[i].HarvestUnitId,
+                            Date = _item.Date,
+                            PersonId = _item.PersonId,
+                            BBCH = _item.BBCH,
+                            FertilizerId = _item.FertilizerId,
+                            Dosage = _item.Details[i].Dosage,
+                            UnitId = _item.UnitId,
+                            Setting = _item.Details[i].Setting,
+                            Comment = _item.Details[i].Comment
+                        };
+                    var response = await Mediator.Send(cmd);
+                    if (response.Success && response.Data is not null)
+                        Dispatcher.Dispatch(new AddFertilizationJobAction(response.Data));
+                }
+                else
+                {
+                    var cmd = new UpdateFertilizationCommand
+                        {
+                            Id = _item.Details[i].Id,
+                            HarvestUnitId = _item.Details[i].HarvestUnitId,
+                            Date = _item.Date,
+                            PersonId = _item.PersonId,
+                            BBCH = _item.BBCH,
+                            FertilizerId = _item.FertilizerId,
+                            Dosage = _item.Details[i].Dosage,
+                            UnitId = _item.UnitId,
+                            Setting = _item.Details[i].Setting,
+                            Comment = _item.Details[i].Comment
+                        };
+                    var response = await Mediator.Send(cmd);
+                    if (response.Success && response.Data is not null)
+                        Dispatcher.Dispatch(new UpdateFertilizationJobAction(response.Data));
+                }
+
+            }
+            await OnClose.InvokeAsync();
+        }
+    }
+
+    private async Task OnSaveCancel(bool save)
+    {
+        if (save)
+        {
+            var isValid = true;
+            foreach (var editContext in _editContexts)
+            {
+                if (!editContext.Validate())
+                {
+                    var msg = editContext.GetValidationMessages();
+                    isValid = false;
+                }
+            }
+            if (isValid)
+                await OnSubmit();
+        }
+        else
+            await OnClose.InvokeAsync();
+    }
+}

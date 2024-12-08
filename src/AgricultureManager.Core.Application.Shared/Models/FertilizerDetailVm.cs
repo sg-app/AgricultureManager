@@ -1,5 +1,4 @@
-﻿using AgricultureManager.Core.Domain.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AgricultureManager.Core.Application.Shared.Models
 {
@@ -10,7 +9,7 @@ namespace AgricultureManager.Core.Application.Shared.Models
         public string Name { get; set; } = string.Empty;
         public string? Comment { get; set; }
 
-        public virtual ICollection<FertilizerToDetail> FertilizerToDetails { get; set; } = [];
-        public virtual ICollection<Fertilizer> Fertilizers { get; set; } = [];
+        public virtual ICollection<FertilizerToDetailVm> FertilizerToDetails { get; set; } = [];
+        public virtual ICollection<FertilizerVm> Fertilizers { get; set; } = [];
     }
 }

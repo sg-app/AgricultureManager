@@ -8,5 +8,9 @@
 
         public virtual FertilizerVm Fertilizer { get; set; } = default!;
         public virtual FertilizerDetailVm FertilizerDetail { get; set; } = default!;
+        public override string ToString()
+        {
+            return $"{FertilizerDetail.Name}: {Quantity}";
+        }
     }
 }
