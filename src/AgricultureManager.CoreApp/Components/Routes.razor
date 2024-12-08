@@ -1,7 +1,24 @@
-﻿<Fluxor.Blazor.Web.StoreInitializer />
+﻿@using AgricultureManager.Core.Application.Store.Features.CultureStore
+@using AgricultureManager.Core.Application.Store.Features.PeopleStore
+@using AgricultureManager.Core.Application.Store.Features.SeedCategoryStore
+@using AgricultureManager.Core.Application.Store.Features.SeedTechnologyStore
+@using AgricultureManager.Core.Application.Store.Features.UnitStore
+<Fluxor.Blazor.Web.StoreInitializer />
 <Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>
+
+@code{
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    protected override void OnInitialized()
+    {
+        Dispatcher.Dispatch(new LoadSeedCategoriesDataAction());
+        Dispatcher.Dispatch(new LoadSeedTechnologiesDataAction());
+        Dispatcher.Dispatch(new LoadCulturesDataAction());
+        Dispatcher.Dispatch(new LoadUnitsDataAction());
+        Dispatcher.Dispatch(new LoadPeoplesDataAction());
+    }
+}

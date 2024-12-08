@@ -19,7 +19,8 @@ namespace AgricultureManager.Core.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-            services.AddFluxor(config => {
+            services.AddFluxor(config =>
+            {
                 config.ScanAssemblies(Assembly.GetExecutingAssembly());
 #if DEBUG
                 config.UseReduxDevTools();

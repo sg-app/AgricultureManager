@@ -1,0 +1,256 @@
+﻿@inherits FluxorComponent
+@using AgricultureManager.Core.Application.Features.CultureFeatures
+@using AgricultureManager.Core.Application.Features.PersonFeatures
+@using AgricultureManager.Core.Application.Features.SeedFeatures
+@using AgricultureManager.Core.Application.Features.SeedTechnologyFeatures
+@using AgricultureManager.Core.Application.Features.UnitFeatures
+@using AgricultureManager.Core.Application.Shared.Models.EditorModels
+@using AgricultureManager.Core.Application.Store.Features.SeedJobStore
+@if (_item is not null && _item.Details.Count > 0)
+{
+    <RadzenTemplateForm TItem="EditSeedVm" Data="_item" EditContext="@_editContexts[0]">
+        <DataAnnotationsValidator />
+        <div class="d-flex flex-row flex-wrap">
+            <div class="px-2">
+                <label for="Date" class="form-label">Datum</label>
+                <RadzenDatePicker class="d-flex" id="Date" @bind-Value="_item.Date" DateFormat="d" />
+            </div>
+            <div class="px-2">
+                <label for="Person" class="form-label">Anwender</label>
+                <RadzenDropDown class="form-control" id="Person" TValue="Guid?" Data="@PeopleState.Value.Peoples" TextProperty="DisplayName" ValueProperty="Id" @bind-Value="_item.PersonId" />
+            </div>
+        </div>
+        <div class="d-flex flex-row flex-wrap align-items-center">
+            <div class="px-2">
+                <label for="Culture" class="form-label">Kultur</label>
+                <RadzenDropDown class="form-control" id="Culture" TValue="Guid" Data="@CultureState.Value.Cultures" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.CultureId" />
+                <ValidationMessage For="@(()=>_item.CultureId)" />
+            </div>
+            <div class="px-2">
+                <label for="IsMainCulture" class="form-check-label">Hauptkultur</label>
+                <RadzenCheckBox class="form-control" id="IsMainCulture" @bind-Value="_item.IsMainCulture" />
+            </div>
+        </div>
+        <div class="d-flex flex-row flex-wrap">
+            <div class="px-2">
+                <label for="SeedTechnology" class="form-label">Saattechnologie</label>
+                <RadzenDropDown class="form-control" id="SeedTechnology" TValue="Guid?" Data="@SeedTechnologyState.Value.SeedTechnologies" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.SeedTechnologyId" />
+            </div>
+            <div class="px-2">
+                <label for="DosageUnit" class="form-label">Einheit Dosierung</label>
+                <RadzenDropDown class="form-control" id="DosageUnit" TValue="Guid?" Data="@UnitState.Value.Units" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.UnitId" />
+            </div>
+
+        </div>
+    </RadzenTemplateForm>
+
+
+    @for (int i = 0; i < _item.Details.Count; i++)
+    {
+        var item = _item.Details[i];
+        var editContext = _editContexts[i + 1];
+        @if (HarvestUnitState.Value.SelectedHarvestUnits?.Count() > 1)
+        {
+            <h2 class="p-2 mt-3">@HarvestUnitState.Value.HarvestUnitsOverview.FirstOrDefault(f => f.Id == item.HarvestUnitId)?.HarvestUnitName - @HarvestUnitState.Value.HarvestUnitsOverview.FirstOrDefault(f => f.Id == item.HarvestUnitId)?.FieldName</h2>
+        }
+        <RadzenTemplateForm TItem="EditSeedDetailVm" Data="item" EditContext="editContext">
+            <DataAnnotationsValidator />
+            <div class="d-flex flex-row flex-wrap">
+                <div class="px-2">
+                    <label for="@($"VarietyName{i}")" class="form-label">Sortenname</label>
+                    <RadzenTextBox class="form-control" id="@($"VarietyName{i}")" @bind-Value="item.VarietyName" />
+                    <ValidationMessage For="@(()=>item.VarietyName)" />
+                </div>
+                <div class="px-2">
+                    <label for="@($"ApprovalNumber{i}")" class="form-label">Zulassungsnummer</label>
+                    <RadzenTextBox class="form-control" id="@($"ApprovalNumber{i}")" @bind-Value="item.ApprovalNumber" />
+                </div>
+                <div class="px-2">
+                    <label for="@($"SeedCategoryId{i}")" class="form-label">Saatgutkategorie</label>
+                    <RadzenDropDown class="form-control" id="@($"SeedCategoryId{i}")" TValue="Guid?" Data="@SeedCategoryState.Value.SeedCategories" TextProperty="Name" ValueProperty="Id" @bind-Value="item.SeedCategoryId" />
+                </div>
+            </div>
+            <div class="d-flex flex-row flex-wrap">
+                <div class="px-2">
+                    <label for="@($"Quantity{i}")" class="form-label">Dosierung</label>
+                    <RadzenNumeric class="form-control" id="@($"Quantity{i}")" TValue="double" Format="0.00" @bind-Value="item.Quantity" />
+                    <ValidationMessage For="@(()=>item.Quantity)" />
+                </div>
+            </div>
+            <div class="d-flex flex-row flex-wrap">
+                <div class="px-2 w-100">
+                    <label for="@($"Setting{i}")" class="form-label">Einstellung</label>
+                    <RadzenTextBox class="form-control" id="@($"Setting{i}")" @bind-Value="item.Setting" />
+                    <ValidationMessage For="@(()=>item.Setting)" />
+                </div>
+            </div>
+            <div class="d-flex">
+                <div class="px-2 w-100">
+                    <label for="@($"Comment{i}")" class="form-label">Kommentar</label>
+                    <RadzenTextArea class="form-control" id="@($"Comment{i}")" @bind-Value="item.Comment" />
+                    <ValidationMessage For="@(()=>item.Comment)" />
+                </div>
+            </div>
+        </RadzenTemplateForm>
+    }
+    <SaveCancelButton ButtonResult="OnSaveCancel" />
+}
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public IMapper Mapper { get; set; } = default!;
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
+    [Inject] public IState<SeedTechnologyState> SeedTechnologyState { get; set; } = default!;
+    [Inject] public IState<SeedCategoryState> SeedCategoryState { get; set; } = default!;
+    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
+    [Inject] public IState<CultureState> CultureState { get; set; } = default!;
+    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
+
+    [Parameter] public SeedVm? Item { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private EditSeedVm? _item;
+    private List<EditContext> _editContexts = new();
+
+    protected override void OnParametersSet()
+    {
+        _editContexts.Clear();
+        if (Item is not null)
+        {
+            PrepareEditOneItem();
+            return;
+        }
+
+        if (HarvestUnitState.Value.SelectedHarvestUnits?.Count() >= 1)
+            PrepareCreateItems();
+
+    }
+
+    private void PrepareEditOneItem()
+    {
+        _item = new EditSeedVm
+            {
+                Date = Item!.Date,
+                PersonId = Item.PersonId,
+                CultureId = Item.CultureId,
+                IsMainCulture = Item.IsMainCulture,
+                SeedTechnologyId = Item.SeedTechnologyId,
+                UnitId = Item.UnitId
+            };
+        var detail = new EditSeedDetailVm
+            {
+                Id = Item.Id,
+                HarvestUnitId = Item.HarvestUnitId,
+                VarietyName = Item.VarietyName,
+                ApprovalNumber = Item.ApprovalNumber,
+                Quantity = Item.Quantity,
+                SeedCategoryId = Item.SeedCategoryId,
+                Setting = Item.Setting,
+                Comment = Item.Comment
+            };
+        _item.Details.Add(detail);
+        _editContexts.Clear();
+        _editContexts.Add(new EditContext(_item));
+        _editContexts.Add(new EditContext(detail));
+    }
+
+    private void PrepareCreateItems()
+    {
+        _editContexts.Clear();
+        _item = new EditSeedVm
+            {
+                Date = DateTime.UtcNow,
+                UnitId = UnitState.Value.Units?.Where(f => f.Name == "kg/ha").FirstOrDefault()?.Id,
+                SeedTechnologyId = SeedTechnologyState.Value.SeedTechnologies?.Where(f => f.Name == "konventionell").FirstOrDefault()?.Id,
+            };
+        _editContexts.Add(new EditContext(_item));
+
+        foreach (var unit in HarvestUnitState.Value.SelectedHarvestUnits!)
+        {
+            var newItem = new EditSeedDetailVm
+                {
+                    HarvestUnitId = unit.Id,
+                    HarvestUnit = unit.HarvestUnit
+                };
+            _item.Details.Add(newItem);
+            _editContexts.Add(new EditContext(newItem));
+        }
+    }
+    private async Task OnSubmit()
+    {
+        if (_item is not null)
+        {
+            for (int i = 0; i < _item.Details.Count; i++)
+            {
+                if (_item.Details[i].Id == Guid.Empty)
+                {
+                    var cmd = new AddSeedCommand
+                        {
+                            HarvestUnitId = _item.Details[i].HarvestUnitId,
+                            Date = _item.Date,
+                            PersonId = _item.PersonId,
+                            CultureId = _item.CultureId,
+                            IsMainCulture = _item.IsMainCulture,
+                            VarietyName = _item.Details[i].VarietyName,
+                            ApprovalNumber = _item.Details[i].ApprovalNumber,
+                            Quantity = _item.Details[i].Quantity,
+                            UnitId = _item.UnitId,
+                            SeedCategoryId = _item.Details[i].SeedCategoryId,
+                            SeedTechnologyId = _item.SeedTechnologyId,
+                            Setting = _item.Details[i].Setting,
+                            Comment = _item.Details[i].Comment
+                        };
+                    var response = await Mediator.Send(cmd);
+                    if (response.Success && response.Data is not null)
+                        Dispatcher.Dispatch(new AddSeedJobAction(response.Data));
+                }
+                else
+                {
+                    var cmd = new UpdateSeedCommand
+                        {
+                            Id = _item.Details[i].Id,
+                            HarvestUnitId = _item.Details[i].HarvestUnitId,
+                            Date = _item.Date,
+                            PersonId = _item.PersonId,
+                            CultureId = _item.CultureId,
+                            IsMainCulture = _item.IsMainCulture,
+                            VarietyName = _item.Details[i].VarietyName,
+                            ApprovalNumber = _item.Details[i].ApprovalNumber,
+                            Quantity = _item.Details[i].Quantity,
+                            UnitId = _item.UnitId,
+                            SeedCategoryId = _item.Details[i].SeedCategoryId,
+                            SeedTechnologyId = _item.SeedTechnologyId,
+                            Setting = _item.Details[i].Setting,
+                            Comment = _item.Details[i].Comment
+                        };
+                    var response = await Mediator.Send(cmd);
+                    if (response.Success && response.Data is not null)
+                        Dispatcher.Dispatch(new UpdateSeedJobAction(response.Data));
+                }
+
+            }
+            await OnClose.InvokeAsync();
+        }
+    }
+
+    private async Task OnSaveCancel(bool save)
+    {
+        if (save)
+        {
+            var isValid = true;
+            foreach (var editContext in _editContexts)
+            {
+                if (!editContext.Validate())
+                {
+                    var msg = editContext.GetValidationMessages();
+                    isValid = false;
+                }
+            }
+            if (isValid)
+                await OnSubmit();
+        }
+        else
+            await OnClose.InvokeAsync();
+    }
+}

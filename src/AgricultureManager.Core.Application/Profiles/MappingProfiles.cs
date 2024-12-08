@@ -8,6 +8,7 @@ using AgricultureManager.Core.Application.Features.ParameterFeatures;
 using AgricultureManager.Core.Application.Features.PersonFeatures;
 using AgricultureManager.Core.Application.Features.PlantProtectantFeatures;
 using AgricultureManager.Core.Application.Features.SeedCategoryFeatures;
+using AgricultureManager.Core.Application.Features.SeedFeatures;
 using AgricultureManager.Core.Application.Features.SeedTechnologyFeatures;
 using AgricultureManager.Core.Application.Features.UnitFeatures;
 using AgricultureManager.Core.Application.Shared.Models;
@@ -86,7 +87,12 @@ namespace AgricultureManager.Core.Application.Profiles
             CreateMap<PlantProtection, PlantProtectionVm>();
 
             CreateMap<Seed, SeedVm>();
-
+            CreateMap<Seed, SeedVm>();
+            CreateMap<AddSeedCommand, Seed>();
+            CreateMap<UpdateSeedCommand, Seed>();
+            CreateMap<SeedVm, SeedVm>();
+            CreateMap<SeedVm, AddSeedCommand>();
+            CreateMap<SeedVm, UpdateSeedCommand>();
 
             CreateMap<SeedTechnology, SeedTechnologyVm>();
             CreateMap<AddSeedTechnologyCommand, SeedTechnology>();

@@ -1,16 +1,18 @@
 ﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 @using AgricultureManager.Core.Application.Features.HarvestUnitFeatures
+@using AgricultureManager.Core.Application.Store.Features.HarvestUnitStore
 
 <RadzenCheckBox TValue="bool" ValueChanged="OnAllowMultiSelectionChanged" Value=@_allowMultiSelectOnRowClick Name="AllowMultiSelection" />
 <RadzenLabel Text="Mehrfachauswahl" Component="AllowMultiSelection" />
 <div class="d-flex flex-wrap">
-    <RadzenDataGrid @ref="_grid"
-                    @bind-Value="_selectedItems"
+
+    <RadzenDataGrid Value="@HarvestUnitState.Value.SelectedHarvestUnits"
+                    ValueChanged="@(x=>Dispatcher.Dispatch(new SetSelectedHarvestUnitsAction(x)))"
                     AllowSorting="true"
-                    Data="_data"
+                    Data="@HarvestUnitState.Value.HarvestUnitsOverview"
                     TItem="HarvestUnitOverview"
                     SelectionMode="@(_allowMultiSelectOnRowClick ? DataGridSelectionMode.Multiple : DataGridSelectionMode.Single)"
-                    IsLoading=@_isLoading
+                    IsLoading=@HarvestUnitState.Value.IsLoading
                     LoadData="@LoadData"
                     Density="Density.Compact">
         <Columns>
@@ -18,7 +20,7 @@
             {
                 <RadzenDataGridColumn OrderIndex="-1" Width="60px" Sortable="false" Filterable="false">
                     <Template Context="data">
-                        <RadzenCheckBox TriState="false" Value="@(_selectedItems != null && _selectedItems.Contains(data))" TValue="bool" />
+                        <RadzenCheckBox TriState="false" Value="@(HarvestUnitState.Value.SelectedHarvestUnits != null && HarvestUnitState.Value.SelectedHarvestUnits.Contains(data))" TValue="bool" />
                     </Template>
                 </RadzenDataGridColumn>
             }
@@ -32,13 +34,8 @@
             <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.CultureShortName))" Title="Kultur" />
         </Columns>
     </RadzenDataGrid>
-    @if (_selectedItems?.Count > 0)
-    {
-        @*    <SeedProcess HarvestUnits="@_selectedItems" />
-    <PlantProtectionProcess HarvestUnits="@_selectedItems" />
-    <FertilizationProcess HarvestUnits="@_selectedItems" />
-    <HarvestProcess HarvestUnits="@_selectedItems" /> *@
-    }
+
+    <JobsTabs />
 
 </div>
 <style>
@@ -48,39 +45,26 @@
 </style>
 
 @code {
-    [Inject] public IMediator Mediator { get; set; } = default!;
+
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
+    [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
 
-    private IList<HarvestUnitOverview>? _data;
-    private IList<HarvestUnitOverview>? _selectedItems;
-    private HarvestUnitOverview? _selectedSingleItem => _selectedItems?.FirstOrDefault();
     private bool _allowMultiSelectOnRowClick;
-    private RadzenDataGrid<HarvestUnitOverview> _grid = default!;
-    private bool _isLoading;
-    private HarvestYearVm? _harvestYear;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        HarvestYearState.StateChanged += async (s, e) =>
+        HarvestYearState.StateChanged += (s, e) =>
         {
-            _harvestYear = HarvestYearState.Value.SelectedHarvestYear;
-            await LoadData(new LoadDataArgs());
-            await _grid.Reload();
+            LoadData(new LoadDataArgs());
         };
-        _harvestYear = HarvestYearState.Value.SelectedHarvestYear;
+        LoadData(new LoadDataArgs());
     }
 
-    private async Task LoadData(LoadDataArgs args)
+    private void LoadData(LoadDataArgs args)
     {
-        _isLoading = true;
-        if (_harvestYear is not null)
-        {
-            var response = await Mediator.Send(new GetHarvestUnitsFromYear(_harvestYear.Id));
-            _data = response.Data;
-        }
-        _isLoading = false;
+        Dispatcher.Dispatch(new LoadHarvestUnitsDataAction(HarvestYearState.Value.SelectedHarvestYear));
     }
 
     private void OnAllowMultiSelectionChanged(bool state)
@@ -89,8 +73,7 @@
 
         if (!state)
         {
-            _selectedItems = null;
-            _grid.Reset();
+            Dispatcher.Dispatch(new SetSelectedHarvestUnitsAction(default!));
         }
     }
 }
