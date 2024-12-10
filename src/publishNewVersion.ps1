@@ -79,6 +79,10 @@ if ($commitMessages.Count -gt 0) {
     docker build -f ./${projPath}/Dockerfile -t ${registry}/${projName}:latest -t ${registry}/${projName}:${semanticVersion} .
     docker push ${registry}/${projName}:latest
     docker push ${registry}/${projName}:${semanticVersion}
+    
+    git add *.csproj
+    git commit -m "New Version ${semanticVersion} created" 
+    git tag v${semanticVersion}
 } 
 else {
     Write-Output "Es wurden keine Git-Commits im aktuellen Verzeichnis gefunden."
