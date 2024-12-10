@@ -2,44 +2,51 @@
 @using AgricultureManager.Core.Application.Features.HarvestUnitFeatures
 @using AgricultureManager.Core.Application.Store.Features.HarvestUnitStore
 
-<RadzenCheckBox TValue="bool" ValueChanged="OnAllowMultiSelectionChanged" Value=@_allowMultiSelectOnRowClick Name="AllowMultiSelection" />
-<RadzenLabel Text="Mehrfachauswahl" Component="AllowMultiSelection" />
-<div>
+@if (HarvestUnitState.Value.HarvestUnitsOverview.Count() == 0)
+{
+    <RadzenText>Erntejarh enthält noch keine Daten.</RadzenText>
+    <RadzenLink Path="/harvestyear/editor">Zum Editor wechseln.</RadzenLink>
+}
+else
+{
+    <RadzenCheckBox TValue="bool" ValueChanged="OnAllowMultiSelectionChanged" Value=@_allowMultiSelectOnRowClick Name="AllowMultiSelection" />
+    <RadzenLabel Text="Mehrfachauswahl" Component="AllowMultiSelection" />
     <div>
-        <RadzenDataGrid Value="@HarvestUnitState.Value.SelectedHarvestUnits"
-                        ValueChanged="@(x=>Dispatcher.Dispatch(new SetSelectedHarvestUnitsAction(x)))"
-                        AllowSorting="true"
-                        Data="@HarvestUnitState.Value.HarvestUnitsOverview"
-                        TItem="HarvestUnitOverview"
-                        SelectionMode="@(_allowMultiSelectOnRowClick ? DataGridSelectionMode.Multiple : DataGridSelectionMode.Single)"
-                        IsLoading=@HarvestUnitState.Value.IsLoading
-                        LoadData="@LoadData"
-                        Density="Density.Compact">
-            <Columns>
-                @if (_allowMultiSelectOnRowClick)
-                {
-                    <RadzenDataGridColumn OrderIndex="-1" Width="60px" Sortable="false" Filterable="false">
+        <div>
+            <RadzenDataGrid Value="@HarvestUnitState.Value.SelectedHarvestUnits"
+                            ValueChanged="@(x=>Dispatcher.Dispatch(new SetSelectedHarvestUnitsAction(x)))"
+                            AllowSorting="true"
+                            Data="@HarvestUnitState.Value.HarvestUnitsOverview"
+                            TItem="HarvestUnitOverview"
+                            SelectionMode="@(_allowMultiSelectOnRowClick ? DataGridSelectionMode.Multiple : DataGridSelectionMode.Single)"
+                            IsLoading=@HarvestUnitState.Value.IsLoading
+                            LoadData="@LoadData"
+                            Density="Density.Compact">
+                <Columns>
+                    @if (_allowMultiSelectOnRowClick)
+                    {
+                        <RadzenDataGridColumn OrderIndex="-1" Width="60px" Sortable="false" Filterable="false">
+                            <Template Context="data">
+                                <RadzenCheckBox TriState="false" Value="@(HarvestUnitState.Value.SelectedHarvestUnits != null && HarvestUnitState.Value.SelectedHarvestUnits.Contains(data))" TValue="bool" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                    }
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.HarvestUnitName))" Title="Name" />
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.FieldName))" Title="Feld" />
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.Area))" Title="Fläche">
                         <Template Context="data">
-                            <RadzenCheckBox TriState="false" Value="@(HarvestUnitState.Value.SelectedHarvestUnits != null && HarvestUnitState.Value.SelectedHarvestUnits.Contains(data))" TValue="bool" />
+                            @data.Area ha
                         </Template>
                     </RadzenDataGridColumn>
-                }
-                <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.HarvestUnitName))" Title="Name" />
-                <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.FieldName))" Title="Feld" />
-                <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.Area))" Title="Fläche">
-                    <Template Context="data">
-                        @data.Area ha
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.CultureShortName))" Title="Kultur" />
-            </Columns>
-        </RadzenDataGrid>
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.CultureShortName))" Title="Kultur" />
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+        <div class="pt-2">
+            <JobsTabs />
+        </div>
     </div>
-    <div class="pt-2">
-        <JobsTabs />
-    </div>
-
-</div>
+}
 <style>
     .rz-grid-table {
         width: unset;
@@ -47,7 +54,6 @@
 </style>
 
 @code {
-
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
     [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;

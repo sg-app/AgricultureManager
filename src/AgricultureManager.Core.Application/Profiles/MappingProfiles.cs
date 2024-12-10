@@ -3,6 +3,7 @@ using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerToDetailFeatures;
 using AgricultureManager.Core.Application.Features.FieldFeatures;
+using AgricultureManager.Core.Application.Features.HarvestUnitFeatures;
 using AgricultureManager.Core.Application.Features.HarvestYearFeatures;
 using AgricultureManager.Core.Application.Features.ParameterFeatures;
 using AgricultureManager.Core.Application.Features.PersonFeatures;
@@ -64,6 +65,11 @@ namespace AgricultureManager.Core.Application.Profiles
             CreateMap<Harvest, HarvestVm>();
 
             CreateMap<HarvestUnit, HarvestUnitVm>();
+            CreateMap<AddHarvestUnitCommand, HarvestUnit>();
+            CreateMap<UpdateHarvestUnitCommand, HarvestUnit>();
+            CreateMap<HarvestUnitVm, HarvestUnitVm>();
+            CreateMap<HarvestUnitVm, AddHarvestUnitCommand>();
+            CreateMap<HarvestUnitVm, UpdateHarvestUnitCommand>();
 
             CreateMap<HarvestYear, HarvestYearVm>();
             CreateMap<AddHarvestYearCommand, HarvestYear>();

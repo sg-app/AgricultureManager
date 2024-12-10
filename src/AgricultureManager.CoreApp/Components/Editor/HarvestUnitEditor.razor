@@ -1,0 +1,79 @@
+﻿@using AgricultureManager.Core.Application.Features.HarvestUnitFeatures
+@if (_editItem is not null)
+{
+    <RadzenCard class="pt-2">
+        <RadzenTemplateForm Data="_editItem" TItem="HarvestUnitVm" Submit="OnSubmit">
+            <DataAnnotationsValidator />
+            <RadzenStack>
+                <RadzenRow AlignItems="AlignItems.Center">
+                    <RadzenColumn Size="12" SizeMD="4">
+                        <RadzenLabel Text="Name" Component="Name" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="8">
+                        <RadzenTextBox Style="width: 100%;" Name="Name" @bind-Value=_editItem.Name />
+                        <ValidationMessage For="@(() => _editItem.Name)" />
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenRow AlignItems="AlignItems.Center">
+                    <RadzenColumn Size="12" SizeMD="4">
+                        <RadzenLabel Text="Fläche" Component="Area" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="8">
+                        <RadzenNumeric Style="width: 100%;" Name="Area" @bind-Value=_editItem.Area />
+                        <ValidationMessage For="@(() => _editItem.Area)" />
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenRow AlignItems="AlignItems.Center">
+                    <RadzenColumn Size="12" SizeMD="4">
+                        <RadzenLabel Text="Kultur" Component="CultureId" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="8">
+                        <RadzenDropDown Data="@CultureState.Value.Cultures" TextProperty="@(nameof(CultureVm.Name))" ValueProperty="@(nameof(CultureVm.Id))" Style="width: 100%;" Name="CultureId" @bind-Value=_editItem.CultureId />
+                        <ValidationMessage For="@(() => _editItem.CultureId)" />
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenStack>
+            <SaveCancelButton ButtonResult="OnSaveCancel" />
+        </RadzenTemplateForm>
+    </RadzenCard>
+}
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public IMapper Mapper { get; set; } = default!;
+    [Inject] public IState<CultureState> CultureState { get; set; } = default!;
+
+    [Parameter] public HarvestUnitVm HarvestUnit { get; set; } = default!;
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private HarvestUnitVm? _editItem;
+
+    protected override void OnParametersSet()
+    {
+        _editItem = Mapper.Map<HarvestUnitVm>(HarvestUnit);
+    }
+
+    private async Task OnSubmit(HarvestUnitVm item)
+    {
+        Response<HarvestUnitVm> response;
+        if (item.Id == Guid.Empty)
+        {
+            var cmd = Mapper.Map<AddHarvestUnitCommand>(item);
+            response = await Mediator.Send(cmd);
+        }
+        else
+        {
+            var cmd = Mapper.Map<UpdateHarvestUnitCommand>(item);
+            response = await Mediator.Send(cmd);
+        }
+        if (response.Success && response.Data is not null)
+            Mapper.Map(response.Data, HarvestUnit);
+
+        await OnClose.InvokeAsync();
+    }
+
+    private async Task OnSaveCancel(bool save)
+    {
+        if (!save)
+            await OnClose.InvokeAsync();
+    }
+}

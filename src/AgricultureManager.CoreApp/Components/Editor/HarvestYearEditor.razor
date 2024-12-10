@@ -1,0 +1,148 @@
+﻿@page "/harvestyear/editor"
+@using AgricultureManager.Core.Application.Features.HarvestUnitFeatures
+@inherits FluxorComponent
+
+@* Links meine Felder/Schläge *@
+@* Rechts meine Nutzung *@
+
+<RadzenDataGrid @ref="_grid"
+AllowSorting="true"
+Data="@FieldState.Value.Fields"
+TItem="FieldVm"
+RowExpand="OnRowExpand">
+    <Columns>
+        <RadzenDataGridColumn TItem="FieldVm" Property="@(nameof(FieldVm.Number))" Title="Flurnummer" />
+        <RadzenDataGridColumn TItem="FieldVm" Property="@(nameof(FieldVm.Name))" Title="Name" />
+        <RadzenDataGridColumn TItem="FieldVm" Property="@(nameof(FieldVm.Area))" Title="Fläche">
+            <Template Context="data">
+                @data.Area.ToString("N2") ha
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+    <Template Context="item">
+        <InsertButton Disabled="@_isInserting" InsertRow="@( ()=> OnInsertRowClick(item))" />
+        <RadzenDataList WrapItems="true" class="pt-2" Data="item.HarvestUnits" Style="max-width:600px">
+            <Template Context="unit">
+                <RadzenCard class="position-relative">
+                    <div class="position-absolute translate-middle-y top-0 start-0">
+                        <RadzenButton class="rz-border-radius-10 rz-shadow-4"
+                        Click="@(()=>OnEditClicked(unit))"
+                        ButtonStyle="ButtonStyle.Secondary"
+                        Icon="edit"
+                        Disabled="@_isInserting"
+                        Size="ButtonSize.Small" />
+                        <RadzenButton class="rz-border-radius-10 rz-shadow-4"
+                        Click="@(()=>OnRemoveClicked(item, unit))"
+                        ButtonStyle="ButtonStyle.Warning"
+                        Icon="delete"
+                        Disabled="@_isInserting"
+                        Size="ButtonSize.Small" />
+                    </div>
+                    <div>
+                        <RadzenStack>
+                            <RadzenRow AlignItems="AlignItems.Center">
+                                <RadzenColumn Size="12" SizeMD="4">
+                                    <RadzenText Text="Name" />
+                                </RadzenColumn>
+                                <RadzenColumn Size="12" SizeMD="8">
+                                    <RadzenText Text="@unit.Name" />
+                                </RadzenColumn>
+                            </RadzenRow>
+                            <RadzenRow AlignItems="AlignItems.Center">
+                                <RadzenColumn Size="12" SizeMD="4">
+                                    <RadzenText Text="Fläche" />
+                                </RadzenColumn>
+                                <RadzenColumn Size="12" SizeMD="8">
+                                    <RadzenText Text="@unit.AreaDisplay" />
+                                </RadzenColumn>
+                            </RadzenRow>
+                            <RadzenRow AlignItems="AlignItems.Center">
+                                <RadzenColumn Size="12" SizeMD="4">
+                                    <RadzenText Text="Kultur" />
+                                </RadzenColumn>
+                                <RadzenColumn Size="12" SizeMD="8">
+                                    <RadzenText Text="@unit.Culture.Name" />
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </RadzenStack>
+                    </div>
+                </RadzenCard>
+            </Template>
+        </RadzenDataList>
+        @if (_selectedItem is not null && _isInserting)
+        {
+            <HarvestUnitEditor HarvestUnit="_selectedItem" OnClose="OnCloseClick" />
+        }
+
+    </Template>
+</RadzenDataGrid>
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public IMapper Mapper { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!; 
+    [Inject] public IState<FieldState> FieldState { get; set; } = default!;
+    [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
+
+    private RadzenDataGrid<FieldVm> _grid = default!;
+    private bool _isInserting;
+    private HarvestUnitVm? _selectedItem;
+    private FieldVm? _selectedField;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        HarvestYearState.StateChanged += async (s, e) =>
+        {
+            await _grid.CollapseAll();
+            await InvokeAsync(StateHasChanged);
+        };
+    }
+    private async Task OnRowExpand(FieldVm item)
+    {
+        if (HarvestYearState.Value.SelectedHarvestYear is null)
+            return;
+
+        var response = await Mediator.Send(new GetHarvestUnitsFromYearAndField(HarvestYearState.Value.SelectedHarvestYear.Id, item.Id));
+        if (response.Success)
+            item.HarvestUnits = response.Data ??= [];
+    }
+
+    private void OnInsertRowClick(FieldVm item)
+    {
+        if (HarvestYearState.Value.SelectedHarvestYear is null)
+            return;
+
+        _isInserting = true;
+        var harvestUnitVm = new HarvestUnitVm{
+                FieldId = item.Id,
+                HarvestYearId = HarvestYearState.Value.SelectedHarvestYear.Id,
+                Area = item.Area
+            };
+        _selectedItem = harvestUnitVm;
+        _selectedField = item;
+    }
+
+    private void OnEditClicked(HarvestUnitVm item)
+    {
+        _selectedItem = item;
+        _isInserting = true;
+    }
+
+    private async Task OnRemoveClicked(FieldVm field, HarvestUnitVm item) { 
+        var dialogResponse = await DialogService.Confirm("Soll der Datensatz wirklich gelöscht werden?", "Datensatz löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+        if (dialogResponse is null || dialogResponse == false)
+            return;
+
+        var response = await Mediator.Send(new RemoveHarvestUnitCommand(item.Id));
+        if (response.Success)
+            field.HarvestUnits.Remove(item);
+    }
+
+    private async Task OnCloseClick(){
+        _selectedItem = null;
+        _isInserting = false;
+        @if (_selectedField is not null)
+             await OnRowExpand(_selectedField);
+    }
+}
