@@ -189,10 +189,7 @@
             foreach (var editContext in _editContexts)
             {
                 if (!editContext.Validate())
-                {
-                    var msg = editContext.GetValidationMessages();
                     isValid = false;
-                }
             }
             if (isValid)
                 await OnSubmit();

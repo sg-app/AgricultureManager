@@ -1,4 +1,6 @@
-﻿@using AgricultureManager.Core.Application.Features.CompanyFeatures
+﻿@inherits FluxorComponent
+@using AgricultureManager.Core.Application.Features.CompanyFeatures
+@using AgricultureManager.Core.Application.Store.Features.CompanyStore
 @rendermode InteractiveAuto
 
 <h3>Betrieb</h3>
@@ -23,6 +25,7 @@
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="8">
                     <RadzenTextBox Style="width: 100%;" Name="CompanyName" @bind-Value=_data.CompanyName />
+                    <ValidationMessage For="@(() => _data.CompanyName)" />
                 </RadzenColumn>
             </RadzenRow>
             <RadzenRow AlignItems="AlignItems.Center">
@@ -31,6 +34,7 @@
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="8">
                     <RadzenTextBox Style="width: 100%;" Name="FirstName" @bind-Value=_data.FirstName />
+                    <ValidationMessage For="@(() => _data.FirstName)" />
                 </RadzenColumn>
             </RadzenRow>
             <RadzenRow AlignItems="AlignItems.Center">
@@ -39,6 +43,7 @@
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="8">
                     <RadzenTextBox Style="width: 100%;" Name="LastName" @bind-Value=_data.LastName />
+                    <ValidationMessage For="@(() => _data.LastName)" />
                 </RadzenColumn>
             </RadzenRow>
             <RadzenRow AlignItems="AlignItems.Center">
@@ -47,6 +52,7 @@
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="8">
                     <RadzenTextBox Style="width: 100%;" Name="Street" @bind-Value=_data.Street />
+                    <ValidationMessage For="@(() => _data.Street)" />
                 </RadzenColumn>
             </RadzenRow>
             <RadzenRow AlignItems="AlignItems.Center">
@@ -55,6 +61,7 @@
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="8">
                     <RadzenTextBox Style="width: 100%;" Name="Housenumber" @bind-Value=_data.Housenumber />
+                    <ValidationMessage For="@(() => _data.Housenumber)" />
                 </RadzenColumn>
             </RadzenRow>
             <RadzenRow AlignItems="AlignItems.Center">
@@ -63,6 +70,7 @@
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="8">
                     <RadzenTextBox Style="width: 100%;" Name="Plz" @bind-Value=_data.Plz />
+                    <ValidationMessage For="@(() => _data.Plz)" />
                 </RadzenColumn>
             </RadzenRow>
             <RadzenRow AlignItems="AlignItems.Center">
@@ -71,49 +79,55 @@
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="8">
                     <RadzenTextBox Style="width: 100%;" Name="City" @bind-Value=_data.City />
+                    <ValidationMessage For="@(() => _data.City)" />
                 </RadzenColumn>
             </RadzenRow>
         </RadzenStack>
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" class="rz-mt-4 rz-mb-4">
-            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Icon="save" Text="Speichern" />
-            <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" Text="Abbruch" Click="@Cancel" />
-        </RadzenStack>
+        <SaveCancelButton CancelButtonVisible="false" />
     </RadzenTemplateForm>
 }
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
-    private CompanyVm? _data;
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public IState<CompanyState> CompanyState { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
-    {
-        var response = await Mediator.Send(new GetCompanyCommand());
-        _data = response.Data ?? new();
-    }
+    private CompanyVm? _data => CompanyState.Value.Company;
 
     async Task Submit(CompanyVm arg)
     {
-        //
+
         if (_data is not null)
-            await Mediator.Send(new AddCompanyCommand()
-                {
-                    CompanyNumber = arg.CompanyNumber,
-                    CompanyName = arg.CompanyName,
-                    FirstName = arg.FirstName,
-                    LastName = arg.LastName,
-                    Street = arg.Street,
-                    Housenumber = arg.Housenumber,
-                    Plz = arg.Plz,
-                    City = arg.City
-                });
-    }
-    void Cancel()
-    {
-        //
+        {
+            if (string.IsNullOrEmpty(_data.CompanyNumber))
+            {
+                await Mediator.Send(new AddCompanyCommand()
+                    {
+                        CompanyNumber = arg.CompanyNumber,
+                        CompanyName = arg.CompanyName,
+                        FirstName = arg.FirstName,
+                        LastName = arg.LastName,
+                        Street = arg.Street,
+                        Housenumber = arg.Housenumber,
+                        Plz = arg.Plz,
+                        City = arg.City
+                    });
+            }
+            else
+            {
+                await Mediator.Send(new UpdateCompanyCommand()
+                    {
+                        CompanyNumber = arg.CompanyNumber,
+                        CompanyName = arg.CompanyName,
+                        FirstName = arg.FirstName,
+                        LastName = arg.LastName,
+                        Street = arg.Street,
+                        Housenumber = arg.Housenumber,
+                        Plz = arg.Plz,
+                        City = arg.City
+                    });
+            }
+            Dispatcher.Dispatch(new UpdateCompanyAction(arg));
+        }
     }
 
-    async Task SaveClickHandler(MouseEventArgs args)
-    {
-
-        //
-    }
 }

@@ -66,7 +66,7 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
                 await _grid.Reload();
             else if (response.Success && response.Data is not null)
                 Dispatcher.Dispatch(new UpdatePlantProtectantAction(response.Data));
-                _itemToEditOriginal = null;
+            _itemToEditOriginal = null;
         }
         private async Task OnCreateRow(PlantProtectantVm item)
         {

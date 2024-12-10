@@ -1,6 +1,4 @@
-﻿using AgricultureManager.Core.Application.Common;
-using AgricultureManager.Core.Application.Shared.Models;
-using AgricultureManager.Core.Application.Store.States;
+﻿using AgricultureManager.Core.Application.Store.States;
 using Fluxor;
 
 namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
@@ -15,7 +13,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
         [ReducerMethod]
         public static HarvestYearState ReduceLoadHarvestYearsResultAction(HarvestYearState state, LoadHarvestYearsResultAction action) =>
             state with { IsInitialized = true, IsLoading = false, HarvestYears = action.HarvestYears };
-        
+
         [ReducerMethod]
         public static HarvestYearState ReduceSetSelectedHarvestYearAction(HarvestYearState state, SetSelectedHarvestYearAction action) =>
             state with { SelectedHarvestYear = action.SelectedHarvestYear };
@@ -29,7 +27,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
         {
             var list = state.HarvestYears.ToList();
             var changed = list.Append(action.HarvestYear);
-            return state with { HarvestYears = changed.OrderByDescending(f=>f.Year)};
+            return state with { HarvestYears = changed.OrderByDescending(f => f.Year) };
         }
 
         [ReducerMethod]

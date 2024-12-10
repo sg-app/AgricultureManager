@@ -22,6 +22,8 @@ namespace AgricultureManager.Core.Application.Profiles
         public MappingProfiles()
         {
 
+            CreateMap<CompanyVm, CompanyVm>();
+
             CreateMap<Culture, CultureVm>();
             CreateMap<AddCultureCommand, Culture>();
             CreateMap<UpdateCultureCommand, Culture>();

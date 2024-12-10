@@ -1,6 +1,6 @@
 ﻿<RadzenStack Orientation="Orientation.Horizontal">
     <RadzenButton class="mt-3" Click="()=>ButtonResult.InvokeAsync(true)" Text="Speichern" Icon="save" IsBusy="@IsBusy" ButtonType="ButtonType.Submit" />
-    <RadzenButton class="mt-3" Click="()=>ButtonResult.InvokeAsync(false)" Text="Abbruch" Icon="undo" ButtonStyle="ButtonStyle.Secondary" />
+    <RadzenButton class="mt-3" Click="()=>ButtonResult.InvokeAsync(false)" Text="Abbruch" Icon="undo" ButtonStyle="ButtonStyle.Secondary" Visible="@CancelButtonVisible"/>
 </RadzenStack>
 @code
 {
@@ -8,4 +8,6 @@
     public EventCallback<bool> ButtonResult { get; set; }
     [Parameter]
     public bool IsBusy { get; set; }
+    [Parameter]
+    public bool CancelButtonVisible { get; set; } = true;
 }
