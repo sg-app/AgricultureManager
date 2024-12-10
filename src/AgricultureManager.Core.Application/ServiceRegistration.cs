@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AgricultureManager.Core.Application.Shared.States;
+using FluentValidation;
 using Fluxor;
 using Fluxor.Blazor.Web.ReduxDevTools;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +22,7 @@ namespace AgricultureManager.Core.Application
 
             services.AddFluxor(config =>
             {
-                config.ScanAssemblies(Assembly.GetExecutingAssembly());
+                config.ScanAssemblies(Assembly.GetExecutingAssembly(), typeof(CompanyState).Assembly);
 #if DEBUG
                 config.UseReduxDevTools();
 #endif
