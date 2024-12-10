@@ -2,14 +2,11 @@
 @using AgricultureManager.Core.Application.Features.HarvestUnitFeatures
 @inherits FluxorComponent
 
-@* Links meine Felder/Schläge *@
-@* Rechts meine Nutzung *@
-
 <RadzenDataGrid @ref="_grid"
-AllowSorting="true"
-Data="@FieldState.Value.Fields"
-TItem="FieldVm"
-RowExpand="OnRowExpand">
+                AllowSorting="true"
+                Data="@FieldState.Value.Fields"
+                TItem="FieldVm"
+                RowExpand="OnRowExpand">
     <Columns>
         <RadzenDataGridColumn TItem="FieldVm" Property="@(nameof(FieldVm.Number))" Title="Flurnummer" />
         <RadzenDataGridColumn TItem="FieldVm" Property="@(nameof(FieldVm.Name))" Title="Name" />
@@ -26,17 +23,17 @@ RowExpand="OnRowExpand">
                 <RadzenCard class="position-relative">
                     <div class="position-absolute translate-middle-y top-0 start-0">
                         <RadzenButton class="rz-border-radius-10 rz-shadow-4"
-                        Click="@(()=>OnEditClicked(unit))"
-                        ButtonStyle="ButtonStyle.Secondary"
-                        Icon="edit"
-                        Disabled="@_isInserting"
-                        Size="ButtonSize.Small" />
+                                      Click="@(()=>OnEditClicked(unit))"
+                                      ButtonStyle="ButtonStyle.Secondary"
+                                      Icon="edit"
+                                      Disabled="@_isInserting"
+                                      Size="ButtonSize.Small" />
                         <RadzenButton class="rz-border-radius-10 rz-shadow-4"
-                        Click="@(()=>OnRemoveClicked(item, unit))"
-                        ButtonStyle="ButtonStyle.Warning"
-                        Icon="delete"
-                        Disabled="@_isInserting"
-                        Size="ButtonSize.Small" />
+                                      Click="@(()=>OnRemoveClicked(item, unit))"
+                                      ButtonStyle="ButtonStyle.Warning"
+                                      Icon="delete"
+                                      Disabled="@_isInserting"
+                                      Size="ButtonSize.Small" />
                     </div>
                     <div>
                         <RadzenStack>
@@ -80,7 +77,7 @@ RowExpand="OnRowExpand">
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public IMapper Mapper { get; set; } = default!;
-    [Inject] public DialogService DialogService { get; set; } = default!; 
+    [Inject] public DialogService DialogService { get; set; } = default!;
     [Inject] public IState<FieldState> FieldState { get; set; } = default!;
     [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
 
@@ -114,7 +111,8 @@ RowExpand="OnRowExpand">
             return;
 
         _isInserting = true;
-        var harvestUnitVm = new HarvestUnitVm{
+        var harvestUnitVm = new HarvestUnitVm
+            {
                 FieldId = item.Id,
                 HarvestYearId = HarvestYearState.Value.SelectedHarvestYear.Id,
                 Area = item.Area
@@ -129,7 +127,8 @@ RowExpand="OnRowExpand">
         _isInserting = true;
     }
 
-    private async Task OnRemoveClicked(FieldVm field, HarvestUnitVm item) { 
+    private async Task OnRemoveClicked(FieldVm field, HarvestUnitVm item)
+    {
         var dialogResponse = await DialogService.Confirm("Soll der Datensatz wirklich gelöscht werden?", "Datensatz löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
         if (dialogResponse is null || dialogResponse == false)
             return;
@@ -139,10 +138,11 @@ RowExpand="OnRowExpand">
             field.HarvestUnits.Remove(item);
     }
 
-    private async Task OnCloseClick(){
+    private async Task OnCloseClick()
+    {
         _selectedItem = null;
         _isInserting = false;
         @if (_selectedField is not null)
-             await OnRowExpand(_selectedField);
+            await    OnRowExpand(_selectedField);
     }
 }
