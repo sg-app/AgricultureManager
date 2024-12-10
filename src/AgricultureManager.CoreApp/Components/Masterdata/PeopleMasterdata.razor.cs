@@ -1,7 +1,10 @@
 ﻿using AgricultureManager.Core.Application.Features.PersonFeatures;
 using AgricultureManager.Core.Application.Shared.Models;
+using AgricultureManager.Core.Application.Store.Features.PeopleStore;
+using AgricultureManager.Core.Application.Store.States;
 using AgricultureManager.Module.Api.Interfaces;
 using AutoMapper;
+using Fluxor;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Radzen;
@@ -14,15 +17,12 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IMapper Mapper { get; set; } = default!;
         [Inject] public DialogService DialogService { get; set; } = default!;
+        [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+        [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
 
-        private IList<PersonVm>? _data;
         private RadzenDataGrid<PersonVm> _grid = default!;
         private PersonVm? _itemToEditOriginal;
         public string Title => "Personen";
-        protected async override Task OnInitializedAsync()
-        {
-            _data = (await Mediator.Send(new GetPersonListCommand())).Data;
-        }
 
         private async Task DeleteRow(PersonVm item)
         {
@@ -31,8 +31,8 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
                 return;
 
             var response = await Mediator.Send(new RemovePersonCommand { Id = item.Id });
-            if (response.Success && _data is not null)
-                _data.Remove(item);
+            if (response.Success)
+                Dispatcher.Dispatch(new RemovePeopleAction(item.Id));
             else
                 _grid.CancelEditRow(item);
             await _grid.Reload();
@@ -64,6 +64,8 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             var response = await Mediator.Send(cmd);
             if (!response.Success)
                 await _grid.Reload();
+            else if (response.Success && response.Data is not null)
+                Dispatcher.Dispatch(new UpdatePeopleAction(response.Data));
             _itemToEditOriginal = null;
         }
         private async Task OnCreateRow(PersonVm item)
@@ -72,7 +74,10 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             Mapper.Map(item, cmd);
             var response = await Mediator.Send(cmd);
             if (response.Success && response.Data is not null)
+            {
                 item.Id = response.Data.Id;
+                Dispatcher.Dispatch(new AddPeopleAction(response.Data));
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using AgricultureManager.Core.Application.Features.SeedCategoryFeatures;
 using AgricultureManager.Core.Application.Shared.Models;
+using AgricultureManager.Core.Application.Store.Features.SeedCategoryStore;
+using AgricultureManager.Core.Application.Store.States;
 using AgricultureManager.Module.Api.Interfaces;
 using AutoMapper;
+using Fluxor;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Radzen;
@@ -14,15 +17,12 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IMapper Mapper { get; set; } = default!;
         [Inject] public DialogService DialogService { get; set; } = default!;
+        [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+        [Inject] public IState<SeedCategoryState> SeedCategoryState { get; set; } = default!;
 
-        private IList<SeedCategoryVm>? _data;
         private RadzenDataGrid<SeedCategoryVm> _grid = default!;
         private SeedCategoryVm? _itemToEditOriginal;
         public string Title => "Saatgutkategorie";
-        protected async override Task OnInitializedAsync()
-        {
-            _data = (await Mediator.Send(new GetSeedCategoryListCommand())).Data;
-        }
 
         private async Task DeleteRow(SeedCategoryVm item)
         {
@@ -31,8 +31,8 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
                 return;
 
             var response = await Mediator.Send(new RemoveSeedCategoryCommand { Id = item.Id });
-            if (response.Success && _data is not null)
-                _data.Remove(item);
+            if (response.Success)
+                Dispatcher.Dispatch(new RemoveSeedCategoryAction(item.Id));
             else
                 _grid.CancelEditRow(item);
             await _grid.Reload();
@@ -64,7 +64,9 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             var response = await Mediator.Send(cmd);
             if (!response.Success)
                 await _grid.Reload();
-            _itemToEditOriginal = null;
+            else if (response.Success && response.Data is not null)
+                Dispatcher.Dispatch(new UpdateSeedCategoryAction(response.Data));
+                _itemToEditOriginal = null;
         }
         private async Task OnCreateRow(SeedCategoryVm item)
         {
@@ -72,7 +74,10 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             Mapper.Map(item, cmd);
             var response = await Mediator.Send(cmd);
             if (response.Success && response.Data is not null)
+            {
                 item.Id = response.Data.Id;
+                Dispatcher.Dispatch(new AddSeedCategoryAction(response.Data));
+            }
         }
     }
 }

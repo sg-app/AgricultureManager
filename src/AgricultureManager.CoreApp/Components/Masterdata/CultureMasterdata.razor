@@ -1,6 +1,7 @@
-﻿<InsertButton InsertRow="InsertRow" />
+﻿@inherits FluxorComponent
+<InsertButton InsertRow="InsertRow" />
 <RadzenDataGrid @ref="_grid"
-                Data="@_data"
+                Data="@CultureState.Value.Cultures"
                 TItem="CultureVm"
                 RowUpdate="@OnUpdateRow"
                 RowCreate="@OnCreateRow"

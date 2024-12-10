@@ -13,7 +13,8 @@ namespace AgricultureManager.Core.Application.Store.Features.SeedTechnologyStore
 
             if (respose.Success && respose.Data is not null)
                 dispatcher.Dispatch(new LoadSeedTechnologiesDataResultAction(respose.Data));
-
+            else
+                dispatcher.Dispatch(new LoadSeedTechnologyDataResultFailAction());
         }
     }
 }

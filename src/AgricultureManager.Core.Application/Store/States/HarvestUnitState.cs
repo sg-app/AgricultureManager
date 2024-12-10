@@ -1,12 +1,14 @@
-﻿using AgricultureManager.Core.Application.Shared.Models;
+﻿using AgricultureManager.Core.Application.Shared.Interfaces.Fluxor;
+using AgricultureManager.Core.Application.Shared.Models;
 using Fluxor;
 
 namespace AgricultureManager.Core.Application.Store.States
 {
     [FeatureState]
-    public record HarvestUnitState
+    public record HarvestUnitState : IInitializableState
     {
         public bool IsLoading { get; init; }
+        public bool IsInitialized { get; init; }
         public IEnumerable<HarvestUnitOverview> HarvestUnitsOverview { get; init; } = [];
         public IList<HarvestUnitOverview> SelectedHarvestUnits { get; init; } = [];
         private HarvestUnitState() { }

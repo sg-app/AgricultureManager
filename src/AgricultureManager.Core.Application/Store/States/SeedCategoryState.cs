@@ -1,16 +1,18 @@
-﻿using AgricultureManager.Core.Application.Shared.Models;
+﻿using AgricultureManager.Core.Application.Shared.Interfaces.Fluxor;
+using AgricultureManager.Core.Application.Shared.Models;
 using Fluxor;
 
 namespace AgricultureManager.Core.Application.Store.States
 {
     [FeatureState]
-    public record SeedCategoryState
+    public record SeedCategoryState : IInitializableState
     {
         public bool IsLoading { get; init; }
-        public IEnumerable<SeedCategoryVm>? SeedCategories { get; init; }
+        public bool IsInitialized { get; init; }
+        public IEnumerable<SeedCategoryVm> SeedCategories { get; init; } = [];
         private SeedCategoryState() { }
 
-        public SeedCategoryState(bool isLoading, IEnumerable<SeedCategoryVm>? seedCategories)
+        public SeedCategoryState(bool isLoading, IEnumerable<SeedCategoryVm> seedCategories)
         {
             IsLoading = isLoading;
             SeedCategories = seedCategories;

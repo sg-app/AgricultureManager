@@ -13,7 +13,8 @@ namespace AgricultureManager.Core.Application.Store.Features.CultureStore
 
             if (respose.Success && respose.Data is not null)
                 dispatcher.Dispatch(new LoadCulturesDataResultAction(respose.Data));
-
+            else
+                dispatcher.Dispatch(new LoadCultureDataResultFailAction());
         }
     }
 }

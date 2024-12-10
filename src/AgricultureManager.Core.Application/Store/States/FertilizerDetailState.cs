@@ -5,17 +5,17 @@ using Fluxor;
 namespace AgricultureManager.Core.Application.Store.States
 {
     [FeatureState]
-    public record PeopleState : IInitializableState
+    public record FertilizerDetailState : IInitializableState
     {
         public bool IsLoading { get; init; }
         public bool IsInitialized { get; init; }
-        public IEnumerable<PersonVm> Peoples { get; init; } = [];
-        private PeopleState() { }
+        public IEnumerable<FertilizerDetailVm> FertilizerDetails { get; init; } = [];
+        private FertilizerDetailState() { }
 
-        public PeopleState(bool isLoading, IEnumerable<PersonVm> peoples)
+        public FertilizerDetailState(bool isLoading, IEnumerable<FertilizerDetailVm> fertilizerDetails)
         {
             IsLoading = isLoading;
-            Peoples = peoples;
+            FertilizerDetails = fertilizerDetails;
         }
     }
 }

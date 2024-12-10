@@ -20,10 +20,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
         {
             var response = await mediator.Send(new GetHarvestYearsCommand());
             if (response.Success && response.Data is not null)
-            {
-                response.Data.Insert(0, CustomItems.CreateNewYearItem);
                 dispatcher.Dispatch(new LoadHarvestYearsResultAction(response.Data));
-            }
         }
 
         [EffectMethod(typeof(GetCurrentHarvestYearAction))]

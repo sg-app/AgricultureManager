@@ -13,7 +13,8 @@ namespace AgricultureManager.Core.Application.Store.Features.UnitStore
 
             if (respose.Success && respose.Data is not null)
                 dispatcher.Dispatch(new LoadUnitsDataResultAction(respose.Data));
-
+            else
+                dispatcher.Dispatch(new LoadUnitDataResultFailAction());
         }
     }
 }

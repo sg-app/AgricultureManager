@@ -1,5 +1,7 @@
 ﻿@using AgricultureManager.Core.Application.Store.Features.CultureStore
+@using AgricultureManager.Core.Application.Store.Features.FertilizerDetailStore
 @using AgricultureManager.Core.Application.Store.Features.FertilizerStore
+@using AgricultureManager.Core.Application.Store.Features.FieldStore
 @using AgricultureManager.Core.Application.Store.Features.PeopleStore
 @using AgricultureManager.Core.Application.Store.Features.PlantProtectantStore
 @using AgricultureManager.Core.Application.Store.Features.SeedCategoryStore
@@ -17,12 +19,14 @@
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     protected override void OnInitialized()
     {
+        Dispatcher.Dispatch(new LoadFieldsDataAction());
+        Dispatcher.Dispatch(new LoadCulturesDataAction());
         Dispatcher.Dispatch(new LoadSeedCategoriesDataAction());
         Dispatcher.Dispatch(new LoadSeedTechnologiesDataAction());
-        Dispatcher.Dispatch(new LoadCulturesDataAction());
         Dispatcher.Dispatch(new LoadUnitsDataAction());
         Dispatcher.Dispatch(new LoadPeoplesDataAction());
         Dispatcher.Dispatch(new LoadFertilizersDataAction());
+        Dispatcher.Dispatch(new LoadFertilizerDetailsDataAction());
         Dispatcher.Dispatch(new LoadPlantProtectantsDataAction());
     }
 }

@@ -15,6 +15,6 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestUnitStore
 
         [ReducerMethod]
         public static HarvestUnitState LoadHarvestUnitsDataResultReducer(HarvestUnitState state, LoadHarvestUnitsDataResultAction action)
-            => state with { IsLoading = false, HarvestUnitsOverview = action.HarvestUnitsOverview };
+            => state with { IsInitialized = true, IsLoading = false, HarvestUnitsOverview = action.HarvestUnitsOverview };
     }
 }

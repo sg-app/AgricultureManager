@@ -11,7 +11,7 @@ namespace AgricultureManager.Core.Application.Store.Features.FertilizationJobSto
 
         [ReducerMethod]
         public static FertilizationJobState LoadFertilizationJobDataResultReducer(FertilizationJobState state, LoadFertilizationJobDataResultAction action)
-            => state with { IsLoading = false, Fertilizations = action.Fertilizations };
+            => state with { IsInitialized = true, IsLoading = false, Fertilizations = action.Fertilizations };
 
         [ReducerMethod(typeof(LoadFertilizationJobDataResultFailAction))]
         public static FertilizationJobState LoadFertilizationJobDataResultFailReducer(FertilizationJobState state)
@@ -20,28 +20,28 @@ namespace AgricultureManager.Core.Application.Store.Features.FertilizationJobSto
         [ReducerMethod]
         public static FertilizationJobState AddFertilizationJobReducer(FertilizationJobState state, AddFertilizationJobAction action)
         {
-            var seeds = state.Fertilizations.ToList();
-            var changed = seeds.Append(action.Fertilization);
+            var list = state.Fertilizations.ToList();
+            var changed = list.Append(action.Fertilization);
             return state with { Fertilizations = changed };
         }
 
         [ReducerMethod]
         public static FertilizationJobState UpdateFertilizationJobReducer(FertilizationJobState state, UpdateFertilizationJobAction action)
         {
-            var seed = state.Fertilizations.First(x => x.Id == action.Fertilization.Id);
-            var seeds = state.Fertilizations.ToList();
-            seeds.Remove(seed);
-            var changed = seeds.Append(action.Fertilization);
+            var item = state.Fertilizations.First(x => x.Id == action.Fertilization.Id);
+            var list = state.Fertilizations.ToList();
+            list.Remove(item);
+            var changed = list.Append(action.Fertilization);
             return state with { Fertilizations = changed };
         }
 
         [ReducerMethod]
         public static FertilizationJobState RemoveFertilizationJobReducer(FertilizationJobState state, RemoveFertilizationJobAction action)
         {
-            var seed = state.Fertilizations.First(x => x.Id == action.FertilizationId);
-            var seeds = state.Fertilizations.ToList();
-            seeds.Remove(seed);
-            return state with { Fertilizations = seeds };
+            var item = state.Fertilizations.First(x => x.Id == action.FertilizationId);
+            var list = state.Fertilizations.ToList();
+            list.Remove(item);
+            return state with { Fertilizations = list };
         }
     }
 }

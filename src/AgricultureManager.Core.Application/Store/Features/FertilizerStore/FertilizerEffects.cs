@@ -13,7 +13,8 @@ namespace AgricultureManager.Core.Application.Store.Features.FertilizerStore
 
             if (respose.Success && respose.Data is not null)
                 dispatcher.Dispatch(new LoadFertilizersDataResultAction(respose.Data));
-
+            else
+                dispatcher.Dispatch(new LoadFertilizerDataResultFailAction());
         }
     }
 }

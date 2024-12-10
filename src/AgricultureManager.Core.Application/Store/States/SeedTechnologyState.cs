@@ -9,11 +9,11 @@ namespace AgricultureManager.Core.Application.Store.States
     {
         public bool IsLoading { get; init; }
         public bool IsInitialized { get; init; }
-        public IEnumerable<SeedTechnologyVm>? SeedTechnologies { get; init; }
+        public IEnumerable<SeedTechnologyVm> SeedTechnologies { get; init; } = [];
 
         private SeedTechnologyState() { }
 
-        public SeedTechnologyState(bool isLoading, IEnumerable<SeedTechnologyVm>? seedTechnologies)
+        public SeedTechnologyState(bool isLoading, IEnumerable<SeedTechnologyVm> seedTechnologies)
         {
             IsLoading = isLoading;
             SeedTechnologies = seedTechnologies;

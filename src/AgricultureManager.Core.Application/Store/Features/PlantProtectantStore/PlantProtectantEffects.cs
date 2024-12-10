@@ -13,7 +13,8 @@ namespace AgricultureManager.Core.Application.Store.Features.PlantProtectantStor
 
             if (respose.Success && respose.Data is not null)
                 dispatcher.Dispatch(new LoadPlantProtectantsDataResultAction(respose.Data));
-
+            else
+                dispatcher.Dispatch(new LoadPlantProtectantDataResultFailAction());
         }
     }
 }

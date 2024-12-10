@@ -11,7 +11,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestJobStore
 
         [ReducerMethod]
         public static HarvestJobState LoadHarvestJobDataResultReducer(HarvestJobState state, LoadHarvestJobDataResultAction action)
-            => state with { IsLoading = false, Harvests = action.Harvests };
+            => state with { IsInitialized = true, IsLoading = false, Harvests = action.Harvests };
 
         [ReducerMethod(typeof(LoadHarvestJobDataResultFailAction))]
         public static HarvestJobState LoadHarvestJobDataResultFailReducer(HarvestJobState state)
@@ -20,28 +20,28 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestJobStore
         [ReducerMethod]
         public static HarvestJobState AddHarvestJobReducer(HarvestJobState state, AddHarvestJobAction action)
         {
-            var seeds = state.Harvests.ToList();
-            var changed = seeds.Append(action.Harvest);
+            var list = state.Harvests.ToList();
+            var changed = list.Append(action.Harvest);
             return state with { Harvests = changed };
         }
 
         [ReducerMethod]
         public static HarvestJobState UpdateHarvestJobReducer(HarvestJobState state, UpdateHarvestJobAction action)
         {
-            var seed = state.Harvests.First(x => x.Id == action.Harvest.Id);
-            var seeds = state.Harvests.ToList();
-            seeds.Remove(seed);
-            var changed = seeds.Append(action.Harvest);
+            var item = state.Harvests.First(x => x.Id == action.Harvest.Id);
+            var list = state.Harvests.ToList();
+            list.Remove(item);
+            var changed = list.Append(action.Harvest);
             return state with { Harvests = changed };
         }
 
         [ReducerMethod]
         public static HarvestJobState RemoveHarvestJobReducer(HarvestJobState state, RemoveHarvestJobAction action)
         {
-            var seed = state.Harvests.First(x => x.Id == action.HarvestId);
-            var seeds = state.Harvests.ToList();
-            seeds.Remove(seed);
-            return state with { Harvests = seeds };
+            var item = state.Harvests.First(x => x.Id == action.HarvestId);
+            var list = state.Harvests.ToList();
+            list.Remove(item);
+            return state with { Harvests = list };
         }
     }
 }

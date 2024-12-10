@@ -9,11 +9,11 @@ namespace AgricultureManager.Core.Application.Store.States
     {
         public bool IsLoading { get; init; }
         public bool IsInitialized { get; init; }
-        public IEnumerable<PlantProtectantVm>? PlantProtectants { get; init; }
+        public IEnumerable<PlantProtectantVm> PlantProtectants { get; init; } = [];
 
         private PlantProtectantState() { }
 
-        public PlantProtectantState(bool isLoading, bool isInitialized, IEnumerable<PlantProtectantVm>? plantProtectant)
+        public PlantProtectantState(bool isLoading, bool isInitialized, IEnumerable<PlantProtectantVm> plantProtectant)
         {
             IsLoading = isLoading;
             IsInitialized = isInitialized;
