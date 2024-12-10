@@ -2,22 +2,22 @@
 using AgricultureManager.Core.Application.Shared.Models;
 using Fluxor;
 
-namespace AgricultureManager.Core.Application.Store.States
+namespace AgricultureManager.Core.Application.Shared.States
 {
     [FeatureState]
-    public record SeedJobState : IInitializableState
+    public record HarvestJobState : IInitializableState
     {
         public bool IsLoading { get; init; }
         public bool IsInitialized { get; init; }
         public Guid SelectedHarvestUnitId { get; init; }
-        public IEnumerable<SeedVm> Seeds { get; init; } = [];
-        private SeedJobState() { }
-        public SeedJobState(bool isLoading, bool isInitialized, Guid selectedHarvestUnitId, IEnumerable<SeedVm> seeds)
+        public IEnumerable<HarvestVm> Harvests { get; init; } = [];
+        private HarvestJobState() { }
+        public HarvestJobState(bool isLoading, bool isInitialized, Guid selectedHarvestUnitId, IEnumerable<HarvestVm> seeds)
         {
             IsLoading = isLoading;
             IsInitialized = isInitialized;
             SelectedHarvestUnitId = selectedHarvestUnitId;
-            Seeds = seeds;
+            Harvests = seeds;
         }
     }
 }

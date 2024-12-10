@@ -2,20 +2,20 @@
 using AgricultureManager.Core.Application.Shared.Models;
 using Fluxor;
 
-namespace AgricultureManager.Core.Application.Store.States
+namespace AgricultureManager.Core.Application.Shared.States
 {
     [FeatureState]
-    public record PeopleState : IInitializableState
+    public record CultureState : IInitializableState
     {
         public bool IsLoading { get; init; }
         public bool IsInitialized { get; init; }
-        public IEnumerable<PersonVm> Peoples { get; init; } = [];
-        private PeopleState() { }
+        public IEnumerable<CultureVm> Cultures { get; init; } = [];
+        private CultureState() { }
 
-        public PeopleState(bool isLoading, IEnumerable<PersonVm> peoples)
+        public CultureState(bool isLoading, IEnumerable<CultureVm> cultures)
         {
             IsLoading = isLoading;
-            Peoples = peoples;
+            Cultures = cultures;
         }
     }
 }

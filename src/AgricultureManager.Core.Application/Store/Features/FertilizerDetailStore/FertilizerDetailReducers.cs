@@ -1,4 +1,4 @@
-﻿using AgricultureManager.Core.Application.Store.States;
+﻿using AgricultureManager.Core.Application.Shared.States;
 using Fluxor;
 
 namespace AgricultureManager.Core.Application.Store.Features.FertilizerDetailStore

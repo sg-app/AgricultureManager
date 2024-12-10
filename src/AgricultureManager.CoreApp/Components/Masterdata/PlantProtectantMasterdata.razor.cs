@@ -1,7 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Features.PlantProtectantFeatures;
 using AgricultureManager.Core.Application.Shared.Models;
+using AgricultureManager.Core.Application.Shared.States;
 using AgricultureManager.Core.Application.Store.Features.PlantProtectantStore;
-using AgricultureManager.Core.Application.Store.States;
 using AgricultureManager.Module.Api.Interfaces;
 using AutoMapper;
 using Fluxor;
