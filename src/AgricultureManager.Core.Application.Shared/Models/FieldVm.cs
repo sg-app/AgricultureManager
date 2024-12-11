@@ -6,7 +6,7 @@ namespace AgricultureManager.Core.Application.Shared.Models
     public class FieldVm : IDeleteEntity
     {
         public Guid Id { get; set; }
-        [MaxLength(45, ErrorMessage ="Maximal {1} Zeichern erlaubt"), Required(ErrorMessage ="Nummer muss ausgefüllt sein.")]
+        [MaxLength(45, ErrorMessage = "Maximal {1} Zeichern erlaubt"), Required(ErrorMessage = "Nummer muss ausgefüllt sein.")]
         public string Number { get; set; } = string.Empty;
         [MaxLength(150, ErrorMessage = "Maximal {1} Zeichern erlaubt"), Required(ErrorMessage = "Name muss ausgefüllt sein.")]
         public string Name { get; set; } = string.Empty;

@@ -11,7 +11,7 @@ namespace AgricultureManager.Core.Application.Shared.Models
         public Guid HarvestYearId { get; set; }
         [Required]
         public Guid FieldId { get; set; }
-        [MaxLength(150, ErrorMessage ="Maximal {1} Zeichen erlaubt."), Required(ErrorMessage = "Name muss ausgefüllt sein.")]
+        [MaxLength(150, ErrorMessage = "Maximal {1} Zeichen erlaubt."), Required(ErrorMessage = "Name muss ausgefüllt sein.")]
         public string Name { get; set; } = string.Empty;
         public float Area { get; set; }
         [NotEmptyGuid(ErrorMessage = "Kultur muss auswählt sein.")]

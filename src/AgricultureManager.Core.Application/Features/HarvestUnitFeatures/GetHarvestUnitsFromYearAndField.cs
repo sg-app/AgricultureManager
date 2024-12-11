@@ -16,7 +16,7 @@ namespace AgricultureManager.Core.Application.Features.HarvestUnitFeatures
 
             var entities = await dbContext.HarvestUnit
                 .Include(f => f.Field)
-                .Include(f=>f.Culture)
+                .Include(f => f.Culture)
                 .Where(f => f.HarvestYearId == request.YearId && f.FieldId == request.FieldId)
                 .ToListAsync(cancellationToken);
 

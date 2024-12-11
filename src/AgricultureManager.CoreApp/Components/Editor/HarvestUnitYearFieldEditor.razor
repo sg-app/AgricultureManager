@@ -2,11 +2,15 @@
 @using AgricultureManager.Core.Application.Features.HarvestUnitFeatures
 @inherits FluxorComponent
 
+@if (!_haveHarvestUnits)
+{
+    <RadzenButton class="mb-2" Text="Datenübernahme Vorjahr" Click="OnDataTransferClick" />
+}
 <RadzenDataGrid @ref="_grid"
-                AllowSorting="true"
-                Data="@FieldState.Value.Fields"
-                TItem="FieldVm"
-                RowExpand="OnRowExpand">
+AllowSorting="true"
+Data="@FieldState.Value.Fields"
+TItem="FieldVm"
+RowExpand="OnRowExpand">
     <Columns>
         <RadzenDataGridColumn TItem="FieldVm" Property="@(nameof(FieldVm.Number))" Title="Flurnummer" />
         <RadzenDataGridColumn TItem="FieldVm" Property="@(nameof(FieldVm.Name))" Title="Name" />
@@ -23,17 +27,17 @@
                 <RadzenCard class="position-relative">
                     <div class="position-absolute translate-middle-y top-0 start-0">
                         <RadzenButton class="rz-border-radius-10 rz-shadow-4"
-                                      Click="@(()=>OnEditClicked(unit))"
-                                      ButtonStyle="ButtonStyle.Secondary"
-                                      Icon="edit"
-                                      Disabled="@_isInserting"
-                                      Size="ButtonSize.Small" />
+                        Click="@(()=>OnEditClicked(unit))"
+                        ButtonStyle="ButtonStyle.Secondary"
+                        Icon="edit"
+                        Disabled="@_isInserting"
+                        Size="ButtonSize.Small" />
                         <RadzenButton class="rz-border-radius-10 rz-shadow-4"
-                                      Click="@(()=>OnRemoveClicked(item, unit))"
-                                      ButtonStyle="ButtonStyle.Warning"
-                                      Icon="delete"
-                                      Disabled="@_isInserting"
-                                      Size="ButtonSize.Small" />
+                        Click="@(()=>OnRemoveClicked(item, unit))"
+                        ButtonStyle="ButtonStyle.Warning"
+                        Icon="delete"
+                        Disabled="@_isInserting"
+                        Size="ButtonSize.Small" />
                     </div>
                     <div>
                         <RadzenStack>
@@ -85,6 +89,7 @@
     private bool _isInserting;
     private HarvestUnitVm? _selectedItem;
     private FieldVm? _selectedField;
+    private bool _haveHarvestUnits = true;
 
     protected override void OnInitialized()
     {
@@ -92,9 +97,23 @@
         HarvestYearState.StateChanged += async (s, e) =>
         {
             await _grid.CollapseAll();
+            await CheckHaveHarvestUnits();
             await InvokeAsync(StateHasChanged);
         };
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckHaveHarvestUnits();
+    }
+
+    private async Task CheckHaveHarvestUnits()
+    {
+        if (HarvestYearState.Value.SelectedHarvestYear is null)
+            return;
+        _haveHarvestUnits = (await Mediator.Send(new CheckHaveHarvestUnitsFromYearCommand(HarvestYearState.Value.SelectedHarvestYear.Id))).Data;
+    }
+    
     private async Task OnRowExpand(FieldVm item)
     {
         if (HarvestYearState.Value.SelectedHarvestYear is null)
@@ -143,6 +162,17 @@
         _selectedItem = null;
         _isInserting = false;
         @if (_selectedField is not null)
-            await    OnRowExpand(_selectedField);
+            await        OnRowExpand(_selectedField);
+    }
+
+    private async Task OnDataTransferClick(MouseEventArgs args)
+    {
+        if (HarvestYearState.Value.SelectedHarvestYear is null)
+            return;
+        var response = await Mediator.Send(new TransferHarvestUnitsFromLastYearCommand(HarvestYearState.Value.SelectedHarvestYear.Id));
+        if (response.Success)
+        {
+            await CheckHaveHarvestUnits();
+        }
     }
 }
