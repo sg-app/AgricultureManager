@@ -1,0 +1,82 @@
+﻿@using AgricultureManager.Core.Application.Features.FertilizerPlaningSpecificationFeatures
+<RadzenSplitButton Text="Einfügen" Click="OnInsertClick">
+    <ChildContent>
+        @foreach (var item in GetExpected())
+        {
+            <RadzenSplitButtonItem Text="@item.Name" Value="@item.Id.ToString()" />
+        }
+    </ChildContent>
+</RadzenSplitButton>
+@if (_items is not null)
+{
+    <RadzenStack class="pt-3" Gap="1rem">
+        @foreach (var item in _items)
+        {
+            var detail = FertilizerDetailState.Value.FertilizerDetails.First(f => f.Id == item.FertilizerDetailId);
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="1">
+                    <RadzenLabel Text="@detail.Name" Component="@($"Componente_{detail.Name}")" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="6">
+                    <RadzenNumeric Step="1" @bind-Value="item.Quantity" Style="width: 100%;" Name="@($"Componente_{detail.Name}")" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="2">
+                    <RadzenButton Click="@(()=>OnRemoveClick(item))" Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" />
+                </RadzenColumn>
+            </RadzenRow>
+        }
+    </RadzenStack>
+}
+
+<SaveCancelButton ButtonResult="OnSaveClick" />
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
+    [Inject] public IState<FertilizerDetailState> FertilizerDetailState { get; set; } = default!;
+    [Parameter] public Guid HarvestUnitId { get; set; } = default!;
+
+    private ICollection<FertilizerPlaningSpecificationVm>? _items;
+
+    private IEnumerable<FertilizerDetailVm> GetExpected()
+    {
+        if (_items is null) return [];
+
+        var list = FertilizerDetailState.Value.FertilizerDetails.ToList();
+        var assignedIds = _items.Select(f => f.FertilizerDetailId);
+        var assignedDetails = list.Where(f => assignedIds.Contains(f.Id)).ToList();
+
+        var excptedList = list.Except(assignedDetails);
+
+        return excptedList;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var response = await Mediator.Send(new GetFertilizerPlaningSpecificationCommand(HarvestUnitId));
+        _items = response.Data;
+    }
+
+    private void OnInsertClick(RadzenSplitButtonItem item)
+    {
+        if (item is not null && Guid.TryParse(item.Value, out var id))
+        {
+            _items?.Add(new FertilizerPlaningSpecificationVm { HarvestUnitId = HarvestUnitId, FertilizerDetailId = id, Quantity = 0 });
+        }
+    }
+
+    private void OnRemoveClick(FertilizerPlaningSpecificationVm item)
+    {
+        if (_items is null) return;
+        _items.Remove(item);
+    }
+
+    private async Task OnSaveClick(bool save)
+    {
+        if (save && _items is not null)
+        {
+            await Mediator.Send(new BulkUpdateFertilizerPlaningSpecificationCommand(HarvestUnitId, _items));
+        }
+        DialogService.Close(save);
+    }
+}

@@ -30,6 +30,9 @@ namespace AgricultureManager.Core.Application.Shared.Interfaces.Persistence
         DbSet<SeedTechnology> SeedTechnology { get; set; }
         DbSet<Unit> Unit { get; set; }
 
+        DbSet<FertilizerPlaning> FertilizerPlaning { get; set; }
+        DbSet<FertilizerPlaningSpecification> FertilizerPlaningSpecification { get; set; }
+
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

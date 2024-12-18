@@ -1,0 +1,43 @@
+﻿@inherits FluxorComponent
+<RadzenCheckBoxList @bind-Value=@_harvestUnitIds TValue="Guid" Orientation="Orientation.Vertical">
+    <Items>
+        @foreach (var item in HarvestUnitState.Value.HarvestUnitsOverview)
+        {
+            <RadzenCheckBoxListItem Value="@item.Id">
+                <Template>
+                    <div class="row">
+                        <div style="width:80px">
+                            <RadzenText Text="@item.HarvestUnitName" />
+                        </div>
+                        <div style="width:250px">
+                            <RadzenText Text="@item.FieldName" />
+                        </div>
+                        <div style="width:50px">
+                            <RadzenText Text="@item.CultureShortName" />
+                        </div>
+                    </div>
+                </Template>
+            </RadzenCheckBoxListItem>
+        }
+    </Items>
+</RadzenCheckBoxList>
+
+<SaveCancelButton ButtonResult="OnSaveCancelClick" />
+
+@code {
+    [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
+    private IEnumerable<Guid> _harvestUnitIds = [];
+
+    private void OnSaveCancelClick(bool save)
+    {
+        if (save)
+        {
+            DialogService.Close(_harvestUnitIds);
+        }
+        else
+        {
+            DialogService.Close(null);
+        }
+    }
+}

@@ -1,6 +1,8 @@
 ﻿using AgricultureManager.Core.Application.Features.CultureFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerFeatures;
+using AgricultureManager.Core.Application.Features.FertilizerPlaningFeatures;
+using AgricultureManager.Core.Application.Features.FertilizerPlaningSpecificationFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerToDetailFeatures;
 using AgricultureManager.Core.Application.Features.FieldFeatures;
 using AgricultureManager.Core.Application.Features.HarvestUnitFeatures;
@@ -13,6 +15,7 @@ using AgricultureManager.Core.Application.Features.SeedFeatures;
 using AgricultureManager.Core.Application.Features.SeedTechnologyFeatures;
 using AgricultureManager.Core.Application.Features.UnitFeatures;
 using AgricultureManager.Core.Application.Shared.Models;
+using AgricultureManager.Core.Application.Shared.Models.EditorModels;
 using AgricultureManager.Core.Domain.Entities;
 using AutoMapper;
 
@@ -122,6 +125,23 @@ namespace AgricultureManager.Core.Application.Profiles
             CreateMap<UnitVm, UnitVm>();
             CreateMap<UnitVm, AddUnitCommand>();
             CreateMap<UnitVm, UpdateUnitCommand>();
+
+            CreateMap<FertilizerPlaning, FertilizerPlaningVm>();
+            CreateMap<AddFertilizerPlaningCommand, FertilizerPlaning>();
+            CreateMap<UpdateFertilizerPlaningCommand, FertilizerPlaning>();
+            CreateMap<FertilizerPlaningVm, FertilizerPlaningVm>();
+            CreateMap<FertilizerPlaningVm, AddFertilizerPlaningCommand>();
+            CreateMap<FertilizerPlaningVm, UpdateFertilizerPlaningCommand>();
+            CreateMap<FertilizerPlaningSpecification, FertilizerPlaningSpecificationVm>().ReverseMap();
+            CreateMap<AddFertilizerPlaningSpecificationCommand, FertilizerPlaningSpecification>();
+            CreateMap<UpdateFertilizerPlaningSpecificationCommand, FertilizerPlaningSpecification>();
+            CreateMap<FertilizerPlaningSpecificationVm, FertilizerPlaningSpecificationVm>();
+            CreateMap<FertilizerPlaningSpecificationVm, AddFertilizerPlaningSpecificationCommand>();
+            CreateMap<FertilizerPlaningSpecificationVm, UpdateFertilizerPlaningSpecificationCommand>();
+
+            CreateMap<FertilizerPlaningVm, EditFertilizerPlaningVm>().ReverseMap();
+            CreateMap<EditFertilizerPlaningVm, AddFertilizerPlaningCommand>().ReverseMap();
+
 
         }
     }

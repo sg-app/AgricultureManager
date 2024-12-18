@@ -25,6 +25,9 @@ namespace AgricultureManager.Infrastructure.Persistence
         public DbSet<Unit> Unit { get; set; }
 
 
+        public DbSet<FertilizerPlaning> FertilizerPlaning { get; set; }
+        public DbSet<FertilizerPlaningSpecification> FertilizerPlaningSpecification { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 

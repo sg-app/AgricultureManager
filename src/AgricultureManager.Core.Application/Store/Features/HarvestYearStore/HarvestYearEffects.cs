@@ -2,6 +2,7 @@
 using AgricultureManager.Core.Application.Features.HarvestYearFeatures;
 using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
+using AgricultureManager.Core.Application.Store.Features.HarvestUnitStore;
 using AgricultureManager.Core.Domain.Entities;
 using Fluxor;
 using MediatR;
@@ -41,6 +42,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
                     if (harvestYearEntity is not null)
                     {
                         dispatcher.Dispatch(new SetSelectedHarvestYearAction(harvestYear));
+                        dispatcher.Dispatch(new LoadHarvestUnitsDataAction(harvestYear));
                         return;
                     }
                 }
@@ -66,7 +68,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
         }
 
         [EffectMethod]
-        public async Task HandleSaveSelectedHarvestYearAction(SaveSelectedHarvestYearAction action, IDispatcher _)
+        public async Task HandleSaveSelectedHarvestYearAction(SaveSelectedHarvestYearAction action, IDispatcher dispatcher)
         {
 
             var keyValue = new Parameter
@@ -88,6 +90,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
                 dbContext.Parameter.Update(existKey);
             }
             await dbContext.SaveChangesAsync(CancellationToken.None);
+            dispatcher.Dispatch(new LoadHarvestUnitsDataAction(action.SelectedHarvestYear));
         }
 
     }

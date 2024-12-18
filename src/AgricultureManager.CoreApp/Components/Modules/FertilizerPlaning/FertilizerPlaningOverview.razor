@@ -1,0 +1,276 @@
+﻿@inherits FluxorComponent
+@using System.Collections.ObjectModel
+@using AgricultureManager.Core.Application.Features.FertilizerPlaningFeatures
+@using AgricultureManager.Core.Application.Features.FertilizerPlaningSpecificationFeatures
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xxl-5">
+            <RadzenDataGrid Value="@HarvestUnitState.Value.SelectedHarvestUnits"
+            ValueChanged="@OnValueChanged"
+            AllowSorting="true"
+            Data="@HarvestUnitState.Value.HarvestUnitsOverview"
+            TItem="HarvestUnitOverview"
+            IsLoading=@HarvestUnitState.Value.IsLoading
+            Density="Density.Compact">
+                <Columns>
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.HarvestUnitName))" Title="Name" />
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.FieldName))" Title="Feld" />
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.Area))" Title="Fläche">
+                        <Template Context="data">
+                            @data.Area ha
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.CultureShortName))" Title="Kultur" />
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+        <div class="col-xxl-7">
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="2rem">
+                <InsertButton InsertRow="InsertRow" Disabled="@(_selecteHarvestUnit is null)" />
+                <RadzenButton class="my-1" Click="OnCopyClick" Size="ButtonSize.Small" Text="Kopieren" Icon="content_copy" ButtonStyle="ButtonStyle.Secondary" />
+            </RadzenStack>
+            <RadzenDataGrid @ref="_planingGrid" AllowSorting="true"
+            RowUpdate="@OnUpdateRow"
+            RowCreate="@OnCreateRow"
+            Data="@_fertilizerPlanings"
+            TItem="FertilizerPlaningVm"
+            Density="Density.Compact">
+                <Columns>
+                    <RadzenDataGridColumn TItem="FertilizerPlaningVm" Property="@(nameof(FertilizerPlaningVm.FertilizerId))" Title="Dünger">
+                        <Template Context="data">
+                            @FertilizerState.Value.Fertilizers.FirstOrDefault(x => x.Id == data.FertilizerId)?.Name
+                        </Template>
+                        <EditTemplate Context="data">
+                            <RadzenDropDown TValue="Guid" Data="@FertilizerState.Value.Fertilizers" TextProperty="Name" ValueProperty="Id" @bind-Value="data.FertilizerId" />
+                        </EditTemplate>
+                        <FooterTemplate>
+                            <RadzenRow>
+                                Anforderung
+                            </RadzenRow>
+                            <RadzenRow>
+                                Summe
+                            </RadzenRow>
+                            <RadzenRow>
+                                Differenz
+                            </RadzenRow>
+                        </FooterTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="FertilizerPlaningVm" Property="@(nameof(FertilizerPlaningVm.Dosage))" Title="Dosierung dt/ha" Width="150px">
+                        <Template Context="data">
+                            @data.Dosage.ToString("N1")
+                        </Template>
+                        <EditTemplate Context="data">
+                            <RadzenNumeric TValue="float" Format="N1" Step="0.1" @bind-Value="@data.Dosage" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    @foreach (var spec in _fertilizerPlaningSpecifications.OrderBy(x=>x.FertilizerDetail.Name))
+                    {
+                        var detail = FertilizerDetailState.Value.FertilizerDetails.First(f => f.Id == spec.FertilizerDetailId);
+                        <RadzenDataGridColumn Title="@detail.Name" Width="50px">
+                            <Template>
+                                @GetRowCalc(detail, context.FertilizerId, context.Dosage)
+                            </Template>
+                            <FooterTemplate>
+                                <RadzenRow>
+                                    @spec.Quantity
+                                </RadzenRow>
+                                <RadzenRow>
+                                    @GetSummary(detail)
+                                </RadzenRow>
+                                <RadzenRow>
+                                    <RadzenText class="@(spec.Quantity - GetSummary(detail) < 0 ? "rz-color-danger fw-bold" : "rz-color-success fw-bold")">
+                                        @(spec.Quantity - GetSummary(detail))
+
+                                    </RadzenText>
+                                </RadzenRow>
+                            </FooterTemplate>
+                        </RadzenDataGridColumn>
+                    }
+                    <RadzenDataGridColumn TItem="FertilizerPlaningVm" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="150px" Frozen="true" FrozenPosition="FrozenColumnPosition.Right" OrderIndex="100">
+                        <Template Context="item">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <RadzenButton Click="@(()=>EditRow(item))" Icon="edit_square" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" />
+                                <RadzenButton Click="@(()=>RowUpward(item))" Icon="arrow_upward" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Info" />
+                                <RadzenButton Click="@(()=>RowDownward(item))" Icon="arrow_downward" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Info" />
+                            </div>
+                            <RadzenButton Click="@(()=>DeleteRow(item))" Icon="delete" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Danger" />
+                        </Template>
+                        <EditTemplate Context="item">
+                            <RadzenButton Click="@(()=>CancelEditRow(item))" Icon="close" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Info" />
+                            <RadzenButton Click="@(()=>SaveRow(item))" Icon="save" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Success" />
+                        </EditTemplate>
+                        <FooterTemplate>
+                            <RadzenButton Click="OnSpecEditClick" Icon="edit_square" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" />
+                        </FooterTemplate>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] public IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public IMapper Mapper { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
+    [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
+    [Inject] public IState<FertilizerState> FertilizerState { get; set; } = default!;
+    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
+    [Inject] public IState<FertilizerDetailState> FertilizerDetailState { get; set; } = default!;
+
+    private IList<EditFertilizerPlaningVm> _fertilizerPlanings = [];
+    private ICollection<FertilizerPlaningSpecificationVm> _fertilizerPlaningSpecifications = [];
+    private FertilizerPlaningVm draggedItem = new();
+    private HarvestUnitOverview? _selecteHarvestUnit;
+    private RadzenDataGrid<FertilizerPlaningVm> _planingGrid = default!;
+    private FertilizerPlaningVm? _itemToEditOriginal;
+
+    private async Task OnValueChanged(IList<HarvestUnitOverview> harvestUnitVm)
+    {
+        _selecteHarvestUnit = harvestUnitVm.FirstOrDefault();
+        await LoadPlaningData();
+    }
+
+    private async Task LoadPlaningData()
+    {
+        if (_selecteHarvestUnit == null) return;
+
+        var response = await Mediator.Send(new GetFertilizerPlaningCommand(_selecteHarvestUnit.Id));
+        _fertilizerPlanings = Mapper.Map<IList<EditFertilizerPlaningVm>>(response.Data);
+
+        var responseSpec = await Mediator.Send(new GetFertilizerPlaningSpecificationCommand(_selecteHarvestUnit.Id));
+        _fertilizerPlaningSpecifications = responseSpec.Data ??= [];
+
+        foreach (var spec in _fertilizerPlaningSpecifications)
+        {
+            for (int i = 0; i < _fertilizerPlanings.Count; i++)
+            {
+                _fertilizerPlanings[i].Details.Add(FertilizerDetailState.Value.FertilizerDetails.First(f => f.Id == spec.FertilizerDetailId), spec.Quantity);
+            }
+        }
+
+        await _planingGrid.Reload();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private int GetSummary(FertilizerDetailVm fertilizerDetail)
+    {
+        var summary = 0.0;
+        foreach (var planing in _fertilizerPlanings)
+        {
+            var fertilizer = FertilizerState.Value.Fertilizers.FirstOrDefault(f => f.Id == planing.FertilizerId);
+            if (fertilizer is null) continue;
+            var fertilizerValue = fertilizer.FertilizerToDetails.FirstOrDefault(f => f.FertilizerDetailId == fertilizerDetail.Id)?.Quantity ?? 0;
+            var calc = fertilizerValue * planing.Dosage;
+            summary += calc;
+        }
+        return (int)Math.Floor(summary);
+    }
+
+    private int GetRowCalc(FertilizerDetailVm fertilizerDetail, Guid fertilizerId, float dosage)
+    {
+        var fertilizer = FertilizerState.Value.Fertilizers.FirstOrDefault(f => f.Id == fertilizerId);
+        if (fertilizer is null) return 0;
+        var fertilizerValue = fertilizer.FertilizerToDetails.FirstOrDefault(f => f.FertilizerDetailId == fertilizerDetail.Id)?.Quantity ?? 0;
+        var calc = fertilizerValue * dosage;
+        return (int)Math.Floor(calc);
+    }
+
+    private async Task OnSpecEditClick(MouseEventArgs e)
+    {
+        if (_selecteHarvestUnit == null) return;
+
+        var parameters = new Dictionary<string, object>
+        {
+            { nameof(FertilizerPlaningSpecEditor.HarvestUnitId), _selecteHarvestUnit.Id }
+        };
+        var dialogResult = await DialogService.OpenAsync<FertilizerPlaningSpecEditor>("Anforderung", parameters);
+        if (dialogResult is bool && dialogResult == true)
+        {
+            await LoadPlaningData();
+        }
+    }
+
+    private async Task DeleteRow(FertilizerPlaningVm item)
+    {
+        var dialogResponse = await DialogService.Confirm("Soll der Datensatz wirklich gelöscht werden?", "Datensatz löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+        if (dialogResponse is null || dialogResponse == false)
+            return;
+
+        var response = await Mediator.Send(new RemoveFertilizerPlaningCommand(item.Id));
+        if (response.Success)
+        {
+            var toRemove = _fertilizerPlanings.First(f => f.Id == item.Id);
+            _fertilizerPlanings.Remove(toRemove);
+        }
+        else
+            _planingGrid.CancelEditRow(item);
+        await _planingGrid.Reload();
+    }
+
+    private async Task InsertRow() =>
+        await _planingGrid.InsertRow(new() { HarvestUnitId = _selecteHarvestUnit!.Id, Order = _planingGrid.Count + 1 });
+
+    private async Task EditRow(FertilizerPlaningVm item)
+    {
+        _itemToEditOriginal = Mapper.Map<FertilizerPlaningVm>(item);
+        await _planingGrid.EditRow(item);
+    }
+
+    private void CancelEditRow(FertilizerPlaningVm item)
+    {
+        _planingGrid.CancelEditRow(item);
+        Mapper.Map(_itemToEditOriginal, item);
+        _itemToEditOriginal = null;
+    }
+
+    private async Task SaveRow(FertilizerPlaningVm item) =>
+        await _planingGrid.UpdateRow(item);
+
+    private async Task OnUpdateRow(FertilizerPlaningVm item)
+    {
+        var cmd = new UpdateFertilizerPlaningCommand();
+        Mapper.Map(item, cmd);
+        var response = await Mediator.Send(cmd);
+        if (!response.Success)
+            await _planingGrid.Reload();
+
+        _itemToEditOriginal = null;
+    }
+    private async Task OnCreateRow(FertilizerPlaningVm item)
+    {
+        var cmd = new AddFertilizerPlaningCommand();
+        Mapper.Map(item, cmd);
+        var response = await Mediator.Send(cmd);
+        if (response.Success && response.Data is not null)
+        {
+            await LoadPlaningData();
+        }
+    }
+
+    private async Task RowUpward(FertilizerPlaningVm item)
+    {
+        var response = await Mediator.Send(new OrderFertilizerPlaningCommand(OrderDirection.Upwards, item));
+        if (response.Success)
+            await LoadPlaningData();
+    }
+
+    private async Task RowDownward(FertilizerPlaningVm item)
+    {
+        var response = await Mediator.Send(new OrderFertilizerPlaningCommand(OrderDirection.Downwards, item));
+        if (response.Success)
+            await LoadPlaningData();
+    }
+
+    private async Task OnCopyClick(MouseEventArgs e)
+    {
+        var dialogResponse = await DialogService.OpenAsync<HarvestUnitSelectionList>("Wähle");
+
+        if (dialogResponse is IEnumerable<Guid> harvestUnitIds)
+            await Mediator.Send(new CopyFertilizerPlaningCommand(harvestUnitIds, _fertilizerPlanings, _fertilizerPlaningSpecifications));
+    }
+}
