@@ -1,4 +1,4 @@
-﻿namespace AgricultureManager.Core.Application.Common
+﻿namespace AgricultureManager.Core.Application.Shared.Keys
 {
     public static class ParameterKeys
     {

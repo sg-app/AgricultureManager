@@ -42,6 +42,9 @@
         if (doc is CultivatedAreasDocument cultivatedAreasDocument)
             cultivatedAreasDocument.HarvestYear = HarvestYearState.Value.SelectedHarvestYear;
 
+        // /documents/pdfviewer/HarvestYearDocument
+        if (doc is HarvestYearDocument harvestYearDocument)
+            harvestYearDocument.HarvestYear = HarvestYearState.Value.SelectedHarvestYear;
 
         var pdfBytes = doc.GeneratePdf();
         var base64Pdf = Convert.ToBase64String(pdfBytes);

@@ -1,4 +1,5 @@
 ﻿using AgricultureManager.Module.Api.Interfaces;
+using AgricultureManager.Module.Pdf.Documents.Documentation;
 using AgricultureManager.Module.Pdf.Documents.Planing;
 using AgricultureManager.Module.Pdf.Documents.Statistics;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,8 @@ namespace AgricultureManager.Module.Pdf
 
             services.AddKeyedTransient<Quest.IDocument, FertlizerPlaningDocument>(nameof(FertlizerPlaningDocument));
             services.AddKeyedTransient<Quest.IDocument, CultivatedAreasDocument>(nameof(CultivatedAreasDocument));
+            services.AddKeyedTransient<Quest.IDocument, CropRotationDocument>(nameof(CropRotationDocument));
+            services.AddKeyedTransient<Quest.IDocument, HarvestYearDocument>(nameof(HarvestYearDocument));
 
             services.AddSingleton<IMenuItem, DocumentMenuItem>();
         }
@@ -28,11 +31,19 @@ namespace AgricultureManager.Module.Pdf
         public string Url => string.Empty;
         public IEnumerable<IMenuItem> Children =>
         [
+            new HarvestYearDocumentationMenuItem(),
             new FertilizerPlaningMenuItem(),
-            new CultivatedAreasMenuItem()
+            new CultivatedAreasMenuItem(),
+            new CropRotationMenuItem(),
         ];
     }
-
+    public class HarvestYearDocumentationMenuItem : IMenuItem
+    {
+        public string Name => "Schlagdokumentation";
+        public string Icon => "description";
+        public string Url => $"/documents/pdfviewer/{nameof(HarvestYearDocument)}";
+        public IEnumerable<IMenuItem> Children => [];
+    }
     public class FertilizerPlaningMenuItem : IMenuItem
     {
         public string Name => "Düngeplanung";
@@ -48,4 +59,13 @@ namespace AgricultureManager.Module.Pdf
         public string Url => $"/documents/pdfviewer/{nameof(CultivatedAreasDocument)}";
         public IEnumerable<IMenuItem> Children => [];
     }
+
+    public class CropRotationMenuItem : IMenuItem
+    {
+        public string Name => "Fruchtfolgen";
+        public string Icon => "description";
+        public string Url => $"/documents/pdfviewer/{nameof(CropRotationDocument)}";
+        public IEnumerable<IMenuItem> Children => [];
+    }
+
 }

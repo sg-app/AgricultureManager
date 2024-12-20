@@ -1,4 +1,5 @@
 ﻿using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures;
+using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Core.Application.Shared.States;
 using AgricultureManager.Core.Application.Store.Features.FertilizerDetailStore;
@@ -79,5 +80,8 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
                 Dispatcher.Dispatch(new AddFertilizerDetailAction(response.Data));
             }
         }
+
+        private bool IsSystemEntry(FertilizerDetailVm item) => item is ISystemEntry systemEntry && systemEntry.SystemEntry;
+
     }
 }

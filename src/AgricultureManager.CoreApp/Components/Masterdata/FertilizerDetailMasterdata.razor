@@ -20,6 +20,15 @@
                 <RadzenTextBox @bind-Value="item.Comment" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridInlineEditColumn TItem="FertilizerDetailVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+        <RadzenDataGridColumn TItem="FertilizerDetailVm" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+            <Template Context="item">
+                <RadzenButton Click="()=>EditRow(item)" Icon="edit_square" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary" Disabled="@(IsSystemEntry(item))" />
+                <RadzenButton Click="()=>DeleteRow(item)" Icon="delete" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Danger" Disabled="@(IsSystemEntry(item))" />
+            </Template>
+            <EditTemplate Context="item">
+                <RadzenButton Click="()=>CancelEditRow(item)" Icon="close" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Info" />
+                <RadzenButton Click="()=>SaveRow(item)" Icon="save" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Success" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
