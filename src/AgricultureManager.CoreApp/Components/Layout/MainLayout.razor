@@ -22,6 +22,10 @@
             <RadzenPanelMenuItem Text="Schlagdokumentation" Path="documentation" Icon="home" />
             <RadzenPanelMenuItem Text="Module">
                 <RadzenPanelMenuItem Text="Düngeplanung" Path="fertilizerplaning" />
+                @foreach (var item in _menuItems)
+                {
+                    @BuildMenuItem(item)
+                }
             </RadzenPanelMenuItem>
             <RadzenPanelMenuItem Text="Daten">
                 <RadzenPanelMenuItem Text="Betrieb" Path="company" />
@@ -43,6 +47,35 @@
 </div>
 
 @code {
+    [Inject] public IServiceProvider ServiceProvider { get; set; } = default!;
     bool sidebar1Expanded = true;
     private string? _currentYear;
+    private IEnumerable<IMenuItem> _menuItems = [];
+    
+    protected override void OnInitialized()
+    {
+        _menuItems = ServiceProvider.GetMenuItems();
+        base.OnInitialized();
+    }
+    
+    private RenderFragment BuildMenuItem(IMenuItem item) => builder =>
+    {
+        builder.OpenComponent<RadzenPanelMenuItem>(0);
+        builder.AddAttribute(1, "Text", item.Name);
+        builder.AddAttribute(2, "Path", item.Url);
+        builder.AddAttribute(3, "Icon", item.Icon);
+
+        if (item.Children != null && item.Children.Any())
+        {
+            builder.AddAttribute(4, "ChildContent", (RenderFragment)(childBuilder =>
+            {
+                foreach (var child in item.Children)
+                {
+                    childBuilder.AddContent(5, BuildMenuItem(child));
+                }
+            }));
+        }
+
+        builder.CloseComponent();
+    };
 }

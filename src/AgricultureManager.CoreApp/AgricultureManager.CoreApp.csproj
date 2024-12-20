@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -11,6 +11,9 @@
     <ProjectReference Include="..\AgricultureManager.Infrastructure.Persistence\AgricultureManager.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj" />
     <ProjectReference Include="..\AgricultureManager.SharedComponents\AgricultureManager.SharedComponents.csproj" />
+    <ProjectReference Include="..\AgricultureManager.Module.Pdf\AgricultureManager.Module.Pdf.csproj">
+      <!--<PrivateAssets>all</PrivateAssets>-->
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\bootstrap\" />

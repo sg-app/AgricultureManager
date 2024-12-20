@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Module.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Module.Manager", "AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj", "{AA01DB00-25BD-43EB-B521-C4DE28724104}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgricultureManager.Module.Pdf", "AgricultureManager.Module.Pdf\AgricultureManager.Module.Pdf.csproj", "{E2531D90-6569-4C67-B96B-B613344E5AC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{AA01DB00-25BD-43EB-B521-C4DE28724104}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA01DB00-25BD-43EB-B521-C4DE28724104}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA01DB00-25BD-43EB-B521-C4DE28724104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2531D90-6569-4C67-B96B-B613344E5AC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2531D90-6569-4C67-B96B-B613344E5AC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2531D90-6569-4C67-B96B-B613344E5AC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2531D90-6569-4C67-B96B-B613344E5AC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

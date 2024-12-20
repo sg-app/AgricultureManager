@@ -8,8 +8,10 @@
 @using AgricultureManager.Core.Application.Store.Features.SeedCategoryStore
 @using AgricultureManager.Core.Application.Store.Features.SeedTechnologyStore
 @using AgricultureManager.Core.Application.Store.Features.UnitStore
+@using System.Reflection
+@using AgricultureManager.Module.Manager
 <Fluxor.Blazor.Web.StoreInitializer />
-<Router AppAssembly="typeof(Program).Assembly">
+<Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="@_assemblies">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
@@ -18,6 +20,9 @@
 
 @code{
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public PluginAssemblyProvider pluginAssemblyProvider { get; set; } = default!;
+    private IEnumerable<Assembly> _assemblies = [];
+
     protected override void OnInitialized()
     {
         Dispatcher.Dispatch(new LoadCompanyDataAction());
@@ -30,5 +35,7 @@
         Dispatcher.Dispatch(new LoadFertilizersDataAction());
         Dispatcher.Dispatch(new LoadFertilizerDetailsDataAction());
         Dispatcher.Dispatch(new LoadPlantProtectantsDataAction());
+
+        _assemblies = pluginAssemblyProvider.AdditionalPluginAssembliesWithRoutes;
     }
 }

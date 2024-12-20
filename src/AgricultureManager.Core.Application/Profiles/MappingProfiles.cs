@@ -44,7 +44,7 @@ namespace AgricultureManager.Core.Application.Profiles
             CreateMap<FertilizerVm, AddFertilizerCommand>();
             CreateMap<FertilizerVm, UpdateFertilizerCommand>();
 
-            CreateMap<FertilizerDetail, FertilizerDetailVm>();
+            CreateMap<FertilizerDetail, FertilizerDetailVm>().ReverseMap();
             CreateMap<AddFertilizerDetailCommand, FertilizerDetail>();
             CreateMap<UpdateFertilizerDetailCommand, FertilizerDetail>();
             CreateMap<FertilizerDetailVm, FertilizerDetailVm>();
@@ -141,6 +141,7 @@ namespace AgricultureManager.Core.Application.Profiles
 
             CreateMap<FertilizerPlaningVm, EditFertilizerPlaningVm>().ReverseMap();
             CreateMap<EditFertilizerPlaningVm, AddFertilizerPlaningCommand>().ReverseMap();
+            CreateMap<EditFertilizerPlaningVm, FertilizerPlaning>();
 
 
         }

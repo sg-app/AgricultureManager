@@ -24,11 +24,12 @@ namespace AgricultureManager.Core.Application.Features.FertilizerPlaningFeatures
                 var planingCount = await context.FertilizerPlaning
                     .Where(x => x.HarvestUnitId == harvestUnitId)
                     .CountAsync(cancellationToken);
-                if (planingCount != 0)
+                if (planingCount == 0)
                 {
                     var copyPlaningData = mapper.Map<IList<FertilizerPlaning>>(request.FertilizerPlanings);
                     for (int i = 0; i < copyPlaningData.Count; i++)
                     {
+                        copyPlaningData[i].Id = Guid.NewGuid();
                         copyPlaningData[i].HarvestUnitId = harvestUnitId;
                     }
                     await context.FertilizerPlaning.AddRangeAsync(copyPlaningData, cancellationToken);
@@ -37,18 +38,20 @@ namespace AgricultureManager.Core.Application.Features.FertilizerPlaningFeatures
                 var planingSpecCount = await context.FertilizerPlaningSpecification
                     .Where(x => x.HarvestUnitId == harvestUnitId)
                     .CountAsync(cancellationToken);
-                if (planingSpecCount != 0)
+                if (planingSpecCount == 0)
                 {
                     var copySpecData = mapper.Map<IList<FertilizerPlaningSpecification>>(request.FertilizerPlaningSpecifications);
                     for (int i = 0; i < copySpecData.Count; i++)
                     {
+                        copySpecData[i].Id = Guid.NewGuid();
+                        copySpecData[i].FertilizerDetail = null!; // löschen wegen Changetracking -> DBConcurencyException
                         copySpecData[i].HarvestUnitId = harvestUnitId;
                     }
                     await context.FertilizerPlaningSpecification.AddRangeAsync(copySpecData, cancellationToken);
                 }
             }
-            await context.SaveChangesAsync(cancellationToken);
 
+            await context.SaveChangesAsync(cancellationToken);
             return Response.Success();
         }
     }

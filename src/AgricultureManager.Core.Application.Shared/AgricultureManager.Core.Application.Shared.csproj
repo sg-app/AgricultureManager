@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\Services\**" />
+    <EmbeddedResource Remove="Interfaces\Services\**" />
+    <None Remove="Interfaces\Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Blazored.FluentValidation" Version="2.2.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
@@ -19,10 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Core.Domain\AgricultureManager.Core.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Interfaces\Services\" />
   </ItemGroup>
 
 </Project>

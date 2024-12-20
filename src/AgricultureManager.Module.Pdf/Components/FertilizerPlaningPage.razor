@@ -1,0 +1,38 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@implements IDisposable
+
+
+@page "/documents/FertilizerPlaning"
+<iframe src="@pdfDataUrl" width="100%" height="100%"></iframe>
+
+@code {
+    [Inject] public IServiceProvider ServiceProvider { get; set; } = default!;
+    [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
+    [Inject] public IStore Store { get; set; } = default!;
+    private string pdfDataUrl = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        HarvestYearState.StateChanged += OnHarvestYearChanged;
+    }
+
+    private void OnHarvestYearChanged(object? sender, EventArgs args)
+    {
+        if (HarvestYearState.Value.SelectedHarvestYear == null) return;
+
+        var doc = ServiceProvider.GetRequiredKeyedService<IDocument>(nameof(FertlizerPlaningDocument));
+        ((FertlizerPlaningDocument)doc).HarvestYear = HarvestYearState.Value.SelectedHarvestYear;
+
+        var pdfBytes = doc.GeneratePdf();
+        var base64Pdf = Convert.ToBase64String(pdfBytes);
+        pdfDataUrl = $"data:application/pdf;base64,{base64Pdf}";
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        HarvestYearState.StateChanged -= OnHarvestYearChanged;
+    }
+
+}

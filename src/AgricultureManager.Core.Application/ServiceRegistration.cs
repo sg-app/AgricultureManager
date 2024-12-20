@@ -22,7 +22,9 @@ namespace AgricultureManager.Core.Application
 
             services.AddFluxor(config =>
             {
-                config.ScanAssemblies(Assembly.GetExecutingAssembly(), typeof(CompanyState).Assembly);
+                config.ScanAssemblies(
+                    Assembly.GetExecutingAssembly(),
+                    Assembly.GetAssembly(typeof(CompanyState)));
 #if DEBUG
                 config.UseReduxDevTools();
 #endif

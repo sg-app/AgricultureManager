@@ -15,6 +15,7 @@ builder.Services.AddRadzenComponents();
 builder.Services.AddCoreApplication(builder.Configuration);
 builder.Services.AddCorePersistence(builder.Configuration);
 builder.Services.RegisterMasterdata();
+builder.Services.AddPlugins(builder.Configuration);
 
 var app = builder.Build();
 
@@ -39,6 +40,7 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .AddPluginAssemblies(app.Services);
 
 app.Run();
