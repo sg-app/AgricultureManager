@@ -28,7 +28,7 @@
         <div class="col-xxl-7">
             <RadzenStack Orientation="Orientation.Horizontal" Gap="2rem">
                 <InsertButton InsertRow="InsertRow" Disabled="@(_selecteHarvestUnit is null)" />
-                <RadzenButton class="my-1" Click="OnCopyClick" Size="ButtonSize.Small" Text="Kopieren" Icon="content_copy" ButtonStyle="ButtonStyle.Secondary" />
+                <RadzenButton class="my-1" Click="OnCopyClick" Size="ButtonSize.Small" Text="Kopieren" Icon="content_copy" ButtonStyle="ButtonStyle.Secondary" Disabled="@(_selecteHarvestUnit is null)" />
             </RadzenStack>
             <RadzenDataGrid @ref="_planingGrid" AllowSorting="true"
             RowUpdate="@OnUpdateRow"

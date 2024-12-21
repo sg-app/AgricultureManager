@@ -1,4 +1,5 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
+using AgricultureManager.Core.Application.Shared.Keys;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -68,10 +69,14 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                             {
                                 c.ConstantColumn(150); //Dünger
                                 c.ConstantColumn(70); //Dosierung
-                                for (int i = 0; i < harvestUnit.FertilizerPlaningSpecifications.Count; i++)
-                                {
-                                    c.ConstantColumn(40); //Für jedes Detail
-                                }
+                                //for (int i = 0; i < harvestUnit.FertilizerPlaningSpecifications.Count; i++)
+                                //{
+                                //    c.ConstantColumn(40); //Für jedes Detail
+                                //}
+                                c.ConstantColumn(40);
+                                c.ConstantColumn(40);
+                                c.ConstantColumn(40);
+                                c.ConstantColumn(40);
                                 c.ConstantColumn(70); //Gesamt
                                 c.ConstantColumn(70); //Datum
                                 c.ConstantColumn(70); //Gesamt
@@ -82,10 +87,14 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                             {
                                 h.Cell().Element(CellStyle).Text("Dünger");
                                 h.Cell().Element(CellStyle).AlignRight().Text("Dosierung");
-                                foreach (var spec in harvestUnit.FertilizerPlaningSpecifications.OrderBy(f => f.FertilizerDetail.Name))
-                                {
-                                    h.Cell().Element(CellStyle).AlignRight().Text(spec.FertilizerDetail.Name);
-                                }
+                                //foreach (var spec in harvestUnit.FertilizerPlaningSpecifications.OrderBy(f => f.FertilizerDetail.Name))
+                                //{
+                                //    h.Cell().Element(CellStyle).AlignRight().Text(spec.FertilizerDetail.Name);
+                                //}
+                                h.Cell().Element(CellStyle).AlignRight().Text("N");
+                                h.Cell().Element(CellStyle).AlignRight().Text("P");
+                                h.Cell().Element(CellStyle).AlignRight().Text("K");
+                                h.Cell().Element(CellStyle).AlignRight().Text("S");
                                 h.Cell().Element(CellStyle).AlignRight().Text("Gesamt");
                                 h.Cell().Element(CellStyle).Text("Datum");
                                 h.Cell().Element(CellStyle).Text("Gesamt");
@@ -105,9 +114,10 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                             {
                                 t.Cell().Element(CellStyle).Text(planingItem.Fertilizer.Name);
                                 t.Cell().Element(CellStyle).AlignRight().Text($"{planingItem.Dosage:N2} dt/ha");
-                                foreach (var spec in harvestUnit.FertilizerPlaningSpecifications.OrderBy(f => f.FertilizerDetail.Name))
+                                foreach (var detailId in SystemEntryKeys.FertilizerDetailKeys)
                                 {
-                                    var detailAmount = planingItem.Dosage * planingItem.Fertilizer.FertilizerToDetails.First(f => f.FertilizerDetailId == spec.FertilizerDetailId).Quantity;
+                                    var quantity = planingItem.Fertilizer.FertilizerToDetails.FirstOrDefault(f => f.FertilizerDetailId == detailId)?.Quantity ?? 0;
+                                    var detailAmount = planingItem.Dosage * quantity;
                                     t.Cell().Element(CellStyle).AlignRight().Text(Math.Round(detailAmount, 0).ToString("N0"));
                                 }
                                 var amount = harvestUnit.Area * planingItem.Dosage * 100;
@@ -128,12 +138,13 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                             {
 
                                 t.Cell().ColumnSpan(2).Element(CellStyle).Text("Summe");
-                                foreach (var spec in harvestUnit.FertilizerPlaningSpecifications.OrderBy(f => f.FertilizerDetail.Name))
+                                foreach (var detailId in SystemEntryKeys.FertilizerDetailKeys)
                                 {
                                     var detailAmount = 0.0;
                                     foreach (var planingItem in planingItems)
                                     {
-                                        detailAmount += Math.Round(planingItem.Dosage * planingItem.Fertilizer.FertilizerToDetails.First(f => f.FertilizerDetailId == spec.FertilizerDetailId).Quantity, 0);
+                                        var quantity = planingItem.Fertilizer.FertilizerToDetails.FirstOrDefault(f => f.FertilizerDetailId == detailId)?.Quantity ?? 0;
+                                        detailAmount += Math.Round(planingItem.Dosage * quantity, 0);
                                     }
                                     t.Cell().Element(CellStyle).AlignRight().Text(detailAmount.ToString("N0"));
                                 }
@@ -141,9 +152,10 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
 
 
                                 t.Cell().ColumnSpan(2).Element(CellStyle).Text("Anforderung");
-                                foreach (var spec in harvestUnit.FertilizerPlaningSpecifications.OrderBy(f => f.FertilizerDetail.Name))
+                                foreach (var detailId in SystemEntryKeys.FertilizerDetailKeys)
                                 {
-                                    t.Cell().Element(CellStyle).AlignRight().Text(spec.Quantity.ToString("N0"));
+                                    var specQuantity = harvestUnit.FertilizerPlaningSpecifications.FirstOrDefault(f => f.FertilizerDetailId == detailId)?.Quantity ?? 0;
+                                    t.Cell().Element(CellStyle).AlignRight().Text(specQuantity.ToString("N0"));
                                 }
                                 t.Cell().ColumnSpan(3).Element(CellStyle);
 
@@ -158,14 +170,16 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
 
                                 t.Cell().ColumnSpan(2).Element(CellStyle2).Text("Differenz");
 
-                                foreach (var spec in harvestUnit.FertilizerPlaningSpecifications.OrderBy(f => f.FertilizerDetail.Name))
+                                foreach (var detailId in SystemEntryKeys.FertilizerDetailKeys)
                                 {
                                     var detailAmount = 0.0;
                                     foreach (var planingItem in planingItems)
                                     {
-                                        detailAmount += Math.Round(planingItem.Dosage * planingItem.Fertilizer.FertilizerToDetails.First(f => f.FertilizerDetailId == spec.FertilizerDetailId).Quantity, 0);
+                                        var quantity = planingItem.Fertilizer.FertilizerToDetails.FirstOrDefault(f => f.FertilizerDetailId == detailId)?.Quantity ?? 0;
+                                        detailAmount += Math.Round(planingItem.Dosage * quantity, 0);
                                     }
-                                    var difference = spec.Quantity - detailAmount;
+                                    var specQuantity = harvestUnit.FertilizerPlaningSpecifications.FirstOrDefault(f => f.FertilizerDetailId == detailId)?.Quantity ?? 0;
+                                    var difference = specQuantity - detailAmount;
                                     var color = difference < 0 ? Colors.Red.Darken2 : Colors.Green.Darken2;
                                     t.Cell().Element(CellStyle2).AlignRight().Text(difference.ToString("N0")).FontColor(color);
                                 }
