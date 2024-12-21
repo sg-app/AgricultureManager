@@ -20,15 +20,32 @@ namespace AgricultureManager.Core.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.FullName is not null && f.FullName.Contains("AgricultureManager.Module", StringComparison.OrdinalIgnoreCase)).ToList();
+            assemblies.Add(Assembly.GetAssembly(typeof(CompanyState))!);
+
             services.AddFluxor(config =>
             {
                 config.ScanAssemblies(
                     Assembly.GetExecutingAssembly(),
-                    Assembly.GetAssembly(typeof(CompanyState)));
+                    [
+                        ..assemblies
+                    ]);
 #if DEBUG
                 config.UseReduxDevTools();
 #endif
             });
+
+            //            services.AddFluxor(config =>
+            //            {
+            //                config.ScanAssemblies(
+            //                    Assembly.GetExecutingAssembly(),
+            //                    [
+            //                        Assembly.GetAssembly(typeof(CompanyState)),
+            //                    ]);
+            //#if DEBUG
+            //                config.UseReduxDevTools();
+            //#endif
+            //            });
 
             return services;
         }

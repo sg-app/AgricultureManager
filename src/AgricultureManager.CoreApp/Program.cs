@@ -12,10 +12,10 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddRadzenComponents();
+builder.Services.AddPlugins(builder.Configuration);
+builder.Services.RegisterMasterdata();
 builder.Services.AddCoreApplication(builder.Configuration);
 builder.Services.AddCorePersistence(builder.Configuration);
-builder.Services.RegisterMasterdata();
-builder.Services.AddPlugins(builder.Configuration);
 
 var app = builder.Build();
 

@@ -11,13 +11,21 @@
     <ProjectReference Include="..\AgricultureManager.Infrastructure.Persistence\AgricultureManager.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj" />
     <ProjectReference Include="..\AgricultureManager.SharedComponents\AgricultureManager.SharedComponents.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Module.Pdf\AgricultureManager.Module.Pdf.csproj">
-      <!--<PrivateAssets>all</PrivateAssets>-->
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\AgricultureManager.Module.Accounting\AgricultureManager.Module.Accounting.csproj">
+      <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
   </ItemGroup>
+  
   <ItemGroup>
     <Folder Include="wwwroot\bootstrap\" />
   </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
       <PrivateAssets>all</PrivateAssets>

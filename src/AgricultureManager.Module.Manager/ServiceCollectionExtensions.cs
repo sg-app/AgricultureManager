@@ -93,8 +93,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 assembly.GetInstances<IServerStartup>()
                     .ToList()
                     .ForEach(x => x.ConfigureServices(services, configuration));
-
             }
+
             return services;
         }
 
