@@ -1,0 +1,46 @@
+﻿@inherits FluxorComponent
+<RadzenCard class="mt-1 p-0 overflow-auto">
+	<div class="p-3 rz-background-color-info-lighter d-flex">
+		<RadzenText class="me-auto" TextStyle="TextStyle.H5" TagName="TagName.H5" Text="Buchungen" />
+		<InsertButton InsertRow="OnInsertRowClick" />
+	</div>
+	<div class="px-3">
+		@foreach (var item in _bookings)
+		{
+			<div class="row d-flex align-items-center py-1">
+				<div class="col-md-5">
+					<RadzenText Text="@(BookingTypeState.Value.BookingTypes?.FirstOrDefault(f=>f.Id==item.BookingTypeId)?.Name)" />
+				</div>
+				<div class="col-md-2">
+					<RadzenText Text="@(item.Amount.ToString("C"))" TextAlign="TextAlign.Right" />
+				</div>
+				<div class="col-md-2">
+					<RadzenText Text="@(TaxRateState.Value.TaxRates?.FirstOrDefault(f=>f.Id==item.TaxRateId)?.TaxRateValue.ToString("P1"))" TextAlign="TextAlign.Right" />
+				</div>
+				<div class="col-md-3 @(_onEdit ? "d-none" : "")">
+					<RadzenButton Icon="edit" Click="@(()=>Edit(item))" Size="ButtonSize.Small" />
+					<RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(()=>Remove(item))" Size="ButtonSize.Small" />
+				</div>
+			</div>
+		}
+		@if (_bookings.Sum(f => f.Amount) != _amount)
+		{
+			<div class="row py-1">
+				<div class="col-md-5">
+					<RadzenText class="rz-color-danger" Text="Abweichung der Summe" />
+				</div>
+				<div class="col-md-2 ">
+					<RadzenText class="rz-color-danger" Text="@((_amount - _bookings.Sum(f=>f.Amount)).ToString("C"))" TextAlign="TextAlign.Right" />
+				</div>
+			</div>
+		}
+		@if (_bookings.Count == 0)
+		{
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.Div" Text="Keine Buchungen gefunden" />
+		}
+		@if (_onEdit)
+		{
+			<BookingEditor ButtonResult="ButtonResult" Booking="@_selectedItem" Amount="@(Math.Abs(AccountMouvement.Amount) - _bookings.Sum(f => f.Amount))" />
+		}
+	</div>
+</RadzenCard>

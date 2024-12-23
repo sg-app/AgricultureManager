@@ -1,0 +1,50 @@
+﻿@page "/accounting/overview"
+<div>
+
+    <div>
+        <RadzenDatePicker TValue="DateTime?" @bind-Value=@_startDate ShowTime="false" Change="StartDateChanged" DateFormat="d" />
+        <RadzenDatePicker TValue="DateTime?" @bind-Value=@_endDate ShowTime="false" Change="EndDateChanged" DateFormat="d">
+            <FooterTemplate>
+                <RadzenButton Click=@(args => _endDate = DateTime.Now) Text="Heute" class="my-3 w-100" />
+            </FooterTemplate>
+        </RadzenDatePicker>
+        <RadzenCheckBox TValue="bool" Value=@_withNoBookings ValueChanged="WithNoBookingChanged" Name="WithNoBookingsCheckBox" />
+        <RadzenLabel Text="Zeige Bewegungen ohne Buchung" Component="WithNoBookingsCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
+    </div>
+
+    <div class="mt-2">
+        <RadzenDataGrid Data="@_accountMouvements" TItem="AccountMouvementVm"
+                        AllowPaging="true" AllowFiltering="true" AllowSorting="true" PageSize="10"
+                        FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        LogicalFilterOperator="LogicalFilterOperator.Or" FilterPopupRenderMode="PopupRenderMode.Initial"
+                        SelectionMode="DataGridSelectionMode.Single" @bind-Value="@_selectedItem"
+                        IsLoading="@_isLoading">
+            <Columns>
+                <RadzenDataGridColumn TItem="AccountMouvementVm" Title="Datum" Property="InputDate" Width="100px" FormatString="{0:d}" />
+                <RadzenDataGridColumn TItem="AccountMouvementVm" Title="Typ" Property="Text" Width="150px" />
+                <RadzenDataGridColumn TItem="AccountMouvementVm" Title="Partner" Property="PartnerName" Width="250px" />
+                <RadzenDataGridColumn TItem="AccountMouvementVm" Title="Beschreibung" Property="Description" />
+                <RadzenDataGridColumn TItem="AccountMouvementVm" Title="Betrag" TextAlign="TextAlign.Right" Property="Amount" Width="100px">
+                    <Template Context="ctx">
+                        @if (ctx.Amount >= 0)
+                        {
+                            <span class="rz-color-success-darker">@ctx.Amount.ToString("C")</span>
+                        }
+                        else
+                        {
+                            <span class="rz-color-danger-darker">@ctx.Amount.ToString("C")</span>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+
+            </Columns>
+            <Template Context="item">
+                <BookingOverview AccountMouvement="@item" />
+                <DocumentUpload AccountMouvement="@item" />
+            </Template>
+        </RadzenDataGrid>
+        @if (_selectedItem != null && _selectedItem.Count > 0)
+        {
+        }
+    </div>
+</div>

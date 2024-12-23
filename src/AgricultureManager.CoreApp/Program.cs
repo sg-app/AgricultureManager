@@ -38,7 +38,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
-
+app.UsePlugins();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddPluginAssemblies(app.Services);

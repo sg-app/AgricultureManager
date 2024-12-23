@@ -14,5 +14,7 @@ namespace AgricultureManager.Module.Accounting.Models
         public decimal TaxRateValue { get; set; }
         public bool IsActive { get; set; }
         public bool IsDefault { get; set; }
+
+        public string DisplayName => $"{TaxRateValue:P1} {TaxRateName}";
     }
 }

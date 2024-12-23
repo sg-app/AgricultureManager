@@ -1,6 +1,6 @@
-﻿using AgricultureManager.Module.Accounting.Features.TaxRateFeatures;
+﻿using AgricultureManager.Module.Accounting.Features.BookingTypeFeatures;
 using AgricultureManager.Module.Accounting.Models;
-using AgricultureManager.Module.Accounting.Store.Features.TaxRateStore;
+using AgricultureManager.Module.Accounting.Store.Features.BookingTypeStore;
 using AgricultureManager.Module.Accounting.Store.States;
 using AgricultureManager.Module.Api.Interfaces;
 using AutoMapper;
@@ -12,33 +12,33 @@ using Radzen.Blazor;
 
 namespace AgricultureManager.Module.Accounting.Components.Masterdata
 {
-    public partial class TaxRateMasterdata : IMasterdata
+    public partial class BookingTypeMasterdata : IMasterdata
     {
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IMapper Mapper { get; set; } = default!;
         [Inject] public DialogService DialogService { get; set; } = default!;
         [Inject] public IDispatcher Dispatcher { get; set; } = default!;
-        [Inject] public IState<TaxRateState> TaxRateState { get; set; } = default!;
+        [Inject] public IState<BookingTypeState> BookingTypeState { get; set; } = default!;
 
-        private RadzenDataGrid<TaxRateVm> _grid = default!;
-        private TaxRateVm? _itemToEditOriginal;
-        public string Title => "Steuersatz";
+        private RadzenDataGrid<BookingTypeVm> _grid = default!;
+        private BookingTypeVm? _itemToEditOriginal;
+        public string Title => "Buchungstypen";
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            if (!TaxRateState.Value.IsInitialized)
-                Dispatcher.Dispatch(new LoadTaxRatesDataAction());
+            if (!BookingTypeState.Value.IsInitialized)
+                Dispatcher.Dispatch(new LoadBookingTypesDataAction());
         }
-        private async Task DeleteRow(TaxRateVm item)
+        private async Task DeleteRow(BookingTypeVm item)
         {
             var dialogResponse = await DialogService.Confirm("Soll der Datensatz wirklich gelöscht werden?", "Datensatz löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
             if (dialogResponse is null || dialogResponse == false)
                 return;
 
-            var response = await Mediator.Send(new RemoveTaxRateCommand(item.Id));
+            var response = await Mediator.Send(new RemoveBookingTypeCommand(item.Id));
             if (response.Success)
-                Dispatcher.Dispatch(new RemoveTaxRateAction(item.Id));
+                Dispatcher.Dispatch(new RemoveBookingTypeAction(item.Id));
             else
                 _grid.CancelEditRow(item);
             await _grid.Reload();
@@ -47,42 +47,42 @@ namespace AgricultureManager.Module.Accounting.Components.Masterdata
         private async Task InsertRow() =>
             await _grid.InsertRow(new());
 
-        private async Task EditRow(TaxRateVm item)
+        private async Task EditRow(BookingTypeVm item)
         {
-            _itemToEditOriginal = Mapper.Map<TaxRateVm>(item);
+            _itemToEditOriginal = Mapper.Map<BookingTypeVm>(item);
             await _grid.EditRow(item);
         }
 
-        private void CancelEditRow(TaxRateVm item)
+        private void CancelEditRow(BookingTypeVm item)
         {
             _grid.CancelEditRow(item);
             Mapper.Map(_itemToEditOriginal, item);
             _itemToEditOriginal = null;
         }
 
-        private async Task SaveRow(TaxRateVm item) =>
+        private async Task SaveRow(BookingTypeVm item) =>
             await _grid.UpdateRow(item);
 
-        private async Task OnUpdateRow(TaxRateVm item)
+        private async Task OnUpdateRow(BookingTypeVm item)
         {
-            var cmd = new UpdateTaxRateCommand();
+            var cmd = new UpdateBookingTypeCommand();
             Mapper.Map(item, cmd);
             var response = await Mediator.Send(cmd);
             if (!response.Success)
                 await _grid.Reload();
             else if (response.Success && response.Data is not null)
-                Dispatcher.Dispatch(new UpdateTaxRateAction(response.Data));
+                Dispatcher.Dispatch(new UpdateBookingTypeAction(response.Data));
             _itemToEditOriginal = null;
         }
-        private async Task OnCreateRow(TaxRateVm item)
+        private async Task OnCreateRow(BookingTypeVm item)
         {
-            var cmd = new AddTaxRateCommand();
+            var cmd = new AddBookingTypeCommand();
             Mapper.Map(item, cmd);
             var response = await Mediator.Send(cmd);
             if (response.Success && response.Data is not null)
             {
                 item.Id = response.Data.Id;
-                Dispatcher.Dispatch(new AddTaxRateAction(response.Data));
+                Dispatcher.Dispatch(new AddBookingTypeAction(response.Data));
             }
         }
     }

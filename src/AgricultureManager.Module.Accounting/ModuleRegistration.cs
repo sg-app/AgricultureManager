@@ -9,6 +9,7 @@ namespace AgricultureManager.Module.Accounting
 {
     public class ModuleRegistration : IServerStartup
     {
+
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             var currentAssembly = Assembly.GetExecutingAssembly();
@@ -30,6 +31,27 @@ namespace AgricultureManager.Module.Accounting
             });
             services.AddScoped<IAccountingDbContextFactory, AccountingDbContextFactory>();
 
+            services.AddSingleton<IMenuItem, AccountingMenuItem>();
         }
+    }
+
+    public class AccountingMenuItem : IMenuItem
+    {
+        public string Name => "Accounting";
+        public string Icon => "money";
+        public string Url => string.Empty;
+
+        public IEnumerable<IMenuItem> Children => [
+            new AccountingOverviewMenuItem(),
+            ];
+    }
+
+    public class AccountingOverviewMenuItem : IMenuItem
+    {
+        public string Name => "Buchungen";
+        public string Icon => "money";
+        public string Url => "/accounting/overview";
+
+        public IEnumerable<IMenuItem> Children => [];
     }
 }

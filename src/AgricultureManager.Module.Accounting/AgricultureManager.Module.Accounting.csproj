@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Core.Application.Shared\AgricultureManager.Core.Application.Shared.csproj" />
     <ProjectReference Include="..\AgricultureManager.Module.Api\AgricultureManager.Module.Api.csproj" />
     <ProjectReference Include="..\AgricultureManager.SharedComponents\AgricultureManager.SharedComponents.csproj" />

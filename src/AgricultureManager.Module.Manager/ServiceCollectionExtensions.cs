@@ -1,5 +1,6 @@
 ﻿using AgricultureManager.Module.Api.Interfaces;
 using AgricultureManager.Module.Manager;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 using System.Reflection;
@@ -20,6 +21,18 @@ namespace Microsoft.Extensions.DependencyInjection
 
 
             return services;
+        }
+        public static WebApplication UsePlugins(this WebApplication app)
+        {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.FullName is not null && f.FullName.Contains("AgricultureManager.Module", StringComparison.OrdinalIgnoreCase));
+            foreach (var assembly in assemblies)
+            {
+                // dynamically register server startup services
+                assembly.GetInstances<IServerStartup>()
+                    .ToList()
+                    .ForEach(x => x.AddMiddleware(app));
+            }
+            return app;
         }
         private static void LoadAsseblies()
         {
