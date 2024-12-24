@@ -7,6 +7,7 @@ namespace AgricultureManager.Module.Accounting.Domain
     public class AccountMouvement
     {
         public Guid Id { get; set; }
+        public Guid AccountId { get; set; }
         public DateTime InputDate { get; set; }
         public DateTime ValueDate { get; set; }
         [MaxLength(10)]
@@ -72,5 +73,6 @@ namespace AgricultureManager.Module.Accounting.Domain
         public virtual ICollection<Document>? Documents { get; set; }
         public virtual ICollection<Booking>? Bookings { get; set; }
 
+        public Account Account { get; set; } = default!;
     }
 }

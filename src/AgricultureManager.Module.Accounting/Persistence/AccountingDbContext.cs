@@ -12,6 +12,7 @@ namespace AgricultureManager.Module.Accounting.Persistence
         public DbSet<BookingType> BookingType { get; set; }
         public DbSet<TaxRate> TaxRate { get; set; }
         public DbSet<StatementOfAccountDocument> StatementOfAccountDocument { get; set; }
+        public DbSet<Account> Account { get; set; }
         DatabaseFacade IAccountingDbContext.Database { get => this.Database; }
 
         public AccountingDbContext(DbContextOptions<AccountingDbContext> options) : base(options)

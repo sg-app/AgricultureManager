@@ -21,7 +21,7 @@ namespace AgricultureManager.Module.Accounting.Persistence
         DbSet<BookingType> BookingType { get; set; }
         DbSet<TaxRate> TaxRate { get; set; }
         DbSet<StatementOfAccountDocument> StatementOfAccountDocument { get; set; }
-
+        DbSet<Account> Account { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

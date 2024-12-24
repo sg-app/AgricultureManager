@@ -37,7 +37,7 @@ namespace AgricultureManager.Module.Accounting
 
     public class AccountingMenuItem : IMenuItem
     {
-        public string Name => "Accounting";
+        public string Name => "Buchhaltung";
         public string Icon => "money";
         public string Url => string.Empty;
 

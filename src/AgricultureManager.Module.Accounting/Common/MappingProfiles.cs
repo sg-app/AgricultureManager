@@ -1,4 +1,5 @@
 ﻿using AgricultureManager.Module.Accounting.Domain;
+using AgricultureManager.Module.Accounting.Features.AccountFeatures;
 using AgricultureManager.Module.Accounting.Features.BookingFeatures;
 using AgricultureManager.Module.Accounting.Features.BookingTypeFeatures;
 using AgricultureManager.Module.Accounting.Features.TaxRateFeatures;
@@ -24,6 +25,14 @@ namespace AgricultureManager.Module.Accounting.Common
             CreateMap<BookingTypeVm, UpdateBookingTypeCommand>();
             CreateMap<AddBookingTypeCommand, BookingType>();
             CreateMap<UpdateBookingTypeCommand, BookingType>();
+
+            CreateMap<Account, AccountVm>();
+            CreateMap<AccountVm, AccountVm>();
+            CreateMap<AccountVm, AddAccountCommand>();
+            CreateMap<AccountVm, UpdateAccountCommand>();
+            CreateMap<AddAccountCommand, Account>();
+            CreateMap<UpdateAccountCommand, Account>();
+
 
             CreateMap<AccountMouvement, AccountMouvementVm>();
 

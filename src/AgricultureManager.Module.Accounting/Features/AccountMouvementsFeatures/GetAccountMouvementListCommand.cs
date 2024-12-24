@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AgricultureManager.Module.Accounting.Features.AccountMouvementsFeatures
 {
-    public record GetAccountMouvementListCommand(DateTime? StartDate, DateTime? EndDate, bool NoBookings) : IReq<IEnumerable<AccountMouvementVm>>
+    public record GetAccountMouvementListCommand(Guid AccountId, DateTime? StartDate, DateTime? EndDate, bool NoBookings) : IReq<IEnumerable<AccountMouvementVm>>
     {
     }
 
@@ -21,7 +21,7 @@ namespace AgricultureManager.Module.Accounting.Features.AccountMouvementsFeature
 
             var query = context.AccountMouvement
                 .Include(i => i.Bookings)
-                .Where(f => f.InputDate > startDate && f.InputDate < endDate);
+                .Where(f => f.AccountId == request.AccountId && f.InputDate > startDate && f.InputDate < endDate);
 
             if (request.NoBookings)
                 query = query.Where(f => f.Bookings!.Count == 0);
