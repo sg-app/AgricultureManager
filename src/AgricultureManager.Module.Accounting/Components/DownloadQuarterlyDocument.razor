@@ -1,0 +1,56 @@
+﻿@using AgricultureManager.Module.Accounting.Features.QuarterlyDocumentFeatures
+@using MediatR
+@using Microsoft.JSInterop
+<RadzenCard class="mt-2">
+    <RadzenText>Quartalsdokumente</RadzenText>
+    <RadzenStack Orientation="Orientation.Horizontal">
+        <RadzenDropDown TValue="int" Data="@GetQuarter()" @bind-Value=@_quarter />
+        <RadzenDropDown TValue="int" Data="@GetYears()" @bind-Value=@_year />
+        <RadzenButton Click="@DownloadFileClick" Icon="download" />
+    </RadzenStack>
+</RadzenCard>
+
+@code {
+
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] public NotificationService NotificationService { get; set; } = default!;
+
+    private bool _isBusy = false;
+    private int _quarter;
+    private int _year;
+
+    protected override Task OnInitializedAsync()
+    {
+        _year = DateTime.Now.Year;
+        _quarter = (int)((double)DateTime.Now.Month / 4) + 1;
+        return base.OnInitializedAsync();
+    }
+
+    private async Task DownloadFileClick()
+    {
+        _isBusy = true;
+        var response = await Mediator.Send(new DownloadQuarterlyDocumentCommand(_quarter, _year));
+
+        if (response.Success && response.Data != null)
+        {
+            // All OK. Download file!
+            var filename = $"QuarterlyDocuments_Q{_quarter}_{_year}.zip";
+            await JSRuntime.InvokeVoidAsync("downloadFileFromByteArray", filename, response.Data);
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Warning, "Warnung Download", "Der angeforderte Download war nicht erfolgreich.", 5000);
+        }
+
+        _isBusy = false;
+    }
+    private static IEnumerable<int> GetYears()
+    {
+        int currentYear = DateTime.Now.Year;
+        return Enumerable.Range(currentYear - 10, 11);
+    }
+
+    private static IEnumerable<int> GetQuarter()
+        => Enumerable.Range(1, 3);
+}

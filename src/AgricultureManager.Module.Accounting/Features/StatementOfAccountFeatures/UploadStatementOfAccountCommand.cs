@@ -8,41 +8,43 @@ using AgricultureManager.Module.Accounting.Persistence;
 using AutoMapper;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace AgricultureManager.Module.Accounting.Features.DocumentFeatures
+namespace AgricultureManager.Module.Accounting.Features.StatementOfAccountFeatures
 {
-    public record UploadDocumentCommand(AccountMouvementVm AccountMouvement, IBrowserFile File, string CustomDescription) : IReq<DocumentVm>
+    public record UploadStatementOfAccountCommand(int Month, int Year, IBrowserFile File, bool Overwrite) : IReq<StatementOfAccountDocumentVm>
     {
     }
-    public class UploadDocumentCommandHandler(IAccountingDbContextFactory contextFactory, IAppDbContextFactory appContextFactory, IMapper mapper) : IReqHandler<UploadDocumentCommand, DocumentVm>
+    public class UploadStatementOfAccountCommandHandler(IAccountingDbContextFactory contextFactory, IAppDbContextFactory appContextFactory, IMapper mapper) : IReqHandler<UploadStatementOfAccountCommand, StatementOfAccountDocumentVm>
     {
-        public async Task<Response<DocumentVm>> Handle(UploadDocumentCommand request, CancellationToken cancellationToken)
+        public async Task<Response<StatementOfAccountDocumentVm>> Handle(UploadStatementOfAccountCommand request, CancellationToken cancellationToken)
         {
             using var context = contextFactory.CreateDbContext();
             using var appContext = appContextFactory.CreateDbContext();
             var basePathKeyValue = await appContext.Parameter.FindAsync([AccountingParameterKeys.AccountingBaseFilePath], cancellationToken);
-            var documentBasePathKeyValue = await appContext.Parameter.FindAsync([AccountingParameterKeys.AccountingBaseFilePath], cancellationToken);
-            var documentSaveToDbKeyValue = await appContext.Parameter.FindAsync([AccountingParameterKeys.AccountingDocumentSaveToDatabase], cancellationToken);
+            var documentBasePathKeyValue = await appContext.Parameter.FindAsync([AccountingParameterKeys.StatementOfAccountBaseFilePath], cancellationToken);
+            var documentSaveToDbKeyValue = await appContext.Parameter.FindAsync([AccountingParameterKeys.StatementOfAccountDocumentSaveToDatabase], cancellationToken);
             var basePath = basePathKeyValue?.Value ?? "/share";
-            var documentBasePath = documentBasePathKeyValue?.Value ?? "AccountMouvement";
+            var documentBasePath = documentBasePathKeyValue?.Value ?? "StateOfAccount";
 
-            var fileDir = Path.Combine(documentBasePath, documentBasePath, GetFiscalYear(request.AccountMouvement.InputDate));
+            var fileDir = Path.Combine(documentBasePath, "StateOfAccount", GetFiscalYear(new DateTime(request.Year, request.Month, 1)));
             if (!Directory.Exists(fileDir))
                 Directory.CreateDirectory(fileDir);
 
-            var destFileName = $"{request.AccountMouvement.InputDate.Date:yyyy-MM-dd}_{request.AccountMouvement.PartnerName}";
-            if (!String.IsNullOrEmpty(request.CustomDescription))
-                destFileName += $"_{request.CustomDescription}";
-            destFileName += Path.GetExtension(request.File.Name);
+            var filePath = Path.Combine(fileDir, request.File.Name);
+            if (File.Exists(filePath) && request.Overwrite)
+                File.Delete(filePath);
 
-            var filePath = Path.Combine(fileDir, destFileName);
+            if (File.Exists(filePath))
+                return Response.Fail<StatementOfAccountDocumentVm>("Datei existiert bereits.");
 
             using var fStream = File.Create(filePath);
             if (fStream.Length < 4294967295)
             {
-                var doc = new Document
+                var doc = new StatementOfAccountDocument
                 {
-                    AccountMouvementId = request.AccountMouvement.Id,
-                    Documentname = destFileName,
+                    Id = Guid.NewGuid(),
+                    Month = request.Month,
+                    Year = request.Year,
+                    Documentname = request.File.Name,
                     Documentpath = filePath
                 };
 
@@ -59,21 +61,21 @@ namespace AgricultureManager.Module.Accounting.Features.DocumentFeatures
                 using var transaction = context.Database.BeginTransaction();
                 try
                 {
-                    var entityEntry = await context.Document.AddAsync(doc, cancellationToken);
+                    var entityEntry = await context.StatementOfAccountDocument.AddAsync(doc, cancellationToken);
                     await context.SaveChangesAsync(cancellationToken);
                     await transaction.CommitAsync(cancellationToken);
                     await request.File.OpenReadStream().CopyToAsync(fStream, cancellationToken);
-                    return Response.Success(mapper.Map<DocumentVm>(doc));
+                    return Response.Success(mapper.Map<StatementOfAccountDocumentVm>(doc));
                 }
                 catch (Exception)
                 {
                     await transaction.RollbackAsync(cancellationToken);
-                    return Response.Fail<DocumentVm>("Fehler beim Speichern in der Datenbank.");
+                    return Response.Fail<StatementOfAccountDocumentVm>("Fehler beim Speichern in der Datenbank.");
                 }
             }
             else
             {
-                return Response.Fail<DocumentVm>("Datei ist zu groß. Maximal 4GB erlaubt.");
+                return Response.Fail<StatementOfAccountDocumentVm>("Datei ist zu groß. Maximal 4GB erlaubt.");
             }
         }
         private static string GetFiscalYear(DateTime? dateTime)

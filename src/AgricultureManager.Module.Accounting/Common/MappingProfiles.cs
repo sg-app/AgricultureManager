@@ -36,7 +36,7 @@ namespace AgricultureManager.Module.Accounting.Common
             CreateMap<AddBookingCommand, Booking>();
             CreateMap<UpdateBookingCommand, Booking>();
 
-
+            CreateMap<StatementOfAccountDocument, StatementOfAccountDocumentVm>();
 
 
         }

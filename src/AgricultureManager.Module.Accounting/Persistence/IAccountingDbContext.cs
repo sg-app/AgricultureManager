@@ -1,6 +1,7 @@
 ﻿using AgricultureManager.Module.Accounting.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace AgricultureManager.Module.Accounting.Persistence
 {
@@ -11,6 +12,8 @@ namespace AgricultureManager.Module.Accounting.Persistence
         ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
         EntityEntry Remove(object entity);
         EntityEntry Add(object entity);
+
+        DatabaseFacade Database { get; }
 
         DbSet<AccountMouvement> AccountMouvement { get; set; }
         DbSet<Document> Document { get; set; }

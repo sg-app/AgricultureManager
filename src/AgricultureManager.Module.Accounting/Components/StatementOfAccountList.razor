@@ -1,0 +1,24 @@
+﻿<div>
+	<RadzenDatePicker TValue="DateTime?" @bind-Value=@_startDate ShowTime="false" Change="StartDateChanged" DateFormat="d" />
+	<RadzenDatePicker TValue="DateTime?" @bind-Value=@_endDate ShowTime="false" Change="EndDateChanged" DateFormat="d">
+		<FooterTemplate>
+			<RadzenButton Click=@(args => _endDate = DateTime.Now) Text="Heute" class="my-3 w-100" />
+		</FooterTemplate>
+	</RadzenDatePicker>
+</div>
+<div class="mt-2">
+	<RadzenDataGrid @ref=_grid Data="@_list" TItem="StatementOfAccountDocumentVm"
+					AllowPaging="true" AllowFiltering="false" AllowSorting="true" PageSize="6"
+					SelectionMode="DataGridSelectionMode.Single" IsLoading="@_isLoading">
+		<Columns>
+			<RadzenDataGridColumn TItem="StatementOfAccountDocumentVm" Title="Monat" Property="Month" Width="100px" />
+			<RadzenDataGridColumn TItem="StatementOfAccountDocumentVm" Title="Jahr" Property="Year" Width="100px" />
+			<RadzenDataGridColumn TItem="StatementOfAccountDocumentVm" Title="Dokumentname" Property="Documentname" Width="300px" />
+			<RadzenDataGridColumn TItem="StatementOfAccountDocumentVm" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="80px">
+				<Template Context="item">
+					<RadzenButton Click="()=>DeleteRow(item)" Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" />
+				</Template>
+			</RadzenDataGridColumn>
+		</Columns>
+	</RadzenDataGrid>
+</div>

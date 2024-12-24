@@ -1,0 +1,18 @@
+﻿<div @ref="_fileDropContainer" class="input-group mt-2 p-2 border rounded border-primary @HoverClass" @ondragenter="@OnDragEnter" @ondragleave="@OnDragLeave" @ondragover="@OnDragEnter">
+    <div class="container">
+        <div class="row">
+            <div class="col input-group">
+                <RadzenDropDown TValue="int" Data="GetMonth()" @bind-Value=@_selectedMonth />
+                <RadzenDropDown TValue="int" Data="GetYears()" @bind-Value=@_selectedYear />
+                <InputFile @key="@_inputFieldKey" class="form-control" id="inputGroupFile01" @ref="inputFile" accept=".pdf" OnChange="@OnChange" aria-describedby="inputGroupFileAddon04"></InputFile>
+                <RadzenButton class="btn btn-outline-secondary" id="inputGroupFileAddon04" Click="StartUpload" Text="Upload" Icon="upload" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <RadzenCheckBox @bind-Value=@_overwrite />
+                <RadzenLabel Text="Überschreiben" />
+            </div>
+        </div>
+    </div>
+</div>
