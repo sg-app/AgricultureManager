@@ -8,6 +8,7 @@ namespace AgricultureManager.Module.Accounting.Domain
     {
         [Key]
         public Guid Id { get; set; }
+        public Guid AccountId { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
         [Required]
@@ -17,5 +18,7 @@ namespace AgricultureManager.Module.Accounting.Domain
         public string Documentpath { get; set; } = string.Empty;
         [Column(TypeName = "longblob")]
         public byte[]? Content { get; set; }
+
+        public virtual Account Account { get; set; } = default!;
     }
 }

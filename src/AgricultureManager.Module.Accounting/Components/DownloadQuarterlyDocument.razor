@@ -1,6 +1,8 @@
 ﻿@using AgricultureManager.Module.Accounting.Features.QuarterlyDocumentFeatures
+@using AgricultureManager.Module.Accounting.Store.States
 @using MediatR
 @using Microsoft.JSInterop
+@inherits FluxorComponent
 <RadzenCard class="mt-2">
     <RadzenText>Quartalsdokumente</RadzenText>
     <RadzenStack Orientation="Orientation.Horizontal">
@@ -15,6 +17,7 @@
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public IJSRuntime JSRuntime { get; set; } = default!;
     [Inject] public NotificationService NotificationService { get; set; } = default!;
+    [Inject] public IState<AccountState> AccountState { get; set; } = default!;
 
     private bool _isBusy = false;
     private int _quarter;
@@ -29,13 +32,15 @@
 
     private async Task DownloadFileClick()
     {
+        if (AccountState.Value.SelectedAccount == null) return;
         _isBusy = true;
-        var response = await Mediator.Send(new DownloadQuarterlyDocumentCommand(_quarter, _year));
+        var response = await Mediator.Send(new DownloadQuarterlyDocumentCommand(AccountState.Value.SelectedAccount.Id, _quarter, _year));
 
         if (response.Success && response.Data != null)
         {
             // All OK. Download file!
-            var filename = $"QuarterlyDocuments_Q{_quarter}_{_year}.zip";
+            var accountName = AccountState.Value.SelectedAccount.Description;
+            var filename = $"QuarterlyDocuments_{accountName}_Q{_quarter}_{_year}.zip";
             await JSRuntime.InvokeVoidAsync("downloadFileFromByteArray", filename, response.Data);
         }
         else

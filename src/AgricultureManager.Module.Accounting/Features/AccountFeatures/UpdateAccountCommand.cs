@@ -1,4 +1,5 @@
-﻿using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
+﻿using AgricultureManager.Core.Application.Shared.Extensions;
+using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Module.Accounting.Models;
 using AgricultureManager.Module.Accounting.Persistence;
@@ -29,18 +30,18 @@ namespace AgricultureManager.Module.Accounting.Features.AccountFeatures
         {
             using var dbContext = dbContextFactory.CreateDbContext();
 
-            var culture = await dbContext.Account.FindAsync([request.Id], cancellationToken);
-            if (culture is null)
+            var entity = await dbContext.Account.FindAsync([request.Id], cancellationToken);
+            if (entity is null)
             {
                 return Response.Fail<AccountVm>("Konto nicht gefunden.");
             }
 
-            mapper.Map(request, culture);
+            mapper.Map(request, entity);
 
-            dbContext.Account.Update(culture);
+            dbContext.Account.Update(entity);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            var cultureVm = mapper.Map<AccountVm>(culture);
+            var cultureVm = mapper.Map<AccountVm>(entity);
             return Response.Success(cultureVm);
         }
     }

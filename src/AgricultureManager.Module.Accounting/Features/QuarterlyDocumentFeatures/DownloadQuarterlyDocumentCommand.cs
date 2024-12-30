@@ -6,7 +6,7 @@ using System.IO.Compression;
 
 namespace AgricultureManager.Module.Accounting.Features.QuarterlyDocumentFeatures
 {
-    public record DownloadQuarterlyDocumentCommand(int Quarter, int Year) : IReq<byte[]>
+    public record DownloadQuarterlyDocumentCommand(Guid AccountId, int Quarter, int Year) : IReq<byte[]>
     {
     }
 
@@ -18,7 +18,8 @@ namespace AgricultureManager.Module.Accounting.Features.QuarterlyDocumentFeature
             var quaraterMont = GetMonthForQuarter(request.Quarter);
             var statementFiles = await context.StatementOfAccountDocument
                 .Where(
-                    f => f.Year == request.Year &&
+                    f => f.AccountId == request.AccountId && 
+                    f.Year == request.Year &&
                     quaraterMont.Contains(f.Month)
                 )
                 .Select(f => f.Documentpath).
@@ -28,6 +29,7 @@ namespace AgricultureManager.Module.Accounting.Features.QuarterlyDocumentFeature
             var documents = await context.Document
                 .Include(f => f.AccountMouvement)
                 .Where(f =>
+                    f.AccountMouvement!.AccountId == request.AccountId &&
                     f.AccountMouvement!.ValueDate.Year == request.Year &&
                     quaraterMont.Contains(f.AccountMouvement!.ValueDate.Month))
                 .Select(f => f.Documentpath)

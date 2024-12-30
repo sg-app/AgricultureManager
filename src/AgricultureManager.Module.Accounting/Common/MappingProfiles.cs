@@ -1,10 +1,13 @@
-﻿using AgricultureManager.Module.Accounting.Domain;
+﻿using AgricultureManager.Core.Application.Shared.Extensions;
+using AgricultureManager.Module.Accounting.Domain;
 using AgricultureManager.Module.Accounting.Features.AccountFeatures;
+using AgricultureManager.Module.Accounting.Features.BankingFeatures;
 using AgricultureManager.Module.Accounting.Features.BookingFeatures;
 using AgricultureManager.Module.Accounting.Features.BookingTypeFeatures;
 using AgricultureManager.Module.Accounting.Features.TaxRateFeatures;
 using AgricultureManager.Module.Accounting.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Server.HttpSys;
 
 namespace AgricultureManager.Module.Accounting.Common
 {
@@ -26,12 +29,15 @@ namespace AgricultureManager.Module.Accounting.Common
             CreateMap<AddBookingTypeCommand, BookingType>();
             CreateMap<UpdateBookingTypeCommand, BookingType>();
 
-            CreateMap<Account, AccountVm>();
+            CreateMap<Account, AccountVm>()
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password.Decrypt()));
             CreateMap<AccountVm, AccountVm>();
             CreateMap<AccountVm, AddAccountCommand>();
             CreateMap<AccountVm, UpdateAccountCommand>();
-            CreateMap<AddAccountCommand, Account>();
-            CreateMap<UpdateAccountCommand, Account>();
+            CreateMap<AddAccountCommand, Account>()
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password.Encrypt()));
+            CreateMap<UpdateAccountCommand, Account>()
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password.Encrypt()));
 
 
             CreateMap<AccountMouvement, AccountMouvementVm>();
@@ -46,7 +52,7 @@ namespace AgricultureManager.Module.Accounting.Common
             CreateMap<UpdateBookingCommand, Booking>();
 
             CreateMap<StatementOfAccountDocument, StatementOfAccountDocumentVm>();
-
+            CreateMap<AccountVm, GetMouvementsFromAccountCommand>();
 
         }
     }

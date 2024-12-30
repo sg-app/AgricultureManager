@@ -11,7 +11,12 @@ namespace AgricultureManager.Module.Accounting.Store.Features.AccountStore
 
         [ReducerMethod]
         public static AccountState LoadAccountsDataResultReducer(AccountState state, LoadAccountsDataResultAction action)
-            => state with { IsInitialized = true, IsLoading = false, Accounts = action.Accounts };
+        {
+            var selectedAccount = state.SelectedAccount == null && action.Accounts.Any() 
+                ? action.Accounts.First() 
+                : action.Accounts.First(f=>f.Id == state.SelectedAccount!.Id);
+            return state with { IsInitialized = true, IsLoading = false, Accounts = action.Accounts, SelectedAccount = selectedAccount };
+        }
 
         [ReducerMethod(typeof(LoadAccountDataResultFailAction))]
         public static AccountState LoadAccountDataResultFailReducer(AccountState state)

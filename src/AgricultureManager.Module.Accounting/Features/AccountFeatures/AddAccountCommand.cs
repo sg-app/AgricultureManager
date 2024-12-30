@@ -1,4 +1,5 @@
-﻿using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
+﻿using AgricultureManager.Core.Application.Shared.Extensions;
+using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Module.Accounting.Domain;
 using AgricultureManager.Module.Accounting.Models;
@@ -31,7 +32,6 @@ namespace AgricultureManager.Module.Accounting.Features.AccountFeatures
 
             var culture = mapper.Map<Account>(request);
             culture.Id = Guid.NewGuid();
-
             await dbContext.Account.AddAsync(culture, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 

@@ -13,14 +13,15 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
 {
     public record GetMouvementsFromAccountCommand : IReq
     {
+        public Guid Id { get; set; }
         public string AccountHolder { get; set; } = string.Empty;
-        public string Account { get; set; } = string.Empty;
+        public string AccountNumber { get; set; } = string.Empty;
         public int Blz { get; set; }
         public string Bic { get; set; } = string.Empty;
         public string Iban { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
-        public string UserId { get; set; } = string.Empty;
-        public string Pin { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
     }
@@ -29,7 +30,7 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
     {
         public async Task<ResponseLess> Handle(GetMouvementsFromAccountCommand request, CancellationToken cancellationToken)
         {
-            using var context = contextFactory.CreateDbContext();
+            
             //var config = await context.Configuration.FirstOrDefaultAsync(cancellationToken);
             //if (config == null)
             //{
@@ -40,14 +41,14 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
             var connectionDetails = new ConnectionDetails()
             {
                 AccountHolder = request.AccountHolder,
-                Account = request.Account,
+                Account = request.AccountNumber,
                 Blz = request.Blz,
                 BlzHeadquarter = null,
                 Bic = request.Bic,
                 Iban = request.Iban,
                 Url = request.Url,
-                UserId = request.UserId,
-                Pin = request.Pin
+                UserId = request.Username,
+                Pin = request.Password
             };
             var client = new FinTsClient(connectionDetails);
             var sync = await client.Synchronization();
@@ -76,8 +77,9 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
 
                 HBCIOutputLog(transactions.Messages);
 
-                if (transactions.IsSuccess)
+                if (transactions.IsSuccess && transactions.Data is not null)
                 {
+                    using var context = contextFactory.CreateDbContext();
                     foreach (var item in transactions.Data)
                     {
                         EntityEntry<AccountMouvement> entry;
@@ -87,6 +89,7 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
                             entry = await context.AccountMouvement.AddAsync(new AccountMouvement
                             {
                                 Id = Guid.NewGuid(),
+                                AccountId = request.Id,
                                 InputDate = mouvement.InputDate,
                                 ValueDate = mouvement.ValueDate,
                                 TransactionTypeId = mouvement.TransactionTypeId,
@@ -121,8 +124,14 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
                         }
                     }
                     //config.BankStatementEndDate = endDate;
-                    //var countCfg = await context.SaveChangesAsync(cancellationToken);
-                    //logger.LogDebug("{countCfg} Configuration updated.", countCfg);
+                    var account = await context.Account.FindAsync([request.Id], cancellationToken);
+                    if (account != null)
+                    {
+                        account.LatestSynchronisation = DateTime.UtcNow;
+                        context.Account.Update(account);
+                    }
+                    var countCfg = await context.SaveChangesAsync(cancellationToken);
+                    logger.LogDebug("{countCfg} Configuration updated.", countCfg);
                 }
             }
             return Response.Success();

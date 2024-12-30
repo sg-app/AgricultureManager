@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace AgricultureManager.Module.Accounting.Features.StatementOfAccountFeatures
 {
-    public record UploadStatementOfAccountCommand(int Month, int Year, IBrowserFile File, bool Overwrite) : IReq<StatementOfAccountDocumentVm>
+    public record UploadStatementOfAccountCommand(Guid AccountId, int Month, int Year, IBrowserFile File, bool Overwrite) : IReq<StatementOfAccountDocumentVm>
     {
     }
     public class UploadStatementOfAccountCommandHandler(IAccountingDbContextFactory contextFactory, IAppDbContextFactory appContextFactory, IMapper mapper) : IReqHandler<UploadStatementOfAccountCommand, StatementOfAccountDocumentVm>
@@ -42,6 +42,7 @@ namespace AgricultureManager.Module.Accounting.Features.StatementOfAccountFeatur
                 var doc = new StatementOfAccountDocument
                 {
                     Id = Guid.NewGuid(),
+                    AccountId = request.AccountId,
                     Month = request.Month,
                     Year = request.Year,
                     Documentname = request.File.Name,

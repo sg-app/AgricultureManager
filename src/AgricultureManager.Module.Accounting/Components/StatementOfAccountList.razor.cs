@@ -1,5 +1,7 @@
 ﻿using AgricultureManager.Module.Accounting.Features.StatementOfAccountFeatures;
 using AgricultureManager.Module.Accounting.Models;
+using AgricultureManager.Module.Accounting.Store.States;
+using Fluxor;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
@@ -9,6 +11,7 @@ namespace AgricultureManager.Module.Accounting.Components
     public partial class StatementOfAccountList
     {
         [Inject] public IMediator Mediator { get; set; } = default!;
+        [Inject] public IState<AccountState> AccountState { get; set; } = default!;
 
         private RadzenDataGrid<StatementOfAccountDocumentVm> _grid = default!;
         private ICollection<StatementOfAccountDocumentVm> _list = [];
@@ -16,6 +19,15 @@ namespace AgricultureManager.Module.Accounting.Components
         private DateTime? _startDate;
         private DateTime? _endDate;
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            AccountState.StateChanged += async (s, e) =>
+            {
+                await LoadDataAsync();
+                await InvokeAsync(StateHasChanged);
+            };
+        }
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();

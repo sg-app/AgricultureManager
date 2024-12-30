@@ -1,4 +1,6 @@
 ﻿using AgricultureManager.Module.Accounting.Features.StatementOfAccountFeatures;
+using AgricultureManager.Module.Accounting.Store.States;
+using Fluxor;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -11,6 +13,7 @@ namespace AgricultureManager.Module.Accounting.Components
     {
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IJSRuntime JSRuntime { get; set; } = default!;
+        [Inject] public IState<AccountState> AccountState { get; set; } = default!;
 
         private IJSObjectReference _filePasteModule;
         private IJSObjectReference _filePasteFunctionReference;
@@ -28,6 +31,7 @@ namespace AgricultureManager.Module.Accounting.Components
 
         protected override void OnInitialized()
         {
+            base.OnInitialized();
             _selectedMonth = DateTime.UtcNow.AddMonths(-1).Month;
             _selectedYear = _selectedMonth != 12 ? DateTime.UtcNow.Year : DateTime.UtcNow.AddYears(-1).Year;
         }
@@ -55,9 +59,9 @@ namespace AgricultureManager.Module.Accounting.Components
 
         private async Task StartUpload()
         {
-            if (_file != null)
+            if (_file != null && AccountState.Value.SelectedAccount != null)
             {
-                var response = await Mediator.Send(new UploadStatementOfAccountCommand(_selectedMonth, _selectedYear, _file, _overwrite));
+                var response = await Mediator.Send(new UploadStatementOfAccountCommand(AccountState.Value.SelectedAccount.Id, _selectedMonth, _selectedYear, _file, _overwrite));
                 if (response.Success && response.Data != null)
                 {
                     _file = null;
@@ -66,17 +70,21 @@ namespace AgricultureManager.Module.Accounting.Components
             }
         }
 
-        public async ValueTask DisposeAsync()
+        protected override async ValueTask DisposeAsyncCore(bool disposing)
         {
-            if (_filePasteFunctionReference != null)
+            await base.DisposeAsyncCore(disposing);
+            if (disposing)
             {
-                await _filePasteFunctionReference.InvokeVoidAsync("dispose");
-                await _filePasteFunctionReference.DisposeAsync();
-            }
+                if (_filePasteFunctionReference != null)
+                {
+                    await _filePasteFunctionReference.InvokeVoidAsync("dispose");
+                    await _filePasteFunctionReference.DisposeAsync();
+                }
 
-            if (_filePasteModule != null)
-            {
-                await _filePasteModule.DisposeAsync();
+                if (_filePasteModule != null)
+                {
+                    await _filePasteModule.DisposeAsync();
+                }
             }
         }
 
