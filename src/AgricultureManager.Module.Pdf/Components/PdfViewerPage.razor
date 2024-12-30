@@ -21,6 +21,11 @@
         OnHarvestYearChanged(null, new EventArgs());
     }
 
+    protected override void OnParametersSet()
+    {
+        OnHarvestYearChanged(null, new EventArgs());
+    }
+
     private void OnHarvestYearChanged(object? sender, EventArgs args)
     {
         _noDocumentFound = false;
