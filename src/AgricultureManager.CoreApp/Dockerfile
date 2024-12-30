@@ -30,7 +30,13 @@ RUN apt-get update && apt-get install -y \
 	libpango-1.0-0 \ 
 	libxshmfence1 \ 
 	libgbm1 \ 
-	libgtk-3-0
+	libgtk-3-0 \
+	locales
+
+RUN locale-gen de_DE.UTF-8 
+ENV LANG de_DE.UTF-8 
+ENV LANGUAGE de_DE:de 
+ENV LC_ALL de_DE.UTF-8
 
 USER $APP_UID
 WORKDIR /app
