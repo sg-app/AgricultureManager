@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
 	libfreetype6 \ 
 	libpng16-16 \ 
 	libjpeg62-turbo \ 
-	libwebp6 \ 
 	libx11-6 \ 
 	libxext6 \ 
 	libxrender1 \ 

@@ -77,12 +77,17 @@ if ($commitMessages.Count -gt 0) {
 
     Set-Location "$PSScriptRoot\$slnPath"
     docker build -f ./${projPath}/Dockerfile -t ${registry}/${projName}:latest -t ${registry}/${projName}:${semanticVersion} .
+    if ($LASTEXITCODE -ne 0) { Write-Output "Docker Build Failed. Aborting further execution." exit $LASTEXITCODE }
+
     docker push ${registry}/${projName}:latest
+    if ($LASTEXITCODE -ne 0) { Write-Output "Docker Push (latest) Failed. Aborting further execution." exit $LASTEXITCODE }
+
     docker push ${registry}/${projName}:${semanticVersion}
-    
+    if ($LASTEXITCODE -ne 0) { Write-Output "Docker Push (${semanticVersion}) Failed. Aborting further execution." exit $LASTEXITCODE }
+
     git add *.csproj
     git commit -m "New Version ${semanticVersion} created" 
-    git tag v${semanticVersion}
+    #git tag v${semanticVersion}
 } 
 else {
     Write-Output "Es wurden keine Git-Commits im aktuellen Verzeichnis gefunden."
