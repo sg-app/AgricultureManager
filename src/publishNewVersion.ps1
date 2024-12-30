@@ -87,7 +87,7 @@ if ($commitMessages.Count -gt 0) {
 
     git add *.csproj
     git commit -m "New Version ${semanticVersion} created" 
-    #git tag v${semanticVersion}
+    git tag v${semanticVersion}
 } 
 else {
     Write-Output "Es wurden keine Git-Commits im aktuellen Verzeichnis gefunden."
