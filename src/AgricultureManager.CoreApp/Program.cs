@@ -3,9 +3,12 @@ using AgricultureManager.CoreApp.Components;
 using AgricultureManager.Infrastructure.Persistence;
 using AgricultureManager.Module.Manager;
 using Microsoft.EntityFrameworkCore;
+using NLog.Extensions.Logging;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddNLog();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
