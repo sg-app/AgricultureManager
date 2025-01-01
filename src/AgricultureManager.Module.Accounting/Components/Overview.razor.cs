@@ -81,6 +81,7 @@ namespace AgricultureManager.Module.Accounting.Components
 
         private async Task OnLoadClick(MouseEventArgs args)
         {
+            _isLoading = true;
             var cmd = Mapper.Map<GetMouvementsFromAccountCommand>(AccountState.Value.SelectedAccount);
             cmd.StartDate = _startDate;
             cmd.EndDate = _endDate;
@@ -89,6 +90,7 @@ namespace AgricultureManager.Module.Accounting.Components
             var response = await Mediator.Send(cmd);
             if (response.Success)
                 Dispatcher.Dispatch(new LoadAccountsDataAction());
+            _isLoading = false;
         }
 
         private async Task RequestPasswordIfMissing(GetMouvementsFromAccountCommand cmd)
