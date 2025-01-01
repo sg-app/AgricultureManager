@@ -2,6 +2,7 @@
 @using System.Collections.ObjectModel
 @using AgricultureManager.Core.Application.Features.FertilizerPlaningFeatures
 @using AgricultureManager.Core.Application.Features.FertilizerPlaningSpecificationFeatures
+@using AgricultureManager.Core.Application.Store.Features.HarvestUnitStore
 
 <div class="container-fluid">
     <div class="row">
@@ -12,7 +13,8 @@
             Data="@HarvestUnitState.Value.HarvestUnitsOverview"
             TItem="HarvestUnitOverview"
             IsLoading=@HarvestUnitState.Value.IsLoading
-            Density="Density.Compact">
+            Density="Density.Compact"
+            SelectionMode="DataGridSelectionMode.Single">
                 <Columns>
                     <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.HarvestUnitName))" Title="Name" />
                     <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.FieldName))" Title="Feld" />
@@ -64,7 +66,7 @@
                             <RadzenNumeric TValue="float" Format="N1" Step="0.1" @bind-Value="@data.Dosage" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    @foreach (var spec in _fertilizerPlaningSpecifications.OrderBy(x=>x.FertilizerDetail.Name))
+                    @foreach (var spec in _fertilizerPlaningSpecifications.OrderBy(x => x.FertilizerDetail.Name))
                     {
                         var detail = FertilizerDetailState.Value.FertilizerDetails.First(f => f.Id == spec.FertilizerDetailId);
                         <RadzenDataGridColumn Title="@detail.Name" Width="50px">
@@ -132,6 +134,7 @@
     private async Task OnValueChanged(IList<HarvestUnitOverview> harvestUnitVm)
     {
         _selecteHarvestUnit = harvestUnitVm.FirstOrDefault();
+        Dispatcher.Dispatch(new SetSelectedHarvestUnitsAction(harvestUnitVm));
         await LoadPlaningData();
     }
 
