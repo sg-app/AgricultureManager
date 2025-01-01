@@ -84,7 +84,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Documentation
 
         private void ComposeContent(IContainer container)
         {
-            var harvestUnit = _harvestUnits.Where(f => f.Id == _currentHarvestUnitId).FirstOrDefault();
+            var harvestUnit = _harvestUnits.FirstOrDefault(f => f.Id == _currentHarvestUnitId);
             if (harvestUnit != null)
             {
                 // Ernteeinheit Beschreibung.
@@ -188,11 +188,11 @@ namespace AgricultureManager.Module.Pdf.Documents.Documentation
                         t.Span("Aussaat");
                         t.AlignCenter();
                     });
-                    var loopCount = 0;
-                    var seeds = _harvestUnits.First(f => f.Id == _currentHarvestUnitId).Seeds;
-                    var itemsCount = seeds.Count;
-                    foreach (var seed in seeds.OrderBy(o => o.Date))
+
+                    var seeds = _harvestUnits.First(f => f.Id == _currentHarvestUnitId).Seeds.OrderBy(o => o.Date).ToList();
+                    for (int i = 0; i < seeds.Count; i++)
                     {
+                        var seed = seeds[i];
                         c.Item().Table(t =>
                         {
                             t.ColumnsDefinition(c =>
@@ -250,8 +250,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Documentation
                                 t.Span(seed.Culture.Name);
                             });
                         });
-                        if (itemsCount > 1 && loopCount < itemsCount - 1) { c.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten3); }
-                        loopCount++;
+                        if (i < seeds.Count - 1) { c.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten3); }
                     }
                     #endregion
 

@@ -42,6 +42,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
             using var context = contextFactory.CreateDbContext();
 
             _harvestUnits = await context.HarvestUnit
+                .AsNoTracking()
                 .Include(f => f.Culture)
                 .Include(f => f.Field)
                 .Include(f => f.FertilizerPlanings)

@@ -42,19 +42,14 @@
     {
         if (_items is null) return [];
 
-        var list = FertilizerDetailState.Value.FertilizerDetails.ToList();
-        var assignedIds = _items.Select(f => f.FertilizerDetailId);
-        var assignedDetails = list.Where(f => assignedIds.Contains(f.Id)).ToList();
-
-        var excptedList = list.Except(assignedDetails);
-
-        return excptedList;
+        var assignedIds = _items.Select(f => f.FertilizerDetailId).ToHashSet();
+        return FertilizerDetailState.Value.FertilizerDetails.Where(f => !assignedIds.Contains(f.Id));
     }
 
     protected override async Task OnParametersSetAsync()
     {
         var response = await Mediator.Send(new GetFertilizerPlaningSpecificationCommand(HarvestUnitId));
-        _items = response.Data;
+        _items = response.Data ?? [];
     }
 
     private void OnInsertClick(RadzenSplitButtonItem item)
@@ -67,8 +62,7 @@
 
     private void OnRemoveClick(FertilizerPlaningSpecificationVm item)
     {
-        if (_items is null) return;
-        _items.Remove(item);
+        _items?.Remove(item);
     }
 
     private async Task OnSaveClick(bool save)

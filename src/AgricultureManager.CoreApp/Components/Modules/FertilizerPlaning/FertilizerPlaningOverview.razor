@@ -2,6 +2,7 @@
 @using System.Collections.ObjectModel
 @using AgricultureManager.Core.Application.Features.FertilizerPlaningFeatures
 @using AgricultureManager.Core.Application.Features.FertilizerPlaningSpecificationFeatures
+@using AgricultureManager.Core.Application.Shared.Keys
 @using AgricultureManager.Core.Application.Store.Features.HarvestUnitStore
 
 <div class="container-fluid">
@@ -66,7 +67,9 @@
                             <RadzenNumeric TValue="float" Format="N1" Step="0.1" @bind-Value="@data.Dosage" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    @foreach (var spec in _fertilizerPlaningSpecifications.OrderBy(x => x.FertilizerDetail.Name))
+                    @foreach (var spec in _fertilizerPlaningSpecifications
+                                            .OrderBy(x => SystemEntryKeys.FertilizerDetailKeys.Contains(x.FertilizerDetailId) ? SystemEntryKeys.FertilizerDetailKeys.ToList().IndexOf(x.FertilizerDetailId) : int.MaxValue)
+                                            .ThenBy(x => x.FertilizerDetail.Name))
                     {
                         var detail = FertilizerDetailState.Value.FertilizerDetails.First(f => f.Id == spec.FertilizerDetailId);
                         <RadzenDataGridColumn Title="@detail.Name" Width="50px">
@@ -146,13 +149,17 @@
         _fertilizerPlanings = Mapper.Map<IList<EditFertilizerPlaningVm>>(response.Data);
 
         var responseSpec = await Mediator.Send(new GetFertilizerPlaningSpecificationCommand(_selecteHarvestUnit.Id));
-        _fertilizerPlaningSpecifications = responseSpec.Data ??= [];
+        _fertilizerPlaningSpecifications = responseSpec.Data ?? [];
 
+         var fertilizerDetails = FertilizerDetailState.Value.FertilizerDetails.ToDictionary(f => f.Id);
         foreach (var spec in _fertilizerPlaningSpecifications)
         {
-            for (int i = 0; i < _fertilizerPlanings.Count; i++)
+            if (fertilizerDetails.TryGetValue(spec.FertilizerDetailId, out var detail))
             {
-                _fertilizerPlanings[i].Details.Add(FertilizerDetailState.Value.FertilizerDetails.First(f => f.Id == spec.FertilizerDetailId), spec.Quantity);
+                foreach (var planing in _fertilizerPlanings)
+                {
+                    planing.Details[detail] = spec.Quantity;
+                }
             }
         }
 
@@ -163,13 +170,14 @@
     private int GetSummary(FertilizerDetailVm fertilizerDetail)
     {
         var summary = 0.0;
+        var fertilizerDetails = FertilizerState.Value.Fertilizers.ToDictionary(f => f.Id);
         foreach (var planing in _fertilizerPlanings)
         {
-            var fertilizer = FertilizerState.Value.Fertilizers.FirstOrDefault(f => f.Id == planing.FertilizerId);
-            if (fertilizer is null) continue;
-            var fertilizerValue = fertilizer.FertilizerToDetails.FirstOrDefault(f => f.FertilizerDetailId == fertilizerDetail.Id)?.Quantity ?? 0;
-            var calc = fertilizerValue * planing.Dosage;
-            summary += calc;
+            if (fertilizerDetails.TryGetValue(planing.FertilizerId, out var fertilizer))
+            {
+                var fertilizerValue = fertilizer.FertilizerToDetails.FirstOrDefault(f => f.FertilizerDetailId == fertilizerDetail.Id)?.Quantity ?? 0;
+                summary += fertilizerValue * planing.Dosage;
+            }
         }
         return (int)Math.Floor(summary);
     }
