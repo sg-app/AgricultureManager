@@ -1,6 +1,6 @@
 ﻿<InsertButton InsertRow="InsertRow" />
 <RadzenDataGrid @ref="_grid"
-                Data="@_data"
+                Data="@PlantProtectantState.Value.PlantProtectants"
                 TItem="PlantProtectantVm"
                 RowUpdate="@OnUpdateRow"
                 RowCreate="@OnCreateRow"

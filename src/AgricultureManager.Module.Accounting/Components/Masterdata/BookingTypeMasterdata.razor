@@ -1,0 +1,28 @@
+﻿@inherits FluxorComponent
+<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+                Data="@BookingTypeState.Value.BookingTypes"
+                TItem="BookingTypeVm"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+    <Columns>
+        <RadzenDataGridColumn TItem="BookingTypeVm" Property="@(nameof(BookingTypeVm.Name))" Title="Name">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Short" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Short)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="BookingTypeVm" Property="@(nameof(BookingTypeVm.Short))" Title="Kurz">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Short" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Short)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="BookingTypeVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+    </Columns>
+</RadzenDataGrid>

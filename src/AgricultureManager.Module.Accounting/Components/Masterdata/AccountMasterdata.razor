@@ -1,0 +1,94 @@
+﻿@inherits FluxorComponent
+<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+                Data="@AccountState.Value.Accounts"
+                TItem="AccountVm"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+    <Columns>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.BankName))" Title="Bankname">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.BankName" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.BankName)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.Description))" Title="Beschreibung">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Description" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Description)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.AccountHolder))" Title="Inhaber">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.AccountHolder" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.AccountHolder)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.AccountNumber))" Title="Kontonummer">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.AccountNumber" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.AccountNumber)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.Blz))" Title="Blz">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Blz" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Blz)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.Bic))" Title="Bic">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Bic" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Bic)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.Iban))" Title="Iban">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Iban" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Iban)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.Url))" Title="Url">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Url" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Url)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.HbciVersion))" Title="HbciVersion">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.HbciVersion" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.HbciVersion)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.Username))" Title="Benutzername">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.Username" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Username)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.Password))" Title="Password">
+            <Template Context="item">
+                ***
+            </Template>
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenPassword @bind-Value="item.Password" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Password)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="AccountVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+    </Columns>
+</RadzenDataGrid>

@@ -1,5 +1,4 @@
-﻿using AgricultureManager.Core.Application.Services;
-using AgricultureManager.Core.Application.Shared.Interfaces.Services;
+﻿using AgricultureManager.Core.Application.Shared.States;
 using FluentValidation;
 using Fluxor;
 using Fluxor.Blazor.Web.ReduxDevTools;
@@ -21,11 +20,16 @@ namespace AgricultureManager.Core.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-            services.AddSingleton<IHarvestYearService, HarvestYearService>();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.FullName is not null && f.FullName.Contains("AgricultureManager.Module", StringComparison.OrdinalIgnoreCase)).ToList();
+            assemblies.Add(Assembly.GetAssembly(typeof(CompanyState))!);
 
-
-            services.AddFluxor(config => {
-                config.ScanAssemblies(Assembly.GetExecutingAssembly());
+            services.AddFluxor(config =>
+            {
+                config.ScanAssemblies(
+                    Assembly.GetExecutingAssembly(),
+                    [
+                        ..assemblies
+                    ]);
 #if DEBUG
                 config.UseReduxDevTools();
 #endif

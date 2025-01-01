@@ -1,7 +1,10 @@
 ﻿using AgricultureManager.Core.Application.Features.FieldFeatures;
 using AgricultureManager.Core.Application.Shared.Models;
+using AgricultureManager.Core.Application.Shared.States;
+using AgricultureManager.Core.Application.Store.Features.FieldStore;
 using AgricultureManager.Module.Api.Interfaces;
 using AutoMapper;
+using Fluxor;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Radzen;
@@ -14,15 +17,12 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IMapper Mapper { get; set; } = default!;
         [Inject] public DialogService DialogService { get; set; } = default!;
+        [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+        [Inject] public IState<FieldState> FieldState { get; set; } = default!;
 
-        private IList<FieldVm>? _data;
         private RadzenDataGrid<FieldVm> _grid = default!;
         private FieldVm? _itemToEditOriginal;
         public string Title => "Schlag";
-        protected async override Task OnInitializedAsync()
-        {
-            _data = (await Mediator.Send(new GetFieldListCommand())).Data;
-        }
 
         private async Task DeleteRow(FieldVm item)
         {
@@ -31,8 +31,8 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
                 return;
 
             var response = await Mediator.Send(new RemoveFieldCommand { Id = item.Id });
-            if (response.Success && _data is not null)
-                _data.Remove(item);
+            if (response.Success)
+                Dispatcher.Dispatch(new RemoveFieldAction(item.Id));
             else
                 _grid.CancelEditRow(item);
             await _grid.Reload();
@@ -64,6 +64,8 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             var response = await Mediator.Send(cmd);
             if (!response.Success)
                 await _grid.Reload();
+            else if (response.Success && response.Data is not null)
+                Dispatcher.Dispatch(new UpdateFieldAction(response.Data));
             _itemToEditOriginal = null;
         }
         private async Task OnCreateRow(FieldVm item)
@@ -72,7 +74,10 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             Mapper.Map(item, cmd);
             var response = await Mediator.Send(cmd);
             if (response.Success && response.Data is not null)
+            {
                 item.Id = response.Data.Id;
+                Dispatcher.Dispatch(new AddFieldAction(response.Data));
+            }
         }
     }
 }

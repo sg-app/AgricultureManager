@@ -1,19 +1,19 @@
-﻿using AgricultureManager.Core.Application.Common;
-using AgricultureManager.Core.Application.Features.HarvestYearFeatures;
+﻿using AgricultureManager.Core.Application.Features.HarvestYearFeatures;
 using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
+using AgricultureManager.Core.Application.Shared.Keys;
 using AgricultureManager.Core.Application.Shared.Models;
+using AgricultureManager.Core.Application.Store.Features.HarvestUnitStore;
 using AgricultureManager.Core.Domain.Entities;
 using Fluxor;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Radzen;
 using System.Text.Json;
 
 
 namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
 {
-    public class HarvestYearEffects(IServiceProvider serviceProvider, IMediator mediator, DialogService dialogService)
+    public class HarvestYearEffects(IServiceProvider serviceProvider, IMediator mediator)
     {
 
         [EffectMethod(typeof(LoadHarvestYearsAction))]
@@ -21,10 +21,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
         {
             var response = await mediator.Send(new GetHarvestYearsCommand());
             if (response.Success && response.Data is not null)
-            {
-                response.Data.Insert(0, CustomItems.CreateNewYearItem);
                 dispatcher.Dispatch(new LoadHarvestYearsResultAction(response.Data));
-            }
         }
 
         [EffectMethod(typeof(GetCurrentHarvestYearAction))]
@@ -45,6 +42,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
                     if (harvestYearEntity is not null)
                     {
                         dispatcher.Dispatch(new SetSelectedHarvestYearAction(harvestYear));
+                        dispatcher.Dispatch(new LoadHarvestUnitsDataAction(harvestYear));
                         return;
                     }
                 }
@@ -70,7 +68,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
         }
 
         [EffectMethod]
-        public async Task HandleSaveSelectedHarvestYearAction(SaveSelectedHarvestYearAction action, IDispatcher _)
+        public async Task HandleSaveSelectedHarvestYearAction(SaveSelectedHarvestYearAction action, IDispatcher dispatcher)
         {
 
             var keyValue = new Parameter
@@ -92,6 +90,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
                 dbContext.Parameter.Update(existKey);
             }
             await dbContext.SaveChangesAsync(CancellationToken.None);
+            dispatcher.Dispatch(new LoadHarvestUnitsDataAction(action.SelectedHarvestYear));
         }
 
     }

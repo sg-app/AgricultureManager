@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C7C4C1B8-BFA9-4DD9-B424-B5C5EA60D83F}"
 	ProjectSection(SolutionItems) = preProject
 		..\doc\ddl.sql = ..\doc\ddl.sql
+		publishNewVersion.ps1 = publishNewVersion.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Core.Domain", "AgricultureManager.Core.Domain\AgricultureManager.Core.Domain.csproj", "{DA593BD9-2CF8-4555-B213-944DCE18D632}"
@@ -27,6 +28,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Module.Api", "AgricultureManager.Module.Api\AgricultureManager.Module.Api.csproj", "{A4C83F7B-8ADE-4B2C-A1E5-F0F5BDBA8AB8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Module.Manager", "AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj", "{AA01DB00-25BD-43EB-B521-C4DE28724104}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgricultureManager.Module.Pdf", "AgricultureManager.Module.Pdf\AgricultureManager.Module.Pdf.csproj", "{E2531D90-6569-4C67-B96B-B613344E5AC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgricultureManager.Module.Accounting", "AgricultureManager.Module.Accounting\AgricultureManager.Module.Accounting.csproj", "{7A7C6E7A-6F5B-4CBD-9F7D-C53229FE5A7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +79,14 @@ Global
 		{AA01DB00-25BD-43EB-B521-C4DE28724104}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA01DB00-25BD-43EB-B521-C4DE28724104}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA01DB00-25BD-43EB-B521-C4DE28724104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2531D90-6569-4C67-B96B-B613344E5AC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2531D90-6569-4C67-B96B-B613344E5AC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2531D90-6569-4C67-B96B-B613344E5AC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2531D90-6569-4C67-B96B-B613344E5AC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A7C6E7A-6F5B-4CBD-9F7D-C53229FE5A7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A7C6E7A-6F5B-4CBD-9F7D-C53229FE5A7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A7C6E7A-6F5B-4CBD-9F7D-C53229FE5A7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A7C6E7A-6F5B-4CBD-9F7D-C53229FE5A7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

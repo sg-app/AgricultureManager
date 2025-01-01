@@ -1,30 +1,36 @@
-﻿@using AgricultureManager.Core.Application.Common
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@using AgricultureManager.Core.Application.Common
 @using AgricultureManager.Core.Application.Features.HarvestYearFeatures
-@using AgricultureManager.Core.Application.Shared.Interfaces.Services
 @using AgricultureManager.Core.Application.Store.Features.HarvestYearStore
 @using AgricultureManager.SharedComponents.Dialogs
 @using System.Text.RegularExpressions
-@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<RadzenDropDown TValue="HarvestYearVm"
-                Value="@HarvestYearState.Value.SelectedHarvestYear"
-                Data="@HarvestYearState.Value.HarvestYears"
-                TextProperty="@(nameof(HarvestYearVm.Year))"
-                ValueChanged="HarvestYearChangedHandler" />
+<RadzenDropDown @ref="_ref" TValue="HarvestYearVm"
+Value="@HarvestYearState.Value.SelectedHarvestYear"
+Data="@_harvestYears"
+TextProperty="@(nameof(HarvestYearVm.Year))"
+ValueChanged="HarvestYearChangedHandler" />
 
 
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
-    [Inject] public IHarvestYearService HarvestYearService { get; set; } = default!;
     [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
 
+    private IList<HarvestYearVm> _harvestYears = [];
+    private RadzenDropDown<HarvestYearVm> _ref = default!;
     protected override void OnInitialized()
     {
         base.OnInitialized();
         Dispatcher.Dispatch(new LoadHarvestYearsAction());
         Dispatcher.Dispatch(new GetCurrentHarvestYearAction());
+        HarvestYearState.StateChanged += (s, e) =>
+        {
+            _harvestYears = HarvestYearState.Value.HarvestYears.ToList();
+            _harvestYears.Insert(0, CustomItems.CreateNewYearItem);
+            StateHasChanged();
+        };
     }
 
     private async Task HarvestYearChangedHandler(HarvestYearVm harvestYear)
@@ -49,9 +55,13 @@
             var response = await Mediator.Send(new AddHarvestYearCommand() { Year = year });
             if (response.Success && response.Data is not null)
             {
-                Dispatcher.Dispatch(new LoadHarvestYearsAction());
+                Dispatcher.Dispatch(new AddHarvestYearAction(response.Data));
                 Dispatcher.Dispatch(new SaveSelectedHarvestYearAction(response.Data));
             }
+        }
+        else if (HarvestYearState.Value.SelectedHarvestYear is not null)
+        {
+            await _ref.SelectItem(HarvestYearState.Value.SelectedHarvestYear, false);
         }
     }
 }

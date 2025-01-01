@@ -1,0 +1,125 @@
+﻿@inherits FluxorComponent
+<div class="d-flex flex-wrap flex-row">
+    <div class="pe-4">
+        <div class="fw-bold">
+            Datum
+        </div>
+        <div>
+            @Item.Date.ToShortDateString()
+        </div>
+    </div>
+    <div class="pe-4">
+        <div class="fw-bold">
+            Kultur
+        </div>
+        <div>
+            @CultureState.Value.Cultures?.FirstOrDefault(f => f.Id == Item.CultureId)?.Name
+        </div>
+    </div>
+    <div class="pe-4">
+        <div class="fw-bold">
+            Saatstärke
+        </div>
+        <div>
+            @Item.Quantity.ToString("N") @UnitState.Value.Units?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name
+        </div>
+    </div>
+</div>
+<div class="d-flex flex-wrap flex-row">
+    <div class="pe-4">
+        <div class="fw-bold">
+            Anwender
+        </div>
+        <div>
+            @PeopleState.Value.Peoples?.FirstOrDefault(f => f.Id == Item.PersonId)?.Displayname
+        </div>
+    </div>
+    <div class="pe-4">
+        <div class="fw-bold">
+            Hauptkultur
+        </div>
+        <div>
+            <RadzenIcon Icon="@(Item.IsMainCulture ? "check_box":"indeterminate_check_box")" Style="font-size:1rem" />
+        </div>
+    </div>
+    <div class="pe-4">
+        <div class="fw-bold">
+            Sorte
+        </div>
+        <div>
+            @Item.VarietyName
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Item.ApprovalNumber))
+    {
+        <div class="pe-4">
+            <div class="fw-bold">
+                Zulassungsnummer
+            </div>
+            <div>
+                @Item.ApprovalNumber
+            </div>
+        </div>
+    }
+</div>
+<div class="d-flex flex-wrap flex-row">
+    @if (Item.SeedCategoryId != Guid.Empty)
+    {
+        <div class="pe-4">
+            <div class="fw-bold">
+                Saatgutkategorie
+            </div>
+            <div>
+                @SeedCategoryState.Value.SeedCategories?.FirstOrDefault(f => f.Id == Item.SeedCategoryId)?.Name
+            </div>
+        </div>
+    }
+    @if (Item.SeedTechnologyId != Guid.Empty)
+    {
+        <div class="pe-4">
+            <div class="fw-bold">
+                Aussaattechnik
+            </div>
+            <div>
+                @SeedTechnologyState.Value.SeedTechnologies?.FirstOrDefault(f => f.Id == Item.SeedTechnologyId)?.Name
+            </div>
+        </div>
+    }
+</div>
+<div class="d-flex flex-wrap flex-row">
+    @if (!string.IsNullOrEmpty(Item.Setting))
+    {
+        <div class="pe-4">
+            <div class="fw-bold">
+                Einstellung
+            </div>
+            <div>
+                @Item.Setting
+            </div>
+        </div>
+    }
+</div>
+<div class="d-flex flex-wrap flex-row">
+    @if (!string.IsNullOrEmpty(Item.Comment))
+    {
+        <div class="pe-4">
+            <div class="fw-bold">
+                Kommentar
+            </div>
+            <div>
+                @Item.Comment
+            </div>
+        </div>
+    }
+</div>
+
+
+@code {
+    [Parameter] public SeedVm Item { get; set; } = default!;
+    [Inject] public IState<SeedTechnologyState> SeedTechnologyState { get; set; } = default!;
+    [Inject] public IState<SeedCategoryState> SeedCategoryState { get; set; } = default!;
+    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
+    [Inject] public IState<CultureState> CultureState { get; set; } = default!;
+    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
+}

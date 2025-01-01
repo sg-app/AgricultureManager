@@ -20,5 +20,13 @@ namespace AgricultureManager.Core.Domain.Entities
         public virtual HarvestYear HarvestYear { get; set; } = default!;
         public virtual Field Field { get; set; } = default!;
         public virtual Culture Culture { get; set; } = default!;
+
+        public virtual ICollection<Seed> Seeds { get; set; } = [];
+        public virtual ICollection<Fertilization> Fertilizations { get; set; } = [];
+        public virtual ICollection<PlantProtection> PlantProtections { get; set; } = [];
+        public virtual ICollection<Harvest> Harvests { get; set; } = [];
+
+        public virtual ICollection<FertilizerPlaning> FertilizerPlanings { get; set; } = [];
+        public virtual ICollection<FertilizerPlaningSpecification> FertilizerPlaningSpecifications { get; set; } = [];
     }
 }

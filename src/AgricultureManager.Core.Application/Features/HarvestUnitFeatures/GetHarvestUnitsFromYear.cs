@@ -1,13 +1,14 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
 using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgricultureManager.Core.Application.Features.HarvestUnitFeatures
 {
     public record GetHarvestUnitsFromYear(Guid YearId) : IReq<List<HarvestUnitOverview>>;
 
-    public class GetHarvestUnitsFromYearHandler(IAppDbContextFactory dbContextFactory) : IReqHandler<GetHarvestUnitsFromYear, List<HarvestUnitOverview>>
+    public class GetHarvestUnitsFromYearHandler(IAppDbContextFactory dbContextFactory, IMapper mapper) : IReqHandler<GetHarvestUnitsFromYear, List<HarvestUnitOverview>>
     {
         public async Task<Response<List<HarvestUnitOverview>>> Handle(GetHarvestUnitsFromYear request, CancellationToken cancellationToken)
         {
@@ -24,6 +25,7 @@ namespace AgricultureManager.Core.Application.Features.HarvestUnitFeatures
                     FieldName = s.Field.Name,
                     Area = s.Area,
                     CultureShortName = s.Culture.ShortName ?? "TBD",
+                    HarvestUnit = mapper.Map<HarvestUnitVm>(s)
                 })
                 .ToListAsync(cancellationToken);
 

@@ -1,0 +1,29 @@
+﻿
+<RadzenCard class="mt-1 p-0 overflow-auto">
+    <div class="p-3 rz-background-color-info-lighter d-flex">
+        <RadzenText class="me-auto" TextStyle="TextStyle.H5" TagName="TagName.H5" Text="Dokumente" />
+    </div>
+    <div class="px-3">
+        @foreach (var item in _documents)
+        {
+            <div class="d-flex align-items-center py-1">
+                <div class="me-auto">
+                    <RadzenText Text="@item.Documentname" />
+                </div>
+                <div>
+                    <RadzenButton Icon="download" Click="@(()=>Download(item))" Size="ButtonSize.Small" />
+                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="@(()=>Remove(item))" Size="ButtonSize.Small" />
+                </div>
+            </div>
+        }
+        @if (_documents.Count == 0)
+        {
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.Div" Text="Keine Dokumente gefunden." />
+        }
+    </div>
+    <div @ref="_fileDropContainer" class="input-group mt-2 p-2 border rounded border-primary @HoverClass" @ondragenter="@OnDragEnter" @ondragleave="@OnDragLeave" @ondragover="@OnDragEnter">
+		<InputFile @key="@_inputFieldKey" class="form-control" id="inputGroupFile01" @ref="inputFile" accept=".pdf" OnChange="@OnChange" aria-describedby="inputGroupFileAddon04"></InputFile>
+        <RadzenTextBox class="form-control mx-2" @bind-Value="@_customDescription" Placeholder="Beschreibung" />
+        <RadzenButton class="btn btn-outline-secondary" id="inputGroupFileAddon04" Click="StartUpload" Text="Upload" Icon="upload" />
+	</div>
+</RadzenCard>

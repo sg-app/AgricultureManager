@@ -1,14 +1,16 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Reflection
+@inherits LayoutComponentBase
 
 <RadzenComponents />
 <RadzenLayout>
 
     <RadzenHeader>
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row align-items-center">
             <div>
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
                     <RadzenSidebarToggle Click="@(()=>sidebar1Expanded = !sidebar1Expanded)" />
-                    <RadzenLabel Text="Agriculture NextGeneration" />
+                    <RadzenText TextStyle="TextStyle.H4" Style="color: var(--rz-header-color)" Text="Agriculture NextGeneration" />
+                    <RadzenText TextStyle="TextStyle.Subtitle2" Style="color: var(--rz-header-color)" Text="@_version" />
                 </RadzenStack>
             </div>
             <div class="ms-auto p-2">
@@ -20,9 +22,17 @@
         <RadzenPanelMenu>
             <RadzenPanelMenuItem Text="Home" Path="#" Icon="home" />
             <RadzenPanelMenuItem Text="Schlagdokumentation" Path="documentation" Icon="home" />
+            <RadzenPanelMenuItem Text="Module">
+                <RadzenPanelMenuItem Text="Düngeplanung" Path="fertilizerplaning" />
+                @foreach (var item in _menuItems)
+                {
+                    @BuildMenuItem(item)
+                }
+            </RadzenPanelMenuItem>
             <RadzenPanelMenuItem Text="Daten">
                 <RadzenPanelMenuItem Text="Betrieb" Path="company" />
                 <RadzenPanelMenuItem Text="Stammdaten" Path="masterdata" />
+                <RadzenPanelMenuItem Text="Erntejahr bearbeiten" Path="harvestyear/editor" />
             </RadzenPanelMenuItem>
         </RadzenPanelMenu>
     </RadzenSidebar>
@@ -39,6 +49,36 @@
 </div>
 
 @code {
+    [Inject] public IServiceProvider ServiceProvider { get; set; } = default!;
     bool sidebar1Expanded = true;
     private string? _currentYear;
+    private IEnumerable<IMenuItem> _menuItems = [];
+    private string _version => $"v{Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion}";
+
+    protected override void OnInitialized()
+    {
+        _menuItems = ServiceProvider.GetMenuItems();
+        base.OnInitialized();
+    }
+    
+    private RenderFragment BuildMenuItem(IMenuItem item) => builder =>
+    {
+        builder.OpenComponent<RadzenPanelMenuItem>(0);
+        builder.AddAttribute(1, "Text", item.Name);
+        builder.AddAttribute(2, "Path", item.Url);
+        builder.AddAttribute(3, "Icon", item.Icon);
+
+        if (item.Children != null && item.Children.Any())
+        {
+            builder.AddAttribute(4, "ChildContent", (RenderFragment)(childBuilder =>
+            {
+                foreach (var child in item.Children)
+                {
+                    childBuilder.AddContent(5, BuildMenuItem(child));
+                }
+            }));
+        }
+
+        builder.CloseComponent();
+    };
 }

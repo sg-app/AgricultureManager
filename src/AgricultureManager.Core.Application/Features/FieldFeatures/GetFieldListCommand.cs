@@ -16,7 +16,9 @@ namespace AgricultureManager.Core.Application.Features.FieldFeatures
         {
             using var dbContext = dbContextFactory.CreateDbContext();
 
-            var entities = await dbContext.Field.AsNoTracking().ToListAsync(cancellationToken);
+            var entities = await dbContext.Field
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
 
             return Response.Success(mapper.Map<IList<FieldVm>>(entities));
         }

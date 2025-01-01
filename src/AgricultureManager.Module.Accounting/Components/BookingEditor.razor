@@ -1,0 +1,35 @@
+﻿@inherits FluxorComponent
+<div class="row">
+	<div class="col">
+		Netto
+	</div>
+	<div class="col">
+		Brutto
+	</div>
+	<div class="col">
+		Steuerrate
+	</div>
+	<div class="col">
+		Buchungstyp
+	</div>
+</div>
+
+<div class="row">
+	<div class="col">
+		<RadzenNumeric class="form-control" TValue="decimal?" @bind-Value="@_nettoValue" ShowUpDown="false" Change="()=>StartCalculation()" Format="C2" />
+	</div>
+	<div class="col">
+		<RadzenNumeric class="form-control" @bind-Value="@_booking.Amount" ShowUpDown="false" ReadOnly="@_amountReadOnly" Disabled="@_amountReadOnly" Format="C2" />
+	</div>
+	<div class="col">
+		<RadzenDropDown class="form-control" Data="@TaxRateState.Value.TaxRates" @bind-Value="@_booking.TaxRateId" TextProperty="DisplayName" ValueProperty="Id" Change="()=>StartCalculation()" />
+	</div>
+	<div class="col">
+		<RadzenDropDown class="form-control" Data="@BookingTypeState.Value.BookingTypes" @bind-Value="@_booking.BookingTypeId" TextProperty="Name" ValueProperty="Id" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true" />
+	</div>
+</div>
+<div class="row">
+	<div class="col pb-1">
+		<SaveCancelButton ButtonResult="OnSaveCancelClick" />
+	</div>
+</div>

@@ -25,6 +25,9 @@ namespace AgricultureManager.Infrastructure.Persistence
         public DbSet<Unit> Unit { get; set; }
 
 
+        public DbSet<FertilizerPlaning> FertilizerPlaning { get; set; }
+        public DbSet<FertilizerPlaningSpecification> FertilizerPlaningSpecification { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
@@ -39,6 +42,13 @@ namespace AgricultureManager.Infrastructure.Persistence
                 .HasMany(f => f.FertilizerDetails)
                 .WithMany(f => f.Fertilizers)
                 .UsingEntity<FertilizerToDetail>();
+
+            modelBuilder.Entity<FertilizerDetail>().HasData(
+                new FertilizerDetail { Id = Guid.Parse("04433ca8-714f-4007-bd93-672b2d10ff36"), Name = "N", Comment = "Stickstoff", SystemEntry = true },
+                new FertilizerDetail { Id = Guid.Parse("0d69cc79-e5b4-4c84-afed-0f9397a611cb"), Name = "P", Comment = "Phosphor", SystemEntry = true },
+                new FertilizerDetail { Id = Guid.Parse("1b5bb848-475d-4d77-bf53-d3d6ff09db46"), Name = "K", Comment = "Kali", SystemEntry = true },
+                new FertilizerDetail { Id = Guid.Parse("8cfee622-ef2f-44ec-b6ca-92db0e8ee8fe"), Name = "S", Comment = "Schwefel", SystemEntry = true }
+            );
         }
     }
 }

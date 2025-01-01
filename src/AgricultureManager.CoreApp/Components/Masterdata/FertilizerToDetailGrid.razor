@@ -16,7 +16,7 @@
                 @item.FertilizerDetail.Name
             </Template>
             <EditTemplate Context="item">
-                <RadzenDropDown @bind-Value="item.FertilizerDetail" Data="@_fertilizerDetails" TextProperty="@(nameof(FertilizerDetailVm.Name))" />
+                <RadzenDropDown @bind-Value="item.FertilizerDetail" Data="@FertilizerDetailState.Value.FertilizerDetails" TextProperty="@(nameof(FertilizerDetailVm.Name))" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="FertilizerToDetailVm" Property="@(nameof(FertilizerToDetailVm.Quantity))" Title="Anteil">
@@ -36,25 +36,13 @@
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public IMapper Mapper { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
+    [Inject] public IState<FertilizerDetailState> FertilizerDetailState { get; set; } = default!;
 
     [Parameter] public FertilizerVm Fertilizer { get; set; } = default!;
 
     private ICollection<FertilizerToDetailVm>? _data => Fertilizer.FertilizerToDetails;
-    private IList<FertilizerDetailVm>? _fertilizerDetails;
     private RadzenDataGrid<FertilizerToDetailVm> _grid = default!;
-
     private FertilizerToDetailVm? _itemToEditOriginal;
-
-    protected async override Task OnInitializedAsync()
-    {
-        // _data = (await Mediator.Send(new GetFertilizerListCommand())).Data;
-        _fertilizerDetails = (await Mediator.Send(new GetFertilizerDetailListCommand())).Data;
-    }
-
-    protected override Task OnParametersSetAsync()
-    {
-        return base.OnParametersSetAsync();
-    }
 
     private async Task DeleteRow(FertilizerToDetailVm item)
     {

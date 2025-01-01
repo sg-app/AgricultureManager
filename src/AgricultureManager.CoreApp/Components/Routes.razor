@@ -1,7 +1,41 @@
-﻿<Fluxor.Blazor.Web.StoreInitializer />
-<Router AppAssembly="typeof(Program).Assembly">
+﻿@using AgricultureManager.Core.Application.Store.Features.CompanyStore
+@using AgricultureManager.Core.Application.Store.Features.CultureStore
+@using AgricultureManager.Core.Application.Store.Features.FertilizerDetailStore
+@using AgricultureManager.Core.Application.Store.Features.FertilizerStore
+@using AgricultureManager.Core.Application.Store.Features.FieldStore
+@using AgricultureManager.Core.Application.Store.Features.PeopleStore
+@using AgricultureManager.Core.Application.Store.Features.PlantProtectantStore
+@using AgricultureManager.Core.Application.Store.Features.SeedCategoryStore
+@using AgricultureManager.Core.Application.Store.Features.SeedTechnologyStore
+@using AgricultureManager.Core.Application.Store.Features.UnitStore
+@using System.Reflection
+@using AgricultureManager.Module.Manager
+<Fluxor.Blazor.Web.StoreInitializer />
+<Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="@_assemblies">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>
+
+@code{
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public PluginAssemblyProvider pluginAssemblyProvider { get; set; } = default!;
+    private IEnumerable<Assembly> _assemblies = [];
+
+    protected override void OnInitialized()
+    {
+        Dispatcher.Dispatch(new LoadCompanyDataAction());
+        Dispatcher.Dispatch(new LoadFieldsDataAction());
+        Dispatcher.Dispatch(new LoadCulturesDataAction());
+        Dispatcher.Dispatch(new LoadSeedCategoriesDataAction());
+        Dispatcher.Dispatch(new LoadSeedTechnologiesDataAction());
+        Dispatcher.Dispatch(new LoadUnitsDataAction());
+        Dispatcher.Dispatch(new LoadPeoplesDataAction());
+        Dispatcher.Dispatch(new LoadFertilizersDataAction());
+        Dispatcher.Dispatch(new LoadFertilizerDetailsDataAction());
+        Dispatcher.Dispatch(new LoadPlantProtectantsDataAction());
+
+        _assemblies = pluginAssemblyProvider.AdditionalPluginAssembliesWithRoutes;
+    }
+}

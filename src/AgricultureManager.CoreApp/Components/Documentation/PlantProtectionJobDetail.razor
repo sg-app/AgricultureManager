@@ -1,0 +1,80 @@
+﻿<div class="d-flex flex-wrap flex-row">
+    <div class="pe-4">
+        <div class="fw-bold">
+            Datum
+        </div>
+        <div>
+            @Item.Date.ToShortDateString()
+        </div>
+    </div>
+    <div class="pe-4">
+        <div class="fw-bold">
+            Pflanzenschutzmittel
+        </div>
+        <div>
+            @PlantProtectantState.Value.PlantProtectants?.FirstOrDefault(f => f.Id == Item.PlantProtectantId)?.Name
+        </div>
+    </div>
+    <div class="pe-4">
+        <div class="fw-bold">
+            Dosierung
+        </div>
+        <div>
+            @Item.Dosage.ToString("N") @UnitState.Value.Units?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name
+        </div>
+    </div>
+</div>
+<div class="d-flex flex-wrap flex-row">
+    <div class="pe-4">
+        <div class="fw-bold">
+            Anwender
+        </div>
+        <div>
+            @PeopleState.Value.Peoples?.FirstOrDefault(f => f.Id == Item.PersonId)?.Displayname
+        </div>
+    </div>
+    @if (!string.IsNullOrEmpty(Item.BBCH))
+    {
+        <div class="pe-4">
+            <div class="fw-bold">
+                BBCH
+            </div>
+            <div>
+                @Item.BBCH
+            </div>
+        </div>
+    }
+</div>
+<div class="d-flex flex-wrap flex-row">
+    @if (!string.IsNullOrEmpty(Item.Setting))
+    {
+        <div class="pe-4">
+            <div class="fw-bold">
+                Einstellung
+            </div>
+            <div>
+                @Item.Setting
+            </div>
+        </div>
+    }
+</div>
+<div class="d-flex flex-wrap flex-row">
+    @if (!string.IsNullOrEmpty(Item.Comment))
+    {
+        <div class="pe-4">
+            <div class="fw-bold">
+                Kommentar
+            </div>
+            <div>
+                @Item.Comment
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public PlantProtectionVm Item { get; set; } = default!;
+    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
+    [Inject] public IState<PlantProtectantState> PlantProtectantState { get; set; } = default!;
+    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
+}

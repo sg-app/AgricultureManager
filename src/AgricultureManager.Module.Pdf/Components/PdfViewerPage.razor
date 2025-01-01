@@ -1,0 +1,65 @@
+﻿@page "/documents/pdfviewer/{document}"
+
+@if (_noDocumentFound)
+{
+    <Radzen.Blazor.RadzenText>Kein passendes Dokument gefunden.</Radzen.Blazor.RadzenText>
+}
+<iframe title="pdfviewerdocuments" src="@_pdfDataUrl" width="100%" height="100%"></iframe>
+
+@code {
+    [Parameter] public string Document { get; set; } = string.Empty;
+    [Inject] public IServiceProvider ServiceProvider { get; set; } = default!;
+    [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
+    [Inject] public IStore Store { get; set; } = default!;
+    private string _pdfDataUrl = string.Empty;
+    private bool _noDocumentFound;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        HarvestYearState.StateChanged += OnHarvestYearChanged;
+        OnHarvestYearChanged(null, new EventArgs());
+    }
+
+    protected override void OnParametersSet()
+    {
+        OnHarvestYearChanged(null, new EventArgs());
+    }
+
+    private void OnHarvestYearChanged(object? sender, EventArgs args)
+    {
+        _noDocumentFound = false;
+        if (HarvestYearState.Value.SelectedHarvestYear == null) return;
+
+        var doc = ServiceProvider.GetKeyedService<IDocument>(Document);
+        if (doc is null)
+        {
+            _noDocumentFound = true;
+            StateHasChanged();
+            return;
+        }
+
+        // /documents/pdfviewer/FertlizerPlaningDocument
+        if (doc is FertlizerPlaningDocument fertlizerPlaningDocument)
+            fertlizerPlaningDocument.HarvestYear = HarvestYearState.Value.SelectedHarvestYear;
+
+        // /documents/pdfviewer/CultivatedAreasDocument
+        if (doc is CultivatedAreasDocument cultivatedAreasDocument)
+            cultivatedAreasDocument.HarvestYear = HarvestYearState.Value.SelectedHarvestYear;
+
+        // /documents/pdfviewer/HarvestYearDocument
+        if (doc is HarvestYearDocument harvestYearDocument)
+            harvestYearDocument.HarvestYear = HarvestYearState.Value.SelectedHarvestYear;
+
+        var pdfBytes = doc.GeneratePdf();
+        var base64Pdf = Convert.ToBase64String(pdfBytes);
+        _pdfDataUrl = $"data:application/pdf;base64,{base64Pdf}";
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        HarvestYearState.StateChanged -= OnHarvestYearChanged;
+    }
+
+}

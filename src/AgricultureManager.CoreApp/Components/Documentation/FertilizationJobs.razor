@@ -1,0 +1,104 @@
+﻿@inherits FluxorComponent
+@implements IDisposable
+@using AgricultureManager.Core.Application.Features.FertilizationFeatures
+@using AgricultureManager.Core.Application.Store.Features.FertilizationJobStore
+
+<RadzenButton class="rz-border-radius-10 rz-shadow-4"
+              Click="OnInsertClicked"
+              ButtonStyle="ButtonStyle.Primary"
+              Size="ButtonSize.Small"
+              Icon="add"
+              Disabled="@_isInserting" />
+
+@if (HarvestUnitState.Value.SelectedHarvestUnits?.Count == 1)
+{
+    <RadzenDataList class="pt-2"
+                    Data="@FertilizationJobState.Value.Fertilizations"
+                    IsLoading="@FertilizationJobState.Value.IsLoading"
+                    WrapItems="true">
+        <Template Context="item">
+            <RadzenCard class="position-relative" Style="width:600px">
+                <div class="position-absolute translate-middle-y top-0 start-0">
+                    <RadzenButton class="rz-border-radius-10 rz-shadow-4"
+                                  Click="@(()=>OnEditClicked(item))"
+                                  ButtonStyle="ButtonStyle.Secondary"
+                                  Icon="edit"
+                                  Disabled="@_isInserting"
+                                  Size="ButtonSize.Small" />
+                    <RadzenButton class="rz-border-radius-10 rz-shadow-4"
+                                  Click="@(()=>OnRemoveClicked(item))"
+                                  ButtonStyle="ButtonStyle.Warning"
+                                  Icon="delete"
+                                  Disabled="@_isInserting"
+                                  Size="ButtonSize.Small" />
+                </div>
+                <div class="pt-3">
+                    <FertilizationJobDetail Item="item" />
+                </div>
+            </RadzenCard>
+        </Template>
+    </RadzenDataList>
+}
+@if (_isInserting)
+{
+    <FertilizationJobEditor Item="@_selectedItem" OnClose="OnEditorClosed" />
+}
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
+    [Inject] public IState<FertilizationJobState> FertilizationJobState { get; set; } = default!;
+
+    private bool _isInserting;
+    private FertilizationVm? _selectedItem;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        HarvestUnitState.StateChanged += LoadData;
+    }
+
+    private void LoadData(object? sender, EventArgs e)
+    {
+        var harvestUnitId = HarvestUnitState.Value.SelectedHarvestUnits?.FirstOrDefault()?.Id;
+        if (harvestUnitId is null)
+            return;
+
+        Dispatcher.Dispatch(new LoadFertilizationJobDataAction((Guid)harvestUnitId));
+    }
+
+    private void OnInsertClicked()
+    {
+        _isInserting = true;
+    }
+
+    private async Task OnRemoveClicked(FertilizationVm item)
+    {
+        var dialogResponse = await DialogService.Confirm("Soll der Datensatz wirklich gelöscht werden?", "Datensatz löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+        if (dialogResponse is null || dialogResponse == false)
+            return;
+
+        var response = await Mediator.Send(new RemoveFertilizationCommand(item.Id));
+        if (response.Success)
+            Dispatcher.Dispatch(new RemoveFertilizationJobAction(item.Id));
+    }
+
+    private void OnEditorClosed()
+    {
+        _isInserting = false;
+        _selectedItem = null;
+    }
+
+    private void OnEditClicked(FertilizationVm item)
+    {
+        _selectedItem = item;
+        _isInserting = true;
+    }
+
+    public void Dispose()
+    {
+        HarvestUnitState.StateChanged -= LoadData;
+    }
+}

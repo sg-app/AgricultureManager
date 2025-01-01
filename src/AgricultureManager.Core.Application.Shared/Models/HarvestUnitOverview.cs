@@ -7,5 +7,8 @@
         public string FieldName { get; set; } = string.Empty;
         public float Area { get; set; }
         public string CultureShortName { get; set; } = string.Empty;
+        public HarvestUnitVm HarvestUnit { get; set; } = default!;
+
+        public string ListValue => $"{HarvestUnitName} ({FieldName})";
     }
 }

@@ -1,0 +1,44 @@
+﻿@inherits FluxorComponent
+<InsertButton InsertRow="InsertRow" />
+<RadzenDataGrid @ref="_grid"
+                Data="@TaxRateState.Value.TaxRates"
+                TItem="TaxRateVm"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+    <Columns>
+        <RadzenDataGridColumn TItem="TaxRateVm" Property="@(nameof(TaxRateVm.TaxRateName))" Title="Name">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenTextBox @bind-Value="item.TaxRateName" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.TaxRateName)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TaxRateVm" Property="@(nameof(TaxRateVm.TaxRateValue))" Title="Satz" Width="100px">
+            <EditTemplate Context="item">
+                <RadzenNumeric @bind-Value="item.TaxRateValue" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.TaxRateValue)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TaxRateVm" Property="@(nameof(TaxRateVm.IsActive))" Title="Aktiv" Width="100px">
+            <Template Context="item">
+                <RadzenIcon Icon="@(item.IsActive ? "check" : "close")" />
+            </Template>
+            <EditTemplate Context="item">
+                <RadzenCheckBox @bind-Value="item.IsActive" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TaxRateVm" Property="@(nameof(TaxRateVm.IsDefault))" Title="Standard">
+            <Template Context="item">
+                <RadzenIcon Icon="@(item.IsDefault ? "check" : "close")" />
+            </Template>
+            <EditTemplate Context="item">
+                <RadzenCheckBox @bind-Value="item.IsDefault" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridInlineEditColumn TItem="TaxRateVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+    </Columns>
+
+</RadzenDataGrid>

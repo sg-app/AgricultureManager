@@ -1,0 +1,31 @@
+﻿@page "/accounting/statementofaccount"
+@using AgricultureManager.Module.Accounting.Store.Features.AccountStore
+@using AgricultureManager.Module.Accounting.Store.States
+@inherits FluxorComponent
+
+<RadzenDropDown class="mb-2" TValue="AccountVm" 
+        Data="@AccountState.Value.Accounts" 
+        Value="@AccountState.Value.SelectedAccount" 
+        ValueChanged="OnAccountChanged"
+        TextProperty="@(nameof(AccountVm.Description))" Style="width:auto" />
+
+<StatementOfAccountList />
+<UploadStatementOfAccount />
+<DownloadQuarterlyDocument />
+
+@code {
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public IState<AccountState> AccountState { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (!AccountState.Value.IsInitialized)
+            Dispatcher.Dispatch(new LoadAccountsDataAction());
+    }
+
+    private void OnAccountChanged(AccountVm item)
+    {
+        Dispatcher.Dispatch(new SetSelectedAccountAction(item));
+    }
+}

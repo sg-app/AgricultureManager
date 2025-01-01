@@ -2,7 +2,14 @@
     <p class="mb-2">@Title</p>
     <div class="row">
         <div class="col">
-            <RadzenTextBox @bind-Value="Text" />
+            @if (IsPassword)
+            {
+                <RadzenPassword @bind-Value="Text"/>
+            }
+            else
+            {
+                <RadzenTextBox @bind-Value="Text" />
+            }
         </div>
     </div>
     <div class="row pt-2">
@@ -16,5 +23,6 @@
 @code {
     [Parameter] public string Title { get; set; } = "Titel";
     [Parameter] public string? Text { get; set; }
+    [Parameter] public bool IsPassword { get; set; }
     [Inject] public DialogService DialogService { get; set; } = default!;
 }

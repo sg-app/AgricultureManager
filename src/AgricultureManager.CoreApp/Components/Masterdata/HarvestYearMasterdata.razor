@@ -1,14 +1,16 @@
-﻿@using AgricultureManager.Core.Application.Features.HarvestYearFeatures
-@using AgricultureManager.Core.Application.Store.Features.HarvestYearStore
+﻿@inherits FluxorComponent
 @implements IMasterdata
+@using AgricultureManager.Core.Application.Features.HarvestYearFeatures
+@using AgricultureManager.Core.Application.Store.Features.HarvestYearStore
+
 <InsertButton InsertRow="InsertRow" />
 <RadzenDataGrid @ref="_grid"
-Data="@_data"
-TItem="HarvestYearVm"
-RowCreate="@OnCreateRow"
-EmptyText="Keine Daten gefunden."
-Density="Density.Compact"
-EditMode="DataGridEditMode.Single">
+                Data="@HarvestYearState.Value.HarvestYears"
+                TItem="HarvestYearVm"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
     <Columns>
         <RadzenDataGridColumn TItem="HarvestYearVm" Property="@(nameof(HarvestYearVm.Year))" Title="Jahr">
             <EditTemplate Context="item">
@@ -20,20 +22,14 @@ EditMode="DataGridEditMode.Single">
     </Columns>
 </RadzenDataGrid>
 
-@code{
+@code {
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
 
-    private IList<HarvestYearVm>? _data;
     private RadzenDataGrid<HarvestYearVm> _grid = default!;
-
     public string Title => "Erntejahr";
-
-    protected async override Task OnInitializedAsync()
-    {
-        _data = (await Mediator.Send(new GetHarvestYearsCommand())).Data;
-    }
 
     private async Task DeleteRow(HarvestYearVm item)
     {
@@ -42,17 +38,16 @@ EditMode="DataGridEditMode.Single">
             return;
 
         var response = await Mediator.Send(new RemoveHarvestYearCommand { Id = item.Id });
-        if (response.Success && _data is not null)
+        if (response.Success)
         {
-            _data.Remove(item);
-            Dispatcher.Dispatch(new LoadHarvestYearsAction());
+            Dispatcher.Dispatch(new RemoveHarvestYearAction(item.Id));
             Dispatcher.Dispatch(new GetCurrentHarvestYearAction());
         }
         else
             _grid.CancelEditRow(item);
         await _grid.Reload();
     }
-    
+
     private void CancelEditRow(HarvestYearVm item)
     {
         _grid.CancelEditRow(item);
@@ -67,8 +62,11 @@ EditMode="DataGridEditMode.Single">
     private async Task OnCreateRow(HarvestYearVm item)
     {
         var cmd = new AddHarvestYearCommand();
-        var response = await Mediator.Send(new AddHarvestYearCommand{Year = item.Year});
+        var response = await Mediator.Send(new AddHarvestYearCommand { Year = item.Year });
         if (response.Success && response.Data is not null)
+        {
             item.Id = response.Data.Id;
+            Dispatcher.Dispatch(new AddHarvestYearAction(response.Data));
+        }
     }
 }
