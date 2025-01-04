@@ -54,6 +54,7 @@ namespace AgricultureManager.Module.Accounting.Common
             CreateMap<StatementOfAccountDocument, StatementOfAccountDocumentVm>();
             CreateMap<AccountVm, GetMouvementsFromAccountCommand>();
 
+            CreateMap<CostType, CostTypeVm>();
         }
     }
 }

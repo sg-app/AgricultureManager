@@ -13,6 +13,12 @@
     </Tabs>
 </RadzenTabs>
 
+<style>
+    ul[role=tablist] {
+        flex-wrap: wrap;
+    }
+</style>
+
 @code {
     [Inject] public IServiceProvider ServiceProvider { get; set; } = default!;
 

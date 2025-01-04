@@ -71,7 +71,7 @@ namespace AgricultureManager.Module.Accounting.Domain
 
 
         public virtual ICollection<Document>? Documents { get; set; }
-        public virtual ICollection<Booking>? Bookings { get; set; }
+        public virtual ICollection<Booking> Bookings { get; set; } = [];
 
         public Account Account { get; set; } = default!;
     }
