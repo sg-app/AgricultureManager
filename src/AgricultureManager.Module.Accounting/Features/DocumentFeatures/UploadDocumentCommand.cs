@@ -27,8 +27,8 @@ namespace AgricultureManager.Module.Accounting.Features.DocumentFeatures
             var basePathKeyValue = await appContext.Parameter.FindAsync([AccountingParameterKeys.AccountingBaseFilePath], cancellationToken);
             var documentBasePathKeyValue = await appContext.Parameter.FindAsync([AccountingParameterKeys.AccountingBaseFilePath], cancellationToken);
             var documentSaveToDbKeyValue = await appContext.Parameter.FindAsync([AccountingParameterKeys.AccountingDocumentSaveToDatabase], cancellationToken);
-            var basePath = basePathKeyValue?.Value ?? "/share";
-            var documentBasePath = documentBasePathKeyValue?.Value ?? "AccountMouvement";
+            var basePath = basePathKeyValue?.Value ?? "share";
+            var documentBasePath = documentBasePathKeyValue?.Value ?? "AccountingDocuments";
 
             var fileDir = Path.Combine(documentBasePath, documentBasePath, GetFiscalYear(request.AccountMouvement.InputDate));
             if (!Directory.Exists(fileDir))
@@ -66,8 +66,8 @@ namespace AgricultureManager.Module.Accounting.Features.DocumentFeatures
                 {
                     var entityEntry = await context.Document.AddAsync(doc, cancellationToken);
                     await context.SaveChangesAsync(cancellationToken);
-                    await transaction.CommitAsync(cancellationToken);
                     await request.File.OpenReadStream(4294967295, cancellationToken).CopyToAsync(fStream, cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
                     return Response.Success(mapper.Map<DocumentVm>(doc));
                 }
                 catch (Exception ex)
