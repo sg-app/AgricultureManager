@@ -9,14 +9,14 @@
         ValueChanged="OnAccountChanged"
         TextProperty="@(nameof(AccountVm.Description))" Style="width:auto" />
 
-<StatementOfAccountList />
-<UploadStatementOfAccount />
+<StatementOfAccountList @ref="statementOfAccountList" />
+<UploadStatementOfAccount UploadDone="OnUploadDone" />
 <DownloadQuarterlyDocument />
 
 @code {
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public IState<AccountState> AccountState { get; set; } = default!;
-
+    private StatementOfAccountList statementOfAccountList;
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -27,5 +27,12 @@
     private void OnAccountChanged(AccountVm item)
     {
         Dispatcher.Dispatch(new SetSelectedAccountAction(item));
+    }
+    private async Task OnUploadDone()
+    {
+        if (statementOfAccountList != null)
+        {
+            await statementOfAccountList.LoadDataAsync();
+        }
     }
 }

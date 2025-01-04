@@ -11,6 +11,7 @@ namespace AgricultureManager.Module.Accounting.Features.BookingTypeFeatures
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Short { get; set; }
+        public CostTypeVm CostType { get; set; }
     }
 
     public class UpdateBookingTypeCommandHandler(IAccountingDbContextFactory dbContextFactory, IMapper mapper) : IReqHandler<UpdateBookingTypeCommand, BookingTypeVm>

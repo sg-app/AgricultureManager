@@ -16,7 +16,7 @@ namespace AgricultureManager.Module.Accounting.Domain
 
 
         public AccountMouvement? AccountMouvement { get; set; }
-        public BookingType? BookingType { get; set; }
+        public BookingType BookingType { get; set; } = default!;
         public TaxRate? TaxRate { get; set; }
     }
 }

@@ -43,7 +43,8 @@ namespace AgricultureManager.Module.Accounting
 
         public IEnumerable<IMenuItem> Children => [
             new AccountingOverviewMenuItem(),
-            new StatementOfAccountMenuItem()
+            new StatementOfAccountMenuItem(),
+            new CostOverviewMenuItem()
             ];
     }
 
@@ -61,6 +62,15 @@ namespace AgricultureManager.Module.Accounting
         public string Name => "Kontoauszug";
         public string Icon => "money";
         public string Url => "/accounting/statementofaccount";
+
+        public IEnumerable<IMenuItem> Children => [];
+    }
+
+    public class CostOverviewMenuItem : IMenuItem
+    {
+        public string Name => "Kostenübersicht";
+        public string Icon => "money";
+        public string Url => "/accounting/costoverview";
 
         public IEnumerable<IMenuItem> Children => [];
     }

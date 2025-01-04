@@ -36,13 +36,14 @@ namespace AgricultureManager.Module.Accounting.Components
             await LoadDataAsync();
         }
 
-        private async Task LoadDataAsync()
+        public async Task LoadDataAsync()
         {
             _isLoading = true;
 
             var response = await Mediator.Send(new GetStatementOfAccountListByDateCommand(_startDate, _endDate));
             _list = response.Data?.OrderByDescending(f => f.Year).ToList() ?? [];
             _isLoading = false;
+            await InvokeAsync(StateHasChanged);
         }
 
         private async Task DeleteRow(StatementOfAccountDocumentVm item)

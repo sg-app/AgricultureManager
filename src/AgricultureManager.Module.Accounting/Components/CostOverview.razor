@@ -1,0 +1,72 @@
+﻿@page "/accounting/costoverview"
+@using AgricultureManager.Module.Accounting.Features.CostOverviewFeatures
+@inherits FluxorComponent
+<RadzenDropDown TValue="HarvestYearVm"
+Value="@_harvestYear"
+Data="@HarvestYearState.Value.HarvestYears"
+TextProperty="@(nameof(HarvestYearVm.Year))"
+ValueChanged="OnHarvestYearChanged" />
+
+<RadzenDataGrid class="mt-2" Data="_costOverviews">
+    <Columns>
+        <RadzenDataGridColumn TItem="CostOverviewVm" Property="@(nameof(CostOverviewVm.CostType))" Title="Kostentyp" />
+        <RadzenDataGridColumn TItem="CostOverviewVm" Property="@(nameof(CostOverviewVm.TotalAmount))" Title="Summe" FormatString="{0:C}">
+            <FooterTemplate>
+                Total: @String.Format("{0:C}", _costOverviews?.Sum(s => s.TotalAmount))
+            </FooterTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+    <Template Context="item">
+        <RadzenDataList Style="--rz-datalist-padding: 0; --rz-datalist-item-padding: 0;" Data="@item.Bookings" TItem="BookingVm">
+            <Template Context="booking">
+                <div class="row">
+                    <div class="col-2 text-end">
+                        @String.Format("{0:C}", booking.Amount)
+                    </div>
+                    <div class="col-2">
+                        @booking.BookingType?.Name
+                    </div>
+                    <div class="col-4 text-truncate">
+                        @booking.AccountMouvement?.PartnerName
+                    </div>
+                    <div class="col-4 text-truncate">
+                        @booking.AccountMouvement?.Description
+                    </div>
+                </div>
+            </Template>
+        </RadzenDataList>
+    </Template>
+</RadzenDataGrid>
+
+@code {
+    [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
+    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
+    [Inject] public IMediator Mediator { get; set; } = default!;
+
+    private HarvestYearVm? _harvestYear;
+    private IEnumerable<CostOverviewVm>? _costOverviews;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HarvestYearState.Value.IsInitialized)
+        {
+            _harvestYear = HarvestYearState.Value.SelectedHarvestYear;
+            await LoadData();
+        }
+    }
+
+    private async Task OnHarvestYearChanged(HarvestYearVm harvestYear)
+    {
+        _harvestYear = harvestYear;
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        if (_harvestYear is null)
+            return;
+
+        var response = await Mediator.Send(new GetCostOverviewCommand(_harvestYear));
+        _costOverviews = response.Data ?? [];
+    }
+}

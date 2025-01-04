@@ -4,6 +4,7 @@ using AgricultureManager.Module.Accounting.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgricultureManager.Module.Accounting.Migrations
 {
     [DbContext(typeof(AccountingDbContext))]
-    partial class AccountingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250104145521_AddCostTypeToBookingType")]
+    partial class AddCostTypeToBookingType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +74,7 @@ namespace AgricultureManager.Module.Accounting.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccountingAccount", (string)null);
+                    b.ToTable("AccountingAccount");
                 });
 
             modelBuilder.Entity("AgricultureManager.Module.Accounting.Domain.AccountMouvement", b =>
@@ -160,7 +163,7 @@ namespace AgricultureManager.Module.Accounting.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("AccountingAccountMouvements", (string)null);
+                    b.ToTable("AccountingAccountMouvements");
                 });
 
             modelBuilder.Entity("AgricultureManager.Module.Accounting.Domain.Booking", b =>
@@ -189,7 +192,7 @@ namespace AgricultureManager.Module.Accounting.Migrations
 
                     b.HasIndex("TaxRateId");
 
-                    b.ToTable("AccountingBooking", (string)null);
+                    b.ToTable("AccountingBooking");
                 });
 
             modelBuilder.Entity("AgricultureManager.Module.Accounting.Domain.BookingType", b =>
@@ -212,7 +215,7 @@ namespace AgricultureManager.Module.Accounting.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccountingBookingType", (string)null);
+                    b.ToTable("AccountingBookingType");
                 });
 
             modelBuilder.Entity("AgricultureManager.Module.Accounting.Domain.Document", b =>
@@ -240,7 +243,7 @@ namespace AgricultureManager.Module.Accounting.Migrations
 
                     b.HasIndex("AccountMouvementId");
 
-                    b.ToTable("AccountingDocument", (string)null);
+                    b.ToTable("AccountingDocument");
                 });
 
             modelBuilder.Entity("AgricultureManager.Module.Accounting.Domain.StatementOfAccountDocument", b =>
@@ -276,7 +279,7 @@ namespace AgricultureManager.Module.Accounting.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("AccountingStatementOfAccountDocument", (string)null);
+                    b.ToTable("AccountingStatementOfAccountDocument");
                 });
 
             modelBuilder.Entity("AgricultureManager.Module.Accounting.Domain.TaxRate", b =>
@@ -301,7 +304,7 @@ namespace AgricultureManager.Module.Accounting.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccountingTaxRate", (string)null);
+                    b.ToTable("AccountingTaxRate");
                 });
 
             modelBuilder.Entity("AgricultureManager.Module.Accounting.Domain.AccountMouvement", b =>

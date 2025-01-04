@@ -12,8 +12,8 @@
         <RadzenDataGridColumn TItem="BookingTypeVm" Property="@(nameof(BookingTypeVm.Name))" Title="Name">
             <EditTemplate Context="item">
                 <DataAnnotationsValidator />
-                <RadzenTextBox @bind-Value="item.Short" Style="width:100%" />
-                <ValidationMessage For="@(()=>item.Short)" />
+                <RadzenTextBox @bind-Value="item.Name" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.Name)" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="BookingTypeVm" Property="@(nameof(BookingTypeVm.Short))" Title="Kurz">
@@ -21,6 +21,13 @@
                 <DataAnnotationsValidator />
                 <RadzenTextBox @bind-Value="item.Short" Style="width:100%" />
                 <ValidationMessage For="@(()=>item.Short)" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="BookingTypeVm" Property="@(nameof(BookingTypeVm.CostType))" Title="Kostentyp">
+            <EditTemplate Context="item">
+                <DataAnnotationsValidator />
+                <RadzenDropDown Data="@(Enum.GetValues(typeof(CostTypeVm)).Cast<Enum>())" @bind-Value="item.CostType" Style="width:100%" />
+                <ValidationMessage For="@(()=>item.CostType)" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridInlineEditColumn TItem="BookingTypeVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
