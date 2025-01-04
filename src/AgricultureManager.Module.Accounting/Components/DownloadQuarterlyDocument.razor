@@ -23,11 +23,14 @@
     private int _quarter;
     private int _year;
 
-    protected override Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        _year = DateTime.Now.Year;
-        _quarter = (int)((double)DateTime.Now.Month / 4) + 1;
-        return base.OnInitializedAsync();
+        base.OnInitialized();
+        var currentDate = DateTime.Now;
+        var currentQuarter = (int)Math.Ceiling(currentDate.Month / 3.0);
+        _quarter = currentQuarter == 1 ? 4 : currentQuarter - 1;
+        _year = currentQuarter == 1 ? currentDate.Year - 1 : currentDate.Year;
+
     }
 
     private async Task DownloadFileClick()
@@ -57,5 +60,5 @@
     }
 
     private static IEnumerable<int> GetQuarter()
-        => Enumerable.Range(1, 3);
+        => Enumerable.Range(1, 4);
 }

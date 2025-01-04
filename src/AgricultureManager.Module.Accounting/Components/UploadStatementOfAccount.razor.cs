@@ -14,6 +14,7 @@ namespace AgricultureManager.Module.Accounting.Components
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IJSRuntime JSRuntime { get; set; } = default!;
         [Inject] public IState<AccountState> AccountState { get; set; } = default!;
+        [Parameter] public EventCallback UploadDone { get; set; }
 
         private IJSObjectReference _filePasteModule;
         private IJSObjectReference _filePasteFunctionReference;
@@ -66,6 +67,7 @@ namespace AgricultureManager.Module.Accounting.Components
                 {
                     _file = null;
                     _inputFieldKey = Guid.NewGuid();
+                    await UploadDone.InvokeAsync();
                 }
             }
         }
@@ -95,7 +97,7 @@ namespace AgricultureManager.Module.Accounting.Components
         }
 
         private static IEnumerable<int> GetMonth()
-            => Enumerable.Range(1, 11);
+            => Enumerable.Range(1, 12);
 
     }
 }
