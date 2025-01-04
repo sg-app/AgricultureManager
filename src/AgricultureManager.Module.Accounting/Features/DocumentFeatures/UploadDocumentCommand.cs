@@ -7,13 +7,18 @@ using AgricultureManager.Module.Accounting.Models;
 using AgricultureManager.Module.Accounting.Persistence;
 using AutoMapper;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Logging;
 
 namespace AgricultureManager.Module.Accounting.Features.DocumentFeatures
 {
     public record UploadDocumentCommand(AccountMouvementVm AccountMouvement, IBrowserFile File, string CustomDescription) : IReq<DocumentVm>
     {
     }
-    public class UploadDocumentCommandHandler(IAccountingDbContextFactory contextFactory, IAppDbContextFactory appContextFactory, IMapper mapper) : IReqHandler<UploadDocumentCommand, DocumentVm>
+    public class UploadDocumentCommandHandler(
+        ILogger<UploadDocumentCommandHandler> logger,
+        IAccountingDbContextFactory contextFactory, 
+        IAppDbContextFactory appContextFactory, 
+        IMapper mapper) : IReqHandler<UploadDocumentCommand, DocumentVm>
     {
         public async Task<Response<DocumentVm>> Handle(UploadDocumentCommand request, CancellationToken cancellationToken)
         {
@@ -62,12 +67,13 @@ namespace AgricultureManager.Module.Accounting.Features.DocumentFeatures
                     var entityEntry = await context.Document.AddAsync(doc, cancellationToken);
                     await context.SaveChangesAsync(cancellationToken);
                     await transaction.CommitAsync(cancellationToken);
-                    await request.File.OpenReadStream().CopyToAsync(fStream, cancellationToken);
+                    await request.File.OpenReadStream(4294967295, cancellationToken).CopyToAsync(fStream, cancellationToken);
                     return Response.Success(mapper.Map<DocumentVm>(doc));
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     await transaction.RollbackAsync(cancellationToken);
+                    logger.LogError(ex, "Fehler beim Speichern in der Datenbank. {message}", ex.Message);
                     return Response.Fail<DocumentVm>("Fehler beim Speichern in der Datenbank.");
                 }
             }

@@ -65,7 +65,7 @@ namespace AgricultureManager.Module.Accounting.Features.StatementOfAccountFeatur
                     var entityEntry = await context.StatementOfAccountDocument.AddAsync(doc, cancellationToken);
                     await context.SaveChangesAsync(cancellationToken);
                     await transaction.CommitAsync(cancellationToken);
-                    await request.File.OpenReadStream().CopyToAsync(fStream, cancellationToken);
+                    await request.File.OpenReadStream(4294967295, cancellationToken).CopyToAsync(fStream, cancellationToken);
                     return Response.Success(mapper.Map<StatementOfAccountDocumentVm>(doc));
                 }
                 catch (Exception)
