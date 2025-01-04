@@ -30,7 +30,7 @@ namespace AgricultureManager.Module.Accounting.Features.DocumentFeatures
             var basePath = basePathKeyValue?.Value ?? "share";
             var documentBasePath = documentBasePathKeyValue?.Value ?? "AccountingDocuments";
 
-            var fileDir = Path.Combine(documentBasePath, documentBasePath, GetFiscalYear(request.AccountMouvement.InputDate));
+            var fileDir = Path.Combine(basePath, documentBasePath, GetFiscalYear(request.AccountMouvement.InputDate));
             if (!Directory.Exists(fileDir))
                 Directory.CreateDirectory(fileDir);
 

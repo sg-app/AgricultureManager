@@ -25,7 +25,7 @@ namespace AgricultureManager.Module.Accounting.Features.StatementOfAccountFeatur
             var basePath = basePathKeyValue?.Value ?? "share";
             var documentBasePath = documentBasePathKeyValue?.Value ?? "StateOfAccount";
 
-            var fileDir = Path.Combine(documentBasePath, "StateOfAccount", GetFiscalYear(new DateTime(request.Year, request.Month, 1)));
+            var fileDir = Path.Combine(basePath, documentBasePath, GetFiscalYear(new DateTime(request.Year, request.Month, 1)));
             if (!Directory.Exists(fileDir))
                 Directory.CreateDirectory(fileDir);
 
