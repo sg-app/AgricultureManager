@@ -1,5 +1,6 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Infrastructure.Persistence;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -13,15 +14,6 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var conString = configuration.GetConnectionString("default");
 
-            //services.AddDbContext<AppDbContext>(options =>
-            //{
-            //    options.UseMySql(conString, ServerVersion.AutoDetect(conString));
-            //    options.EnableSensitiveDataLogging(configuration.GetValue("DbSettings:EnableSensitiveDataLogging", false));
-            //}
-            //, ServiceLifetime.Transient);
-
-            //services.AddTransient<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
-
             services.AddDbContextFactory<AppDbContext>(options =>
             {
                 options.UseMySql(conString, ServerVersion.AutoDetect(conString));
@@ -30,6 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddScoped<IAppDbContextFactory, AppDbContextFactory>();
 
+            services.AddDataProtection()
+                .PersistKeysToDbContext<AppDbContext>();
 
             return services;
         }
