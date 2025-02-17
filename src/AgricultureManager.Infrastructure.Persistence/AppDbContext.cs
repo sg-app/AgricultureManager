@@ -1,10 +1,11 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Domain.Entities;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgricultureManager.Infrastructure.Persistence
 {
-    public class AppDbContext : DbContext, IAppDbContext
+    public class AppDbContext : DbContext, IAppDbContext, IDataProtectionKeyContext
     {
         public DbSet<Culture> Culture { get; set; }
         public DbSet<Fertilization> Fertilization { get; set; }
@@ -27,6 +28,8 @@ namespace AgricultureManager.Infrastructure.Persistence
 
         public DbSet<FertilizerPlaning> FertilizerPlaning { get; set; }
         public DbSet<FertilizerPlaningSpecification> FertilizerPlaningSpecification { get; set; }
+
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {

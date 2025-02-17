@@ -37,7 +37,7 @@ if (!app.Environment.IsDevelopment())
     app.MigratePluginDatabase();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

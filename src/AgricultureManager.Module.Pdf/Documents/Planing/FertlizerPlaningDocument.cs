@@ -227,15 +227,16 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                                     .Padding(3);
                             }
                         });
+
                         var summary = _harvestUnits
-                            .SelectMany(h => h.FertilizerPlanings, (h, fp) => new { h.Culture, fp.Fertilizer, fp.Order, Planing = fp, HarvestUnit = h })
-                            .GroupBy(x => new { x.Culture, x.Fertilizer, x.Order })
+                            .SelectMany(h => h.FertilizerPlanings, (h, fp) => new { CultureName = h.Culture.Name, FertilizerName = fp.Fertilizer.Name, fp.Order, Dosage = fp.Dosage, Area = h.Area })
+                            .GroupBy(x => new { x.CultureName, x.FertilizerName, x.Order })
                             .Select(g => new
                             {
-                                CultureName = g.Key.Culture.Name,
-                                FertilizerName = g.Key.Fertilizer.Name,
+                                g.Key.CultureName,
+                                g.Key.FertilizerName,
                                 g.Key.Order,
-                                Amount = Math.Round(g.Sum(f => f.Planing.Dosage * f.HarvestUnit.Area) * 100, 0)
+                                Amount = Math.Round(g.Sum(f => f.Dosage * f.Area) * 100, 0)
                             })
                             .OrderBy(o => o.CultureName)
                             .ThenBy(o => o.Order);

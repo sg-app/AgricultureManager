@@ -2,12 +2,14 @@
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Module.Accounting.Domain;
 using AgricultureManager.Module.Accounting.Persistence;
+using AgricultureManager.SharedComponents.Dialogs;
 using libfintx.FinTS;
 using libfintx.FinTS.Camt;
 using libfintx.FinTS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
+using Radzen;
 
 namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
 {
@@ -24,9 +26,10 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
         public string Password { get; set; } = string.Empty;
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public int TanProcess { get; set; } = 944;
     }
 
-    public class GetMouvementsFromAccountCommandHandler(ILogger<GetMouvementsFromAccountCommandHandler> logger, IAccountingDbContextFactory contextFactory) : IReqHandler<GetMouvementsFromAccountCommand>
+    public class GetMouvementsFromAccountCommandHandler(ILogger<GetMouvementsFromAccountCommandHandler> logger, IAccountingDbContextFactory contextFactory, DialogService dialogService) : IReqHandler<GetMouvementsFromAccountCommand>
     {
         public async Task<ResponseLess> Handle(GetMouvementsFromAccountCommand request, CancellationToken cancellationToken)
         {
@@ -50,7 +53,11 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
                 UserId = request.Username,
                 Pin = request.Password
             };
-            var client = new FinTsClient(connectionDetails);
+            var client = new FinTsClient(connectionDetails)
+            {
+                HIRMS = request.TanProcess.ToString()
+            };
+
             var sync = await client.Synchronization();
 
             HBCIOutputLog(sync.Messages);
@@ -72,8 +79,11 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
                     return Response.Fail("Start und Enddatum dürfen nicht gleich sein.");
                 }
 
+
+                var dialog = new TANDialog(WaitForTanAsync);
+
                 // Send transaction.
-                var transactions = await client.Transactions_camt(null, CamtVersion.Camt052, startDate, endDate);
+                var transactions = await client.Transactions_camt(dialog, CamtVersion.Camt052, startDate, endDate);
 
                 HBCIOutputLog(transactions.Messages);
 
@@ -135,6 +145,17 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
                 }
             }
             return Response.Success();
+        }
+
+        private async Task<string> WaitForTanAsync(TANDialog dialog)
+        {
+            var dialogResult = await dialogService.OpenAsync<TextBoxDialog>("TAN eingabe", new Dictionary<string, object> { { "Title", "Bitte TAN eingeben:" } });
+
+            if (!string.IsNullOrWhiteSpace(dialogResult))
+            {
+                return dialogResult;
+            }
+            return string.Empty;
         }
 
 
