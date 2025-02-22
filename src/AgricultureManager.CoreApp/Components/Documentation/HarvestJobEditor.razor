@@ -78,19 +78,24 @@
 
     private EditHarvestVm? _item;
     private List<EditContext> _editContexts = new();
+    private bool _firstParameterSet;
 
     protected override void OnParametersSet()
     {
-        _editContexts.Clear();
-        if (Item is not null)
+        if (!_firstParameterSet)
         {
-            PrepareEditOneItem();
-            return;
+            _editContexts.Clear();
+            if (Item is not null)
+            {
+                PrepareEditOneItem();
+                return;
+            }
+
+            if (HarvestUnitState.Value.SelectedHarvestUnits?.Count() >= 1)
+                PrepareCreateItems();
         }
 
-        if (HarvestUnitState.Value.SelectedHarvestUnits?.Count() >= 1)
-            PrepareCreateItems();
-
+        _firstParameterSet = true;
     }
 
     private void PrepareEditOneItem()
