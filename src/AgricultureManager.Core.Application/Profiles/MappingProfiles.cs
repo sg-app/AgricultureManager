@@ -1,15 +1,18 @@
 ﻿using AgricultureManager.Core.Application.Features.CultureFeatures;
+using AgricultureManager.Core.Application.Features.FertilizationFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerPlaningFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerPlaningSpecificationFeatures;
 using AgricultureManager.Core.Application.Features.FertilizerToDetailFeatures;
 using AgricultureManager.Core.Application.Features.FieldFeatures;
+using AgricultureManager.Core.Application.Features.HarvestFeatures;
 using AgricultureManager.Core.Application.Features.HarvestUnitFeatures;
 using AgricultureManager.Core.Application.Features.HarvestYearFeatures;
 using AgricultureManager.Core.Application.Features.ParameterFeatures;
 using AgricultureManager.Core.Application.Features.PersonFeatures;
 using AgricultureManager.Core.Application.Features.PlantProtectantFeatures;
+using AgricultureManager.Core.Application.Features.PlantProtectionFeatures;
 using AgricultureManager.Core.Application.Features.SeedCategoryFeatures;
 using AgricultureManager.Core.Application.Features.SeedFeatures;
 using AgricultureManager.Core.Application.Features.SeedTechnologyFeatures;
@@ -98,12 +101,32 @@ namespace AgricultureManager.Core.Application.Profiles
             CreateMap<PlantProtection, PlantProtectionVm>();
 
             CreateMap<Seed, SeedVm>();
-            CreateMap<Seed, SeedVm>();
             CreateMap<AddSeedCommand, Seed>();
             CreateMap<UpdateSeedCommand, Seed>();
             CreateMap<SeedVm, SeedVm>();
             CreateMap<SeedVm, AddSeedCommand>();
             CreateMap<SeedVm, UpdateSeedCommand>();
+
+            CreateMap<Fertilization, FertilizationVm>();
+            CreateMap<AddFertilizationCommand, Fertilization>();
+            CreateMap<UpdateFertilizationCommand, Fertilization>();
+            CreateMap<FertilizationVm, FertilizationVm>();
+            CreateMap<FertilizationVm, AddFertilizationCommand>();
+            CreateMap<FertilizationVm, UpdateFertilizationCommand>();
+
+            CreateMap<PlantProtection, PlantProtectionVm>();
+            CreateMap<AddPlantProtectionCommand, PlantProtection>();
+            CreateMap<UpdatePlantProtectionCommand, PlantProtection>();
+            CreateMap<PlantProtectionVm, PlantProtectionVm>();
+            CreateMap<PlantProtectionVm, AddPlantProtectionCommand>();
+            CreateMap<PlantProtectionVm, UpdatePlantProtectionCommand>();
+
+            CreateMap<Harvest, HarvestVm>();
+            CreateMap<AddHarvestCommand, Harvest>();
+            CreateMap<UpdateHarvestCommand, Harvest>();
+            CreateMap<HarvestVm, HarvestVm>();
+            CreateMap<HarvestVm, AddHarvestCommand>();
+            CreateMap<HarvestVm, UpdateHarvestCommand>();
 
             CreateMap<SeedTechnology, SeedTechnologyVm>();
             CreateMap<AddSeedTechnologyCommand, SeedTechnology>();
@@ -142,7 +165,6 @@ namespace AgricultureManager.Core.Application.Profiles
             CreateMap<FertilizerPlaningVm, EditFertilizerPlaningVm>().ReverseMap();
             CreateMap<EditFertilizerPlaningVm, AddFertilizerPlaningCommand>().ReverseMap();
             CreateMap<EditFertilizerPlaningVm, FertilizerPlaning>();
-
 
         }
     }
