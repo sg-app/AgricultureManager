@@ -12,7 +12,7 @@
             Erntemenge
         </div>
         <div>
-            @Item.Quantity.ToString("N") @UnitState.Value.Units?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name
+            @Item.Quantity.ToString("N2") @UnitState.Value.Units?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name
         </div>
     </div>
     <div class="pe-4">

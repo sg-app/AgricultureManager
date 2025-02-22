@@ -21,7 +21,7 @@
             Dosierung
         </div>
         <div>
-            @Item.Dosage.ToString("N") @UnitState.Value.Units?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name
+            @Item.Dosage.ToString("N2") @UnitState.Value.Units?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name
         </div>
     </div>
 </div>
