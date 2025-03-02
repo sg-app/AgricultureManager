@@ -60,7 +60,10 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
 
             var sync = await client.Synchronization();
 
-            HBCIOutputLog(sync.Messages);
+            HBCIOutputLog("sync",sync.Messages);
+
+            if(sync.Messages.Any(m=>m.Code == "9942"))
+                return Response.Fail("Anmeldedaten sind ungültig.");
 
             if (sync.IsSuccess)
             {
@@ -85,7 +88,7 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
                 // Send transaction.
                 var transactions = await client.Transactions_camt(dialog, CamtVersion.Camt052, startDate, endDate);
 
-                HBCIOutputLog(transactions.Messages);
+                HBCIOutputLog("transactions",transactions.Messages);
 
                 if (transactions.IsSuccess && transactions.Data is not null)
                 {
@@ -163,11 +166,11 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
         /// HBCI-Nachricht loggen
         /// </summary>
         /// <param name="hbcimsg"></param>
-        private void HBCIOutputLog(IEnumerable<HBCIBankMessage> hbcimsg)
+        private void HBCIOutputLog(string step, IEnumerable<HBCIBankMessage> hbcimsg)
         {
             foreach (var msg in hbcimsg)
             {
-                logger.LogDebug("Code: {code} | Typ: {type} | Nachricht: {message}", msg.Code, msg.Type, msg.Message);
+                logger.LogDebug("Step: [{step}] | Code: {code} | Typ: {type} | Nachricht: {message}",step, msg.Code, msg.Type, msg.Message);
             }
         }
     }
