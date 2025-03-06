@@ -47,7 +47,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                 .Include(f => f.Field)
                 .Include(f => f.FertilizerPlanings)
                 .ThenInclude(f => f.Fertilizer)
-                .ThenInclude(f => f.FertilizerDetails)
+                .ThenInclude(f => f.FertilizerToDetails)
                 .Include(f => f.FertilizerPlaningSpecifications)
                 .ThenInclude(f => f.FertilizerDetail)
                 .Where(f => f.HarvestYearId == HarvestYear!.Id && f.FertilizerPlanings.Any())
@@ -81,6 +81,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                                 c.ConstantColumn(70); //Gesamt
                                 c.ConstantColumn(70); //Datum
                                 c.ConstantColumn(70); //Gesamt
+                                c.ConstantColumn(70); //Dosierung
                             });
 
                             //Header
@@ -99,6 +100,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                                 h.Cell().Element(CellStyle).AlignRight().Text("Gesamt");
                                 h.Cell().Element(CellStyle).Text("Datum");
                                 h.Cell().Element(CellStyle).Text("Gesamt");
+                                h.Cell().Element(CellStyle).Text("Dosierung");
                                 static IContainer CellStyle(IContainer container)
                                 {
                                     return container
@@ -125,6 +127,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                                 t.Cell().Element(CellStyle).AlignRight().Text($"{amount:N0} kg");
                                 t.Cell().Element(CellStyle);
                                 t.Cell().Element(CellStyle);
+                                t.Cell().Element(CellStyle);
                                 static IContainer CellStyle(IContainer container)
                                 {
                                     return container
@@ -149,7 +152,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                                     }
                                     t.Cell().Element(CellStyle).AlignRight().Text(detailAmount.ToString("N0"));
                                 }
-                                t.Cell().ColumnSpan(3).Element(CellStyle);
+                                t.Cell().ColumnSpan(4).Element(CellStyle);
 
 
                                 t.Cell().ColumnSpan(2).Element(CellStyle).Text("Anforderung");
@@ -158,7 +161,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                                     var specQuantity = harvestUnit.FertilizerPlaningSpecifications.FirstOrDefault(f => f.FertilizerDetailId == detailId)?.Quantity ?? 0;
                                     t.Cell().Element(CellStyle).AlignRight().Text(specQuantity.ToString("N0"));
                                 }
-                                t.Cell().ColumnSpan(3).Element(CellStyle);
+                                t.Cell().ColumnSpan(4).Element(CellStyle);
 
                                 static IContainer CellStyle(IContainer container)
                                 {
@@ -184,7 +187,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Planing
                                     var color = difference < 0 ? Colors.Red.Darken2 : Colors.Green.Darken2;
                                     t.Cell().Element(CellStyle2).AlignRight().Text(difference.ToString("N0")).FontColor(color);
                                 }
-                                t.Cell().ColumnSpan(3).Element(CellStyle2);
+                                t.Cell().ColumnSpan(4).Element(CellStyle2);
 
                                 static IContainer CellStyle2(IContainer container)
                                 {
