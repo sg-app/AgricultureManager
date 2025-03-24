@@ -4,33 +4,30 @@
 @using AgricultureManager.Core.Application.Store.Features.FertilizationJobStore
 
 <RadzenButton class="rz-border-radius-10 rz-shadow-4"
-              Click="OnInsertClicked"
-              ButtonStyle="ButtonStyle.Primary"
-              Size="ButtonSize.Small"
-              Icon="add"
-              Disabled="@_isInserting" />
+Click="OpenEditDialog"
+ButtonStyle="ButtonStyle.Primary"
+Size="ButtonSize.Small"
+Icon="add" />
 
 @if (HarvestUnitState.Value.SelectedHarvestUnits?.Count == 1)
 {
     <RadzenDataList class="pt-2"
-                    Data="@FertilizationJobState.Value.Fertilizations"
-                    IsLoading="@FertilizationJobState.Value.IsLoading"
-                    WrapItems="true">
+    Data="@FertilizationJobState.Value.Fertilizations.OrderBy(x=>x.Date)"
+    IsLoading="@FertilizationJobState.Value.IsLoading"
+    WrapItems="true">
         <Template Context="item">
             <RadzenCard class="position-relative" Style="width:600px">
                 <div class="position-absolute translate-middle-y top-0 start-0">
                     <RadzenButton class="rz-border-radius-10 rz-shadow-4"
-                                  Click="@(()=>OnEditClicked(item))"
-                                  ButtonStyle="ButtonStyle.Secondary"
-                                  Icon="edit"
-                                  Disabled="@_isInserting"
-                                  Size="ButtonSize.Small" />
+                    Click="@(()=>OnEditClicked(item))"
+                    ButtonStyle="ButtonStyle.Secondary"
+                    Icon="edit"
+                    Size="ButtonSize.Small" />
                     <RadzenButton class="rz-border-radius-10 rz-shadow-4"
-                                  Click="@(()=>OnRemoveClicked(item))"
-                                  ButtonStyle="ButtonStyle.Warning"
-                                  Icon="delete"
-                                  Disabled="@_isInserting"
-                                  Size="ButtonSize.Small" />
+                    Click="@(()=>OnRemoveClicked(item))"
+                    ButtonStyle="ButtonStyle.Warning"
+                    Icon="delete"
+                    Size="ButtonSize.Small" />
                 </div>
                 <div class="pt-3">
                     <FertilizationJobDetail Item="item" />
@@ -38,10 +35,6 @@
             </RadzenCard>
         </Template>
     </RadzenDataList>
-}
-@if (_isInserting)
-{
-    <FertilizationJobEditor Item="@_selectedItem" OnClose="OnEditorClosed" />
 }
 
 @code {
@@ -51,13 +44,13 @@
     [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
     [Inject] public IState<FertilizationJobState> FertilizationJobState { get; set; } = default!;
 
-    private bool _isInserting;
     private FertilizationVm? _selectedItem;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         HarvestUnitState.StateChanged += LoadData;
+        LoadData(null, default!);
     }
 
     private void LoadData(object? sender, EventArgs e)
@@ -67,11 +60,6 @@
             return;
 
         Dispatcher.Dispatch(new LoadFertilizationJobDataAction((Guid)harvestUnitId));
-    }
-
-    private void OnInsertClicked()
-    {
-        _isInserting = true;
     }
 
     private async Task OnRemoveClicked(FertilizationVm item)
@@ -85,16 +73,21 @@
             Dispatcher.Dispatch(new RemoveFertilizationJobAction(item.Id));
     }
 
-    private void OnEditorClosed()
+    private async Task OpenEditDialog()
     {
-        _isInserting = false;
+        await DialogService.OpenAsync<FertilizationJobEditor>("Bearbeiten",
+            new Dictionary<string, object?> {
+                { nameof(FertilizationJobEditor.Item), _selectedItem }
+                            });
+
         _selectedItem = null;
+
     }
 
-    private void OnEditClicked(FertilizationVm item)
+    private async Task OnEditClicked(FertilizationVm item)
     {
         _selectedItem = item;
-        _isInserting = true;
+        await OpenEditDialog();
     }
 
     public void Dispose()

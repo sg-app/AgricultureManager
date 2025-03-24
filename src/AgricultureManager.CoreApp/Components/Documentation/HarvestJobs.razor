@@ -4,16 +4,15 @@
 @using AgricultureManager.Core.Application.Store.Features.HarvestJobStore
 
 <RadzenButton class="rz-border-radius-10 rz-shadow-4"
-              Click="OnInsertClicked"
+              Click="OpenEditDialog"
               ButtonStyle="ButtonStyle.Primary"
               Size="ButtonSize.Small"
-              Icon="add"
-              Disabled="@_isInserting" />
+              Icon="add" />
 
 @if (HarvestUnitState.Value.SelectedHarvestUnits?.Count == 1)
 {
     <RadzenDataList class="pt-2"
-                    Data="@HarvestJobState.Value.Harvests"
+                    Data="@HarvestJobState.Value.Harvests.OrderBy(x=>x.Date)"
                     IsLoading="@HarvestJobState.Value.IsLoading"
                     WrapItems="true">
         <Template Context="item">
@@ -23,13 +22,11 @@
                                   Click="@(()=>OnEditClicked(item))"
                                   ButtonStyle="ButtonStyle.Secondary"
                                   Icon="edit"
-                                  Disabled="@_isInserting"
                                   Size="ButtonSize.Small" />
                     <RadzenButton class="rz-border-radius-10 rz-shadow-4"
                                   Click="@(()=>OnRemoveClicked(item))"
                                   ButtonStyle="ButtonStyle.Warning"
                                   Icon="delete"
-                                  Disabled="@_isInserting"
                                   Size="ButtonSize.Small" />
                 </div>
                 <div class="pt-3">
@@ -39,10 +36,6 @@
         </Template>
     </RadzenDataList>
 }
-@if (_isInserting)
-{
-    <HarvestJobEditor Item="@_selectedItem" OnClose="OnEditorClosed" />
-}
 
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
@@ -51,13 +44,13 @@
     [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
     [Inject] public IState<HarvestJobState> HarvestJobState { get; set; } = default!;
 
-    private bool _isInserting;
     private HarvestVm? _selectedItem;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         HarvestUnitState.StateChanged += LoadData;
+        LoadData(null, default!);
     }
 
     private void LoadData(object? sender, EventArgs e)
@@ -67,11 +60,6 @@
             return;
 
         Dispatcher.Dispatch(new LoadHarvestJobDataAction((Guid)harvestUnitId));
-    }
-
-    private void OnInsertClicked()
-    {
-        _isInserting = true;
     }
 
     private async Task OnRemoveClicked(HarvestVm item)
@@ -85,16 +73,20 @@
             Dispatcher.Dispatch(new RemoveHarvestJobAction(item.Id));
     }
 
-    private void OnEditorClosed()
+    private async Task OpenEditDialog()
     {
-        _isInserting = false;
+        await DialogService.OpenAsync<HarvestJobEditor>("Bearbeiten",
+            new Dictionary<string, object?> {
+                { nameof(HarvestJobEditor.Item), _selectedItem }
+                            });
+
         _selectedItem = null;
     }
 
-    private void OnEditClicked(HarvestVm item)
+    private async Task OnEditClicked(HarvestVm item)
     {
         _selectedItem = item;
-        _isInserting = true;
+        await OpenEditDialog();
     }
 
     public void Dispose()

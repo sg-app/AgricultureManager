@@ -68,13 +68,13 @@
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public IMapper Mapper { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
     [Inject] public IState<UnitState> UnitState { get; set; } = default!;
     [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
 
     [Parameter] public HarvestVm? Item { get; set; }
-    [Parameter] public EventCallback OnClose { get; set; }
 
     private EditHarvestVm? _item;
     private List<EditContext> _editContexts = new();
@@ -182,7 +182,7 @@
                 }
 
             }
-            await OnClose.InvokeAsync();
+            DialogService.Close();
         }
     }
 
@@ -200,6 +200,6 @@
                 await OnSubmit();
         }
         else
-            await OnClose.InvokeAsync();
+            DialogService.Close();
     }
 }

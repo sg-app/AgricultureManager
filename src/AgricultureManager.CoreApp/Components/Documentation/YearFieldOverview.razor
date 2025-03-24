@@ -7,39 +7,42 @@
 <div class="container-fluid">
     <div class="row">
 
-    <div class="col-xxl-4 col-xl-6 col-md-8">
-        <RadzenDataGrid Value="@HarvestUnitState.Value.SelectedHarvestUnits"
-                        ValueChanged="@(x=>Dispatcher.Dispatch(new SetSelectedHarvestUnitsAction(x)))"
-                        AllowSorting="true"
-                        Data="@HarvestUnitState.Value.HarvestUnitsOverview"
-                        TItem="HarvestUnitOverview"
-                        SelectionMode="@(_allowMultiSelectOnRowClick ? DataGridSelectionMode.Multiple : DataGridSelectionMode.Single)"
-                        IsLoading=@HarvestUnitState.Value.IsLoading
-                        LoadData="@LoadData"
-                        Density="Density.Compact">
-            <Columns>
-                @if (_allowMultiSelectOnRowClick)
-                {
-                    <RadzenDataGridColumn OrderIndex="-1" Width="60px" Sortable="false" Filterable="false">
+        <div class="col-xxl-4 col-xl-6 col-md-8">
+            <RadzenDataGrid Value="@HarvestUnitState.Value.SelectedHarvestUnits"
+                            ValueChanged="@(x=>Dispatcher.Dispatch(new SetSelectedHarvestUnitsAction(x)))"
+                            AllowSorting="true"
+                            Data="@HarvestUnitState.Value.HarvestUnitsOverview"
+                            TItem="HarvestUnitOverview"
+                            SelectionMode="@(_allowMultiSelectOnRowClick ? DataGridSelectionMode.Multiple : DataGridSelectionMode.Single)"
+                            IsLoading=@HarvestUnitState.Value.IsLoading
+                            LoadData="@LoadData"
+                            Density="Density.Compact">
+                <Columns>
+                    @if (_allowMultiSelectOnRowClick)
+                    {
+                        <RadzenDataGridColumn OrderIndex="-1" Width="60px" Sortable="false" Filterable="false">
+                            <Template Context="data">
+                                <RadzenCheckBox TriState="false" Value="@(HarvestUnitState.Value.SelectedHarvestUnits != null && HarvestUnitState.Value.SelectedHarvestUnits.Contains(data))" TValue="bool" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                    }
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.HarvestUnitName))" Title="Name" />
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.FieldName))" Title="Feld" />
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.Area))" Title="Fläche">
                         <Template Context="data">
-                            <RadzenCheckBox TriState="false" Value="@(HarvestUnitState.Value.SelectedHarvestUnits != null && HarvestUnitState.Value.SelectedHarvestUnits.Contains(data))" TValue="bool" />
+                            @data.Area ha
                         </Template>
                     </RadzenDataGridColumn>
-                }
-                <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.HarvestUnitName))" Title="Name" />
-                <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.FieldName))" Title="Feld" />
-                <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.Area))" Title="Fläche">
-                    <Template Context="data">
-                        @data.Area ha
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.CultureShortName))" Title="Kultur" />
-            </Columns>
-        </RadzenDataGrid>
-    </div>
+                    <RadzenDataGridColumn TItem="HarvestUnitOverview" Property="@(nameof(HarvestUnitOverview.CultureShortName))" Title="Kultur" />
+                </Columns>
+            </RadzenDataGrid>
+        </div>
         <div class="col-xxl-8">
-        <JobsTabs />
-    </div>
+            @if(HarvestUnitState.Value.SelectedHarvestUnits?.Count > 0)
+            {
+                <JobsTabs />
+            }
+        </div>
     </div>
 
 </div>
