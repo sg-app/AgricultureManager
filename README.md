@@ -1,6 +1,11 @@
 # AgricultureManager
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build and Publish](https://github.com/sg-app/AgricultureManager/actions/workflows/dotnet.yml/badge.svg)](https://github.com/sg-app/AgricultureManager/actions/workflows/dotnet.yml)
+![GitHub Release](https://img.shields.io/github/v/release/sg-app/AgricultureManager)
+![GitHub Tag](https://img.shields.io/github/v/tag/sg-app/AgricultureManager)
+
+
 
 AgricultureManager is a comprehensive application designed to manage various aspects of agricultural operations. This project includes features for managing harvest documentation, accounting, and more.
 
