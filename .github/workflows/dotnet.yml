@@ -84,9 +84,8 @@ jobs:
       packages: write
 
     steps:
-      - name: Debug new_version
-        run: | 
-          echo "New version: ${{ needs.semantic-version.outputs.new_version }}"
+      - name: Checkout code
+        uses: actions/checkout@v4
         
       - name: Docker meta
         id: meta
