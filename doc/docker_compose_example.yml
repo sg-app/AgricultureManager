@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb
+    container_name: agriculturemanager_db
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=my-secret-pw
+      
+  agriculturemanager:
+    image: ghcr.io/sg-app/agriculturemanager:latest
+    container_name: agriculturemanager_ui
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__default=Server=db;Database=AgricultureManager;Uid=root;Pwd=my-secret-pw
+      - DetailedErrors=false
+      - NLog__rules__2__minLevel=Debug
+      - DbSettings__EnableSensitiveDataLogging=false
+    ports:
+      - 6020:8080
+    volumes:
+      - agriculturemanager_log:/app/log/
+      - agriculturemanager_data:/app/share/
+
+volumes:
+  agriculturemanager_log:
+  agriculturemanager_data:
