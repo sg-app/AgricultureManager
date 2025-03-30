@@ -5,13 +5,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>85d8f614-3d09-46e8-ac14-d8f8ee18f5fb</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <Version>0.25.0</Version>
+    <Version>1.0.0-beta.1</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AgricultureManager.Infrastructure.Persistence\AgricultureManager.Infrastructure.Persistence.csproj" />
-    <ProjectReference Include="..\AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj" />
-    <ProjectReference Include="..\AgricultureManager.SharedComponents\AgricultureManager.SharedComponents.csproj" />
+    <ProjectReference Include="..\AgricultureManager.Infrastructure.Persistence\AgricultureManager.Infrastructure.Persistence.csproj"/>
+    <ProjectReference Include="..\AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj"/>
+    <ProjectReference Include="..\AgricultureManager.SharedComponents\AgricultureManager.SharedComponents.csproj"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Module.Pdf\AgricultureManager.Module.Pdf.csproj">
@@ -22,14 +22,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="wwwroot\bootstrap\" />
+    <Folder Include="wwwroot\bootstrap\"/>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.15" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0"/>
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.15"/>
   </ItemGroup>
 </Project>
