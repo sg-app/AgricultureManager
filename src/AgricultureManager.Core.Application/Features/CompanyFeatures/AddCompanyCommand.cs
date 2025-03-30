@@ -9,6 +9,7 @@ namespace AgricultureManager.Core.Application.Features.CompanyFeatures
 {
     public class AddCompanyCommand : IReq<CompanyVm>
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string? CompanyName { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

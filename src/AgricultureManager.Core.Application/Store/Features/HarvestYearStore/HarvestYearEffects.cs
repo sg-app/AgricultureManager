@@ -50,7 +50,8 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
 
             var existYear = await dbContext.HarvestYear
                 .OrderBy(f => f.Year)
-                .LastAsync(cancellationToken);
+                .LastOrDefaultAsync(cancellationToken);
+
             if (existYear is not null)
             {
                 harvestYear = new HarvestYearVm { Id = existYear.Id, Year = existYear.Year };
@@ -65,6 +66,7 @@ namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
                 dispatcher.Dispatch(new SaveSelectedHarvestYearAction(harvestYear));
                 return;
             }
+
         }
 
         [EffectMethod]

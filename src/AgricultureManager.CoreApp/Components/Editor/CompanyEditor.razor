@@ -98,9 +98,9 @@
 
         if (_data is not null)
         {
-            if (string.IsNullOrEmpty(_data.CompanyNumber))
+            if (_data.Id == Guid.Empty)
             {
-                await Mediator.Send(new AddCompanyCommand()
+                var responseAdd = await Mediator.Send(new AddCompanyCommand()
                     {
                         CompanyNumber = arg.CompanyNumber,
                         CompanyName = arg.CompanyName,
@@ -111,10 +111,12 @@
                         Plz = arg.Plz,
                         City = arg.City
                     });
+                if (responseAdd.Success)
+                    Dispatcher.Dispatch(new UpdateCompanyAction(arg));
             }
             else
             {
-                await Mediator.Send(new UpdateCompanyCommand()
+                var responseUpdate = await Mediator.Send(new UpdateCompanyCommand()
                     {
                         CompanyNumber = arg.CompanyNumber,
                         CompanyName = arg.CompanyName,
@@ -125,8 +127,10 @@
                         Plz = arg.Plz,
                         City = arg.City
                     });
+                    if(responseUpdate.Success)
+                    Dispatcher.Dispatch(new UpdateCompanyAction(arg));
             }
-            Dispatcher.Dispatch(new UpdateCompanyAction(arg));
+            Dispatcher.Dispatch(new LoadCompanyDataAction());
         }
     }
 
