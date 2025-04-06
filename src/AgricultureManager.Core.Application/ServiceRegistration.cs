@@ -1,7 +1,10 @@
-﻿using AgricultureManager.Core.Application.Shared.States;
+﻿using AgricultureManager.Core.Application.Services;
+using AgricultureManager.Core.Application.Shared.States;
+using Blazored.LocalStorage;
 using FluentValidation;
 using Fluxor;
 using Fluxor.Blazor.Web.ReduxDevTools;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -35,6 +38,11 @@ namespace AgricultureManager.Core.Application
 #endif
             });
 
+            services.AddScoped<AuthenticationStateProvider, AmAuthenticationStateProvider>();
+#if DEBUG
+            //services.AddScoped<AuthenticationStateProvider, MockAuthenticationStateProvider>();
+#endif
+            services.AddBlazoredLocalStorage();
             return services;
         }
     }

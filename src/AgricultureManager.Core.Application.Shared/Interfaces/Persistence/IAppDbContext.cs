@@ -1,4 +1,5 @@
 ﻿using AgricultureManager.Core.Domain.Entities;
+using AgricultureManager.Core.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -32,6 +33,8 @@ namespace AgricultureManager.Core.Application.Shared.Interfaces.Persistence
 
         DbSet<FertilizerPlaning> FertilizerPlaning { get; set; }
         DbSet<FertilizerPlaningSpecification> FertilizerPlaningSpecification { get; set; }
+
+        DbSet<User> User { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

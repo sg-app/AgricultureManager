@@ -1,0 +1,12 @@
+﻿@page "/logout"
+@inject NavigationManager NavigationManager
+
+@code {
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+    protected override void OnInitialized()
+    {
+        if (AuthenticationStateProvider is AmAuthenticationStateProvider stateProvider)
+            stateProvider.Logout();
+        NavigationManager.NavigateTo("/", true);
+    }
+}
