@@ -1,3 +1,12 @@
+# [1.1.0](https://github.com/sg-app/AgricultureManager/compare/v1.0.0...v1.1.0) (2025-04-18)
+
+
+### Features
+
+* **auth:** add user management and authentication features ([4e47b4c](https://github.com/sg-app/AgricultureManager/commit/4e47b4c8e1bb0e47e101e32254fab5fb7e3499a0))
+* enhance Docker tagging and improve data handling ([6b4520c](https://github.com/sg-app/AgricultureManager/commit/6b4520cbcf52364b315c4462b34ae0ccec111bbe))
+* enhance user management and validation features ([b145c4b](https://github.com/sg-app/AgricultureManager/commit/b145c4b68b941f027e7771c382569b5d1f7ec852))
+
 # [1.1.0-beta.1](https://github.com/sg-app/AgricultureManager/compare/v1.0.0...v1.1.0-beta.1) (2025-03-30)
 
 
