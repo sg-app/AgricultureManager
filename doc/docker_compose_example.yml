@@ -20,6 +20,8 @@ services:
       - DetailedErrors=false
       - NLog__rules__2__minLevel=Debug
       - DbSettings__EnableSensitiveDataLogging=false
+      - Admin__Username=Admin
+      - Admin__Password=Password
     ports:
       - 6020:8080
     volumes:

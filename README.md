@@ -24,7 +24,7 @@
 
 ## Installation
 
-[Docker Componse Example](https://github.com/sg-app/AgricultureManager/doc/docker_compose_example.yml)
+[Docker Componse Example](./doc/docker_compose_example.yml)
 
 
 ## Project Structure
@@ -56,4 +56,4 @@ The project is structured into several modules, each responsible for different f
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.txt) file for details.
