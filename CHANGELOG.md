@@ -1,3 +1,10 @@
+## [1.1.1-beta.1](https://github.com/sg-app/AgricultureManager/compare/v1.1.0...v1.1.1-beta.1) (2025-04-18)
+
+
+### Bug Fixes
+
+* versions ([93690df](https://github.com/sg-app/AgricultureManager/commit/93690df8dbcc53617e7e5a4b2fe4cebf0cc99ad6))
+
 # [1.1.0](https://github.com/sg-app/AgricultureManager/compare/v1.0.0...v1.1.0) (2025-04-18)
 
 
