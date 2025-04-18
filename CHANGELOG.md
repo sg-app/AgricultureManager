@@ -1,3 +1,10 @@
+# [1.1.0-beta.1](https://github.com/sg-app/AgricultureManager/compare/v1.0.0...v1.1.0-beta.1) (2025-03-30)
+
+
+### Features
+
+* enhance Docker tagging and improve data handling ([6b4520c](https://github.com/sg-app/AgricultureManager/commit/6b4520cbcf52364b315c4462b34ae0ccec111bbe))
+
 # 1.0.0 (2025-03-30)
 
 

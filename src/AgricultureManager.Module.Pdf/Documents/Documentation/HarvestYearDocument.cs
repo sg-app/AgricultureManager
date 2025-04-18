@@ -29,10 +29,29 @@ namespace AgricultureManager.Module.Pdf.Documents.Documentation
             ArgumentNullException.ThrowIfNull(HarvestYear, nameof(HarvestYear));
 
             Task.Run(LoadData).GetAwaiter().GetResult();
-
-            foreach (var harvestUnit in _harvestUnits)
+            if (_harvestUnits.Any())
             {
-                _currentHarvestUnitId = harvestUnit.Id;
+
+                foreach (var harvestUnit in _harvestUnits)
+                {
+                    _currentHarvestUnitId = harvestUnit.Id;
+                    container.Page(page =>
+                    {
+
+                        page.Size(PageSizes.A4.Landscape());
+                        page.DefaultTextStyle(t => t.FontSize(8));
+                        page.Margin(25);
+
+                        page.Header().CustomHeader($"Schlagdokumentation - Ernte {HarvestYear.Year}");
+
+                        page.Content().Element(ComposeContent);
+
+                        page.Footer().CustomFooter();
+                    });
+                }
+            }
+            else
+            {
                 container.Page(page =>
                 {
 
@@ -40,11 +59,7 @@ namespace AgricultureManager.Module.Pdf.Documents.Documentation
                     page.DefaultTextStyle(t => t.FontSize(8));
                     page.Margin(25);
 
-                    page.Header().CustomHeader($"Schlagdokumentation - Ernte {HarvestYear.Year}");
-
-                    page.Content().Element(ComposeContent);
-
-                    page.Footer().CustomFooter();
+                    page.Header().CustomHeader($"Keine Daten vorhanden.");
                 });
             }
         }

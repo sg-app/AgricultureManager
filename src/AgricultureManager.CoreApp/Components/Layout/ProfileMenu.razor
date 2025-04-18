@@ -1,0 +1,17 @@
+﻿<RadzenProfileMenu>
+    <Template>
+        <RadzenIcon Icon="account_circle" />
+    </Template>
+    <ChildContent>
+        <AuthorizeView>
+            <Authorized>
+                <RadzenProfileMenuItem Text="Einstellungen" Path="usersettings" Icon="settings" />
+                <RadzenProfileMenuItem Text="Benutzerverwaltung" Path="usermanagement" Icon="manage_accounts" />
+                <RadzenProfileMenuItem Text="Logout" Path="logout" Icon="logout" />
+            </Authorized>
+            <NotAuthorized>
+                <RadzenProfileMenuItem Text="Login" Path="login" Icon="login" />
+            </NotAuthorized>
+        </AuthorizeView>
+    </ChildContent>
+</RadzenProfileMenu>

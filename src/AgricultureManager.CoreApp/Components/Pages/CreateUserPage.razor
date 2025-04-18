@@ -1,0 +1,60 @@
+﻿@page "/createuser"
+@attribute [Authorize]
+@using AgricultureManager.Core.Application.Features.IdentityFeatures
+<RadzenTemplateForm TItem="UserVm" Data="@_userVm" Submit="OnSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <RadzenStack Gap="1rem">
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="4">
+                <RadzenLabel Text="Benutzername" Component="UserName" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="8">
+                <RadzenTextBox @bind-Value="_userVm.UserName" Placeholder="Benutzername" Style="width: 100%;" Name="UserName" />
+                <ValidationMessage For="@(()=>_userVm.UserName)" />
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="4">
+                <RadzenLabel Text="Passwort" Component="Password" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="8">
+                <RadzenPassword @bind-Value="_userVm.Password" Placeholder="Passwort" Style="width: 100%;" Name="Password" />
+                <ValidationMessage For="@(()=>_userVm.Password)" />
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="4">
+                <RadzenLabel Text="Vorname" Component="Firstname" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="8">
+                <RadzenTextBox @bind-Value="_userVm.Firstname" Placeholder="Vorname" Style="width: 100%;" Name="Firstname" />
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="4">
+                <RadzenLabel Text="Nachname" Component="Lastname" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="8">
+                <RadzenTextBox @bind-Value="_userVm.Lastname" Placeholder="Nachname" Style="width: 100%;" Name="Lastname" />
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+    <RadzenButton Text="Erstellen" ButtonType="ButtonType.Submit" />
+</RadzenTemplateForm>
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+
+    private UserVm _userVm = new();
+
+    private async Task OnSubmit(UserVm item)
+    {
+        var response = await Mediator.Send(new AddUserCommand(item.UserName, item.Firstname, item.Lastname, item.Password));
+        if (response.Success)
+            NavigationManager.NavigateTo("/");
+        
+    }
+}

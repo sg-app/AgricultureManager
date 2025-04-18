@@ -13,12 +13,17 @@
 <Fluxor.Blazor.Web.StoreInitializer />
 <Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="@_assemblies">
     <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+            <NotAuthorized>
+                <h1>Nicht Authorisiert</h1>
+                <p>Bitte anmelden!</p>
+            </NotAuthorized>
+        </AuthorizeRouteView>
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>
 
-@code{
+@code {
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public PluginAssemblyProvider pluginAssemblyProvider { get; set; } = default!;
     private IEnumerable<Assembly> _assemblies = [];

@@ -14,26 +14,40 @@
                 </RadzenStack>
             </div>
             <div class="ms-auto p-2">
+                <ProfileMenu />
+                <AuthorizeView>
+                    <Authorized>
+                        <span class="pe-3">@context.User.Identity?.Name</span>
+                    </Authorized>
+                </AuthorizeView>
                 <HarvestYearSelector />
             </div>
         </div>
     </RadzenHeader>
     <RadzenSidebar @bind-Expanded="@sidebar1Expanded">
         <RadzenPanelMenu>
-            <RadzenPanelMenuItem Text="Home" Path="#" Icon="home" />
-            <RadzenPanelMenuItem Text="Schlagdokumentation" Path="documentation" Icon="home" />
-            <RadzenPanelMenuItem Text="Module">
-                <RadzenPanelMenuItem Text="Düngeplanung" Path="fertilizerplaning" />
-                @foreach (var item in _menuItems)
-                {
-                    @BuildMenuItem(item)
-                }
-            </RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Daten">
-                <RadzenPanelMenuItem Text="Betrieb" Path="company" />
-                <RadzenPanelMenuItem Text="Stammdaten" Path="masterdata" />
-                <RadzenPanelMenuItem Text="Erntejahr bearbeiten" Path="harvestyear/editor" />
-            </RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Home" Path="/" Icon="home" />
+            <AuthorizeView>
+                <Authorized>
+                    <RadzenPanelMenuItem Text="Schlagdokumentation" Path="documentation" Icon="home" />
+                    <RadzenPanelMenuItem Text="Module">
+                        <RadzenPanelMenuItem Text="Düngeplanung" Path="fertilizerplaning" />
+                        @foreach (var item in _menuItems)
+                        {
+                            @BuildMenuItem(item)
+                        }
+                    </RadzenPanelMenuItem>
+                    <RadzenPanelMenuItem Text="Daten">
+                        <RadzenPanelMenuItem Text="Betrieb" Path="company" />
+                        <RadzenPanelMenuItem Text="Stammdaten" Path="masterdata" />
+                        <RadzenPanelMenuItem Text="Erntejahr bearbeiten" Path="harvestyear/editor" />
+                    </RadzenPanelMenuItem>
+                    <RadzenPanelMenuItem Text="Logout" Path="logout" Icon="logout" />
+                </Authorized>
+                <NotAuthorized>
+                    <RadzenPanelMenuItem Text="Login" Path="login" Icon="login" />
+                </NotAuthorized>
+            </AuthorizeView>
         </RadzenPanelMenu>
     </RadzenSidebar>
     <RadzenBody>
@@ -60,7 +74,7 @@
         _menuItems = ServiceProvider.GetMenuItems();
         base.OnInitialized();
     }
-    
+
     private RenderFragment BuildMenuItem(IMenuItem item) => builder =>
     {
         builder.OpenComponent<RadzenPanelMenuItem>(0);

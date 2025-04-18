@@ -1,4 +1,5 @@
 using AgricultureManager.Core.Application;
+using AgricultureManager.Core.Application.Services;
 using AgricultureManager.CoreApp.Components;
 using AgricultureManager.Infrastructure.Persistence;
 using AgricultureManager.Module.Manager;
@@ -20,6 +21,12 @@ builder.Services.RegisterMasterdata();
 builder.Services.AddCoreApplication(builder.Configuration);
 builder.Services.AddCorePersistence(builder.Configuration);
 
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddAuthentication("Negotiate")
+    .AddNegotiate();
+
+builder.Services.AddAuthorizationCore();
+
 var app = builder.Build();
 
 
@@ -36,11 +43,13 @@ if (!app.Environment.IsDevelopment())
     dbContext.Database.Migrate();
     app.MigratePluginDatabase();
 }
-
+app.InitializeApplication();
 //app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UsePlugins();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

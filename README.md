@@ -1,13 +1,12 @@
 # AgricultureManager
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build and Publish](https://github.com/sg-app/AgricultureManager/actions/workflows/dotnet.yml/badge.svg)](https://github.com/sg-app/AgricultureManager/actions/workflows/dotnet.yml)
 ![GitHub Release](https://img.shields.io/github/v/release/sg-app/AgricultureManager)
 ![GitHub Tag](https://img.shields.io/github/v/tag/sg-app/AgricultureManager)
 
 
 
-AgricultureManager is a comprehensive application designed to manage various aspects of agricultural operations. This project includes features for managing harvest documentation, accounting, and more.
+### AgricultureManager is a comprehensive application designed to manage various aspects of agricultural operations. This project includes features for managing harvest documentation, accounting, and more.
 
 ## Table of Contents
 
@@ -25,19 +24,8 @@ AgricultureManager is a comprehensive application designed to manage various asp
 
 ## Installation
 
-To install and run this project locally, follow these steps:
+[Docker Componse Example](https://github.com/sg-app/AgricultureManager/doc/docker_compose_example.yml)
 
-1. Clone the repository
-2. Navigate to the project directory
-3. Open the solution in Visual Studio 2022.
-4. Restore the NuGet packages
-5. Build the solution
-6. Setup the default MariaDb SQL ConnectionString
-7. Run the application
-
-## Usage
-
-Once the application is running, you can access it via your web browser at `http://localhost:5000`. The application provides various features for managing agricultural operations.
 
 ## Project Structure
 

@@ -1,0 +1,55 @@
+﻿@page "/login"
+@inject NavigationManager NavigationManager
+
+<h3>Login</h3>
+
+<RadzenTemplateForm TItem="UserVm" Data="@_userVm" Submit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <RadzenStack Gap="1rem">
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="4">
+                <RadzenLabel Text="Benutzername" Component="UserName" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="8">
+                <RadzenTextBox @bind-Value="_userVm.UserName" Placeholder="Benutzername" Style="width: 100%;" Name="UserName" />
+                <ValidationMessage For="@(()=>_userVm.UserName)" />
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="4">
+                <RadzenLabel Text="Passwort" Component="Password" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="8">
+                <RadzenTextBox @bind-Value="_userVm.Password" Placeholder="Passwort" Style="width: 100%;" Name="Password" />
+                <ValidationMessage For="@(()=>_userVm.Password)" />
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+    <RadzenButton Text="Login" ButtonType="ButtonType.Submit" />
+</RadzenTemplateForm>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <p style="color:red">@_errorMessage</p>
+}
+
+@code {
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    private string _errorMessage = string.Empty;
+    private UserVm _userVm = new();
+    private async Task HandleLogin(UserVm item)
+    {
+        if (AuthenticationStateProvider is AmAuthenticationStateProvider stateProvider)
+        {
+            var response = await stateProvider.Login(_userVm.UserName, _userVm.Password);
+
+            if (string.IsNullOrEmpty(response.LogonMessage))
+                NavigationManager.NavigateTo("/");
+            else
+                _errorMessage = response.LogonMessage;
+        }
+    }
+}

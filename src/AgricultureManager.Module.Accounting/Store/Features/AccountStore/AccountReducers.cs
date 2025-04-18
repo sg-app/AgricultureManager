@@ -14,7 +14,7 @@ namespace AgricultureManager.Module.Accounting.Store.Features.AccountStore
         {
             var selectedAccount = state.SelectedAccount == null && action.Accounts.Any() 
                 ? action.Accounts.First() 
-                : action.Accounts.First(f=>f.Id == state.SelectedAccount!.Id);
+                : action.Accounts.FirstOrDefault(f=>f.Id == state.SelectedAccount!.Id);
             return state with { IsInitialized = true, IsLoading = false, Accounts = action.Accounts, SelectedAccount = selectedAccount };
         }
 

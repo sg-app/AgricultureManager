@@ -1,0 +1,79 @@
+﻿@page "/usersettings"
+@using AgricultureManager.Core.Application.Features.IdentityFeatures
+@using System.Security.Claims
+@attribute [Authorize]
+
+@if (_user is not null)
+{
+    <RadzenTemplateForm TItem="UserVm" Data="@_user" Submit="OnSubmit">
+        <FluentValidationValidator />
+        <ValidationSummary />
+        <RadzenStack Orientation="Orientation.Vertical">
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Vorname" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="6">
+                    <RadzenTextBox @bind-Value="_user.Firstname" />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Nachname" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="6">
+                    <RadzenTextBox @bind-Value="_user.Lastname" />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Neues Passwort" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="6">
+                    <RadzenPassword @bind-Value="_user.Password" />
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenLabel Text="Passwort wiederholen" />
+                </RadzenColumn>
+                <RadzenColumn Size="12" SizeMD="6">
+                    <RadzenPassword @bind-Value="_user.Password2" />
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenStack>
+        <SaveCancelButton ButtonResult="OnSaveCancelClicked" />
+    </RadzenTemplateForm>
+}
+
+@code {
+    [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
+    private UserVm? _user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        var username = authState.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (!string.IsNullOrEmpty(username))
+        {
+            var response = await Mediator.Send(new GetUserCommand(username));
+            if (response.Success)
+                _user = response.Data;
+        }
+    }
+
+    private void OnSaveCancelClicked(bool save)
+    {
+        if (!save)
+            NavigationManager.NavigateTo("/");
+    }
+
+    private async Task OnSubmit(UserVm user)
+    {
+        var response = await Mediator.Send(new UpdateUserCommand(user.UserName, user.Firstname, user.Lastname, user.Password));
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Domain.Entities;
+using AgricultureManager.Core.Domain.Identity;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,7 @@ namespace AgricultureManager.Infrastructure.Persistence
         public DbSet<FertilizerPlaningSpecification> FertilizerPlaningSpecification { get; set; }
 
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
+        public DbSet<User> User { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -37,6 +39,8 @@ namespace AgricultureManager.Infrastructure.Persistence
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<PlantProtectant>()
                 .Property(p => p.PlantProtectantType)
                 .HasConversion<string>();
