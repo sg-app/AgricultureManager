@@ -62,12 +62,12 @@ namespace AgricultureManager.Core.Application.Services
             return _currentUser;
         }
 
-        public void Logout()
+        public async Task Logout()
         {
             if (_currentUser is null) return;
 
             _currentUser = null;
-            localStorage.RemoveItemAsync(UserTokenKey);
+            await localStorage.RemoveItemAsync(UserTokenKey);
             Notify();
         }
 

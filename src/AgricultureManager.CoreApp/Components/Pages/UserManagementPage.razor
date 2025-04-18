@@ -1,0 +1,112 @@
+﻿@page "/usermanagement"
+@using AgricultureManager.Core.Application.Features.IdentityFeatures
+@attribute [Authorize]
+
+<RadzenDataGrid @ref="_grid"
+                Data="@_users" TItem="UserVm"
+                LoadData="@LoadData"
+                IsLoading="@_isLoading"
+                RowUpdate="@OnUpdateRow"
+                RowCreate="@OnCreateRow"
+                EmptyText="Keine Daten gefunden."
+                Density="Density.Compact"
+                EditMode="DataGridEditMode.Single">
+    <RadzenDataGridColumn TItem="UserVm" Property="@(nameof(UserVm.UserName))" Title="Benutzername">
+        <EditTemplate Context="item">
+            <FluentValidationValidator />
+            <RadzenTextBox @bind-Value="item.UserName" Style="width:100%" Disabled="@_isEdit" />
+            <ValidationMessage For="@(()=>item.UserName)" />
+        </EditTemplate>
+    </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="UserVm" Property="@(nameof(UserVm.Firstname))" Title="Vorname">
+        <EditTemplate Context="item">
+            <RadzenTextBox @bind-Value="item.Firstname" Style="width:100%" />
+            <ValidationMessage For="@(()=>item.Firstname)" />
+        </EditTemplate>
+    </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="UserVm" Property="@(nameof(UserVm.Lastname))" Title="Nachname">
+        <EditTemplate Context="item">
+            <RadzenTextBox @bind-Value="item.Lastname" Style="width:100%" />
+            <ValidationMessage For="@(()=>item.Lastname)" />
+        </EditTemplate>
+    </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="UserVm" Property="@(nameof(UserVm.Password))" Title="Passwort">
+        <EditTemplate Context="item">
+            <RadzenPassword @bind-Value="item.Password" Style="width:100%" Disabled="@_isEdit" />
+            <ValidationMessage For="@(()=>item.Password)" />
+        </EditTemplate>
+    </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="UserVm" Property="@(nameof(UserVm.Password2))" Title="Passwort wiederholen">
+        <EditTemplate Context="item">
+            <RadzenPassword @bind-Value="item.Password2" Style="width:100%" Disabled="@_isEdit" />
+            <ValidationMessage For="@(()=>item.Password2)" />
+        </EditTemplate>
+    </RadzenDataGridColumn>
+    <RadzenDataGridInlineEditColumn TItem="UserVm" DeleteRow="DeleteRow" EditRow="EditRow" CancelEditRow="CancelEditRow" SaveRow="SaveRow" />
+</RadzenDataGrid>
+
+@code {
+    [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] public DialogService DialogService { get; set; } = default!;
+
+    private IEnumerable<UserVm>? _users;
+    private RadzenDataGrid<UserVm> _grid = default!;
+    private UserVm? _itemToEditOriginal;
+    private bool _isEdit;
+    private bool _isLoading;
+
+    private async Task LoadData(LoadDataArgs args)
+    {
+        _isLoading = true;
+        var response = await Mediator.Send(new GetUsersCommand());
+        if (response.Success)
+            _users = response.Data;
+        _isLoading = false;
+    }
+
+    private async Task DeleteRow(UserVm item)
+    {
+        var dialogResponse = await DialogService.Confirm("Soll der Datensatz wirklich gelöscht werden?", "Datensatz löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+        if (dialogResponse is null || dialogResponse == false)
+            return;
+
+        var response = await Mediator.Send(new RemoveUserCommand(item.UserName));
+        if (response.Success)
+            await _grid.Reload();
+        else
+            _grid.CancelEditRow(item);
+    }
+
+    private async Task InsertRow() =>
+        await _grid.InsertRow(new UserVm());
+
+    private async Task EditRow(UserVm item)
+    {
+        _itemToEditOriginal = new UserVm { Firstname = item.Firstname, Lastname = item.Lastname };
+        _isEdit = true;
+        await _grid.EditRow(item);
+    }
+
+    private void CancelEditRow(UserVm item)
+    {
+        _grid.CancelEditRow(item);
+        _isEdit = false;
+        _itemToEditOriginal = null;
+    }
+
+    private async Task SaveRow(UserVm item) =>
+        await _grid.UpdateRow(item);
+
+    private async Task OnUpdateRow(UserVm item)
+    {
+        var response = await Mediator.Send(new UpdateUserCommand(item.UserName, item.Firstname, item.Lastname, item.Password));
+        await _grid.Reload();
+        _isEdit = false;
+        _itemToEditOriginal = null;
+    }
+
+    private async Task OnCreateRow(UserVm item)
+    {
+        await Mediator.Send(new AddUserCommand(item.UserName, item.Firstname, item.Lastname, item.Password));
+    }
+}

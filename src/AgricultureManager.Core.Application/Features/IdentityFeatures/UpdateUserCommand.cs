@@ -20,10 +20,13 @@ namespace AgricultureManager.Core.Application.Features.IdentityFeatures
             {
                 return Response.Fail<UserVm>("Benutzer nicht gefunden.");
             }
-
-            using var hmac = new HMACSHA512();
-            entity.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
-            entity.PasswordSalt = hmac.Key;
+            
+            if (!string.IsNullOrWhiteSpace(request.Password))
+            {
+                using var hmac = new HMACSHA512();
+                entity.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
+                entity.PasswordSalt = hmac.Key;
+            }
             entity.Firstname = request.Firstname;
             entity.Lastname = request.Lastname;
 

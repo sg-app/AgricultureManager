@@ -3,10 +3,10 @@
 
 @code {
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (AuthenticationStateProvider is AmAuthenticationStateProvider stateProvider)
-            stateProvider.Logout();
+            await stateProvider.Logout();
         NavigationManager.NavigateTo("/", true);
     }
 }
