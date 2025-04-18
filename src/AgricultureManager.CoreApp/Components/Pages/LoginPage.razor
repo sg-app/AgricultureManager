@@ -22,7 +22,7 @@
                 <RadzenLabel Text="Passwort" Component="Password" />
             </RadzenColumn>
             <RadzenColumn Size="12" SizeMD="8">
-                <RadzenTextBox @bind-Value="_userVm.Password" Placeholder="Passwort" Style="width: 100%;" Name="Password" />
+                <RadzenPassword @bind-Value="_userVm.Password" Placeholder="Passwort" Style="width: 100%;" Name="Password" />
                 <ValidationMessage For="@(()=>_userVm.Password)" />
             </RadzenColumn>
         </RadzenRow>
