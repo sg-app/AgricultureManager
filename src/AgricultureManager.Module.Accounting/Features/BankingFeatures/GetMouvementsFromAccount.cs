@@ -26,7 +26,7 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
         public string Password { get; set; } = string.Empty;
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public int TanProcess { get; set; } = 944;
+        public int TanProcess { get; set; }
     }
 
     public class GetMouvementsFromAccountCommandHandler(ILogger<GetMouvementsFromAccountCommandHandler> logger, IAccountingDbContextFactory contextFactory, DialogService dialogService) : IReqHandler<GetMouvementsFromAccountCommand>
@@ -34,13 +34,6 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
         public async Task<ResponseLess> Handle(GetMouvementsFromAccountCommand request, CancellationToken cancellationToken)
         {
             
-            //var config = await context.Configuration.FirstOrDefaultAsync(cancellationToken);
-            //if (config == null)
-            //{
-            //    logger.LogError($"Configuration from banking context not loaded!");
-            //    return Response.Fail("Konfiguration nicht geladen.");
-            //}
-
             var connectionDetails = new ConnectionDetails()
             {
                 AccountHolder = request.AccountHolder,
@@ -61,93 +54,101 @@ namespace AgricultureManager.Module.Accounting.Features.BankingFeatures
             var sync = await client.Synchronization();
 
             HBCIOutputLog("sync",sync.Messages);
-
-            if(sync.Messages.Any(m=>m.Code == "9942"))
-                return Response.Fail("Anmeldedaten sind ungültig.");
-
-            if (sync.IsSuccess)
+            try
             {
-                // Setup start and end date.
-                var startDate = request.StartDate;
-                if (startDate == null || startDate < DateTime.UtcNow.AddDays(-90).Date)
-                { startDate = DateTime.UtcNow.AddDays(-90).Date; }
 
-                DateTime? endDate = DateTime.UtcNow.AddDays(-1).Date;
-                logger.LogDebug("Bankstatement collection from {startDate} to {endDate}", startDate, endDate);
+                if (sync.Messages.Any(m => m.Code == "9942"))
+                    return Response.Fail("Anmeldedaten sind ungültig.");
 
-                // Exit when data are actualy.
-                if (startDate == endDate)
+                if (sync.IsSuccess)
                 {
-                    logger.LogInformation($"Banking statement was already loaded. Please try again tomorrow.");
-                    return Response.Fail("Start und Enddatum dürfen nicht gleich sein.");
-                }
+                    // Setup start and end date.
+                    var startDate = request.StartDate;
+                    if (startDate == null || startDate < DateTime.UtcNow.AddDays(-90).Date)
+                    { startDate = DateTime.UtcNow.AddDays(-90).Date; }
 
+                    DateTime? endDate = DateTime.UtcNow.AddDays(-1).Date;
+                    logger.LogDebug("Bankstatement collection from {startDate} to {endDate}", startDate, endDate);
 
-                var dialog = new TANDialog(WaitForTanAsync);
-
-                // Send transaction.
-                var transactions = await client.Transactions_camt(dialog, CamtVersion.Camt052, startDate, endDate);
-
-                HBCIOutputLog("transactions",transactions.Messages);
-
-                if (transactions.IsSuccess && transactions.Data is not null)
-                {
-                    using var context = contextFactory.CreateDbContext();
-                    foreach (var item in transactions.Data)
+                    // Exit when data are actualy.
+                    if (startDate == endDate)
                     {
-                        EntityEntry<AccountMouvement> entry;
-                        foreach (var mouvement in item.Transactions)
+                        logger.LogInformation($"Banking statement was already loaded. Please try again tomorrow.");
+                        return Response.Fail("Start und Enddatum dürfen nicht gleich sein.");
+                    }
+
+
+                    var dialog = new TANDialog(WaitForTanAsync);
+
+                    // Send transaction.
+                    var transactions = await client.Transactions_camt(dialog, CamtVersion.Camt052, startDate, endDate);
+
+                    HBCIOutputLog("transactions", transactions.Messages);
+
+                    if (transactions.IsSuccess && transactions.Data is not null)
+                    {
+                        using var context = contextFactory.CreateDbContext();
+                        foreach (var item in transactions.Data)
                         {
-                            // Save received data to Database.
-                            entry = await context.AccountMouvement.AddAsync(new AccountMouvement
+                            EntityEntry<AccountMouvement> entry;
+                            foreach (var mouvement in item.Transactions)
                             {
-                                Id = Guid.NewGuid(),
-                                AccountId = request.Id,
-                                InputDate = mouvement.InputDate,
-                                ValueDate = mouvement.ValueDate,
-                                TransactionTypeId = mouvement.TransactionTypeId,
-                                TypeCode = mouvement.TypeCode,
-                                PartnerName = mouvement.PartnerName,
-                                Description = mouvement.Description,
-                                Amount = mouvement.Amount,
-                                Text = mouvement.Text,
-                                Pending = mouvement.Pending,
-                                Primanota = mouvement.Primanota,
-                                TextKeyAddition = mouvement.TextKeyAddition,
-                                BankCode = mouvement.BankCode,
-                                AccountCode = mouvement.AccountCode,
-                                EndToEndId = mouvement.EndToEndId,
-                                MandateId = mouvement.MandateId,
-                                ProprietaryRef = mouvement.ProprietaryRef,
-                                CustomerRef = mouvement.CustomerRef,
-                                PaymentInformationId = mouvement.PaymentInformationId,
-                                MessageId = mouvement.MessageId,
-                                Storno = mouvement.Storno
-                            }, cancellationToken);
-                            try
-                            {
-                                var count = await context.SaveChangesAsync(cancellationToken);
-                                logger.LogDebug("{count} rows added to context.", count);
-                            }
-                            catch (Exception ex)
-                            {
-                                entry.State = EntityState.Unchanged;
-                                logger.LogError(ex, "Update not possible. {message}", ex.Message);
+                                // Save received data to Database.
+                                entry = await context.AccountMouvement.AddAsync(new AccountMouvement
+                                {
+                                    Id = Guid.NewGuid(),
+                                    AccountId = request.Id,
+                                    InputDate = mouvement.InputDate,
+                                    ValueDate = mouvement.ValueDate,
+                                    TransactionTypeId = mouvement.TransactionTypeId,
+                                    TypeCode = mouvement.TypeCode,
+                                    PartnerName = mouvement.PartnerName,
+                                    Description = mouvement.Description ?? "unknown",
+                                    Amount = mouvement.Amount,
+                                    Text = mouvement.Text,
+                                    Pending = mouvement.Pending,
+                                    Primanota = mouvement.Primanota,
+                                    TextKeyAddition = mouvement.TextKeyAddition,
+                                    BankCode = mouvement.BankCode,
+                                    AccountCode = mouvement.AccountCode,
+                                    EndToEndId = mouvement.EndToEndId,
+                                    MandateId = mouvement.MandateId,
+                                    ProprietaryRef = mouvement.ProprietaryRef,
+                                    CustomerRef = mouvement.CustomerRef,
+                                    PaymentInformationId = mouvement.PaymentInformationId,
+                                    MessageId = mouvement.MessageId,
+                                    Storno = mouvement.Storno
+                                }, cancellationToken);
+                                try
+                                {
+                                    var count = await context.SaveChangesAsync(cancellationToken);
+                                    logger.LogDebug("{count} rows added to context.", count);
+                                }
+                                catch (Exception ex)
+                                {
+                                    entry.State = EntityState.Unchanged;
+                                    logger.LogError(ex, "Update not possible. {message}", ex.Message);
+                                }
                             }
                         }
+                        //config.BankStatementEndDate = endDate;
+                        var account = await context.Account.FindAsync([request.Id], cancellationToken);
+                        if (account != null)
+                        {
+                            account.LatestSynchronisation = DateTime.UtcNow;
+                            context.Account.Update(account);
+                        }
+                        var countCfg = await context.SaveChangesAsync(cancellationToken);
+                        logger.LogDebug("{countCfg} Configuration updated.", countCfg);
                     }
-                    //config.BankStatementEndDate = endDate;
-                    var account = await context.Account.FindAsync([request.Id], cancellationToken);
-                    if (account != null)
-                    {
-                        account.LatestSynchronisation = DateTime.UtcNow;
-                        context.Account.Update(account);
-                    }
-                    var countCfg = await context.SaveChangesAsync(cancellationToken);
-                    logger.LogDebug("{countCfg} Configuration updated.", countCfg);
                 }
+                return Response.Success();
             }
-            return Response.Success();
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "GetMouvement Failed. {message}", ex.Message);
+                return Response.Fail($"Fehler beim abholen der Kontoauszüge. {ex.Message}");
+            }
         }
 
         private async Task<string> WaitForTanAsync(TANDialog dialog)

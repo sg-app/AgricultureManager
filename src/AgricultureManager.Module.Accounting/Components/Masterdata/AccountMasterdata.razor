@@ -72,6 +72,11 @@
                 <ValidationMessage For="@(()=>item.HbciVersion)" />
             </EditTemplate>
         </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.TanProcess))" Title="TAN-Verfahren">
+            <EditTemplate Context="item">
+                <RadzenNumeric @bind-Value="item.TanProcess" Style="width:100%" ShowUpDown="false" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="AccountVm" Property="@(nameof(AccountVm.Username))" Title="Benutzername">
             <EditTemplate Context="item">
                 <DataAnnotationsValidator />
