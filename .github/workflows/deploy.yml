@@ -2,10 +2,9 @@ name: Publish image to Github container repository
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main, develop]
-    tags:
-      - "v*"
+  workflow_run:
+    workflows: [Build Test and Semantic Versioning]
+    types: [completed]
 
 # Cancel previous PR/branch runs when a new commit is pushed
 #concurrency:
@@ -16,7 +15,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Container Registry
     runs-on: ubuntu-latest
-    if: ${{ contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       actions: read
       contents: write
