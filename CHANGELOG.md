@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/sg-app/AgricultureManager/compare/v1.2.2...v1.2.3) (2025-08-21)
+
+
+### Bug Fixes
+
+* remove premature exit in version determination step ([db1921e](https://github.com/sg-app/AgricultureManager/commit/db1921ecab5594ed8a930dce7b74a8060085f332))
+
 ## [1.2.2](https://github.com/sg-app/AgricultureManager/compare/v1.2.1...v1.2.2) (2025-08-21)
 
 
