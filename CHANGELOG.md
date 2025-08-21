@@ -1,3 +1,10 @@
+# [1.2.0-beta.3](https://github.com/sg-app/AgricultureManager/compare/v1.2.0-beta.2...v1.2.0-beta.3) (2025-08-21)
+
+
+### Features
+
+* **debug:** add mock user for authentication testing ([5ffc439](https://github.com/sg-app/AgricultureManager/commit/5ffc439a4b46d9555995c6b64e9a4d63b738b28a))
+
 # [1.2.0-beta.2](https://github.com/sg-app/AgricultureManager/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2025-08-02)
 
 
