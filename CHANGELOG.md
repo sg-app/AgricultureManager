@@ -1,3 +1,19 @@
+# [1.2.0](https://github.com/sg-app/AgricultureManager/compare/v1.1.1...v1.2.0) (2025-08-21)
+
+
+### Bug Fixes
+
+* add TanProcess property to account commands ([97c7eba](https://github.com/sg-app/AgricultureManager/commit/97c7ebaa75fce0c7aa3cb3acdf5fa2ae62ac8047))
+* comment out concurrency settings in workflows ([baa95fc](https://github.com/sg-app/AgricultureManager/commit/baa95fc7b08b71333639ea7166ce99b823517bee))
+* update CI conditions and job names in workflows ([759f26a](https://github.com/sg-app/AgricultureManager/commit/759f26a3f7d86d41cd33a092de9e5bd64f56e7bc))
+
+
+### Features
+
+* **account:** add TanProcess column and update models ([1dc57a9](https://github.com/sg-app/AgricultureManager/commit/1dc57a95062594b08ea3bb7ce156b6a74c210892))
+* add GitHub Actions workflow for Docker image publishing ([5d3fb08](https://github.com/sg-app/AgricultureManager/commit/5d3fb0805bcb0ca283d7d24bf664841491980568))
+* **debug:** add mock user for authentication testing ([5ffc439](https://github.com/sg-app/AgricultureManager/commit/5ffc439a4b46d9555995c6b64e9a4d63b738b28a))
+
 # [1.2.0-beta.3](https://github.com/sg-app/AgricultureManager/compare/v1.2.0-beta.2...v1.2.0-beta.3) (2025-08-21)
 
 
