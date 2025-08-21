@@ -1,3 +1,10 @@
+# [1.2.0-beta.2](https://github.com/sg-app/AgricultureManager/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2025-08-02)
+
+
+### Bug Fixes
+
+* add TanProcess property to account commands ([97c7eba](https://github.com/sg-app/AgricultureManager/commit/97c7ebaa75fce0c7aa3cb3acdf5fa2ae62ac8047))
+
 # [1.2.0-beta.1](https://github.com/sg-app/AgricultureManager/compare/v1.1.1...v1.2.0-beta.1) (2025-08-02)
 
 
