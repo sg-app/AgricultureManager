@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/sg-app/AgricultureManager/compare/v1.2.0...v1.2.1) (2025-08-21)
+
+
+### Bug Fixes
+
+* update workflow triggers and conditions for deployment ([d292581](https://github.com/sg-app/AgricultureManager/commit/d2925818421a4aba892491a2ea30cd4f174f4002))
+
 # [1.2.0](https://github.com/sg-app/AgricultureManager/compare/v1.1.1...v1.2.0) (2025-08-21)
 
 
