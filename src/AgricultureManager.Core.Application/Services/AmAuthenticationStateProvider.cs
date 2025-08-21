@@ -36,6 +36,9 @@ namespace AgricultureManager.Core.Application.Services
                     _currentUser = null;
                 }
             }
+#if DEBUG
+            _currentUser = new UserVm { Firstname = "Mock", Lastname = "User" };
+#endif
             return CreateAuthenticationState(_currentUser);
         }
 
