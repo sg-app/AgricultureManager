@@ -1,3 +1,24 @@
+# [1.2.0-beta.3](https://github.com/sg-app/AgricultureManager/compare/v1.2.0-beta.2...v1.2.0-beta.3) (2025-08-21)
+
+
+### Features
+
+* **debug:** add mock user for authentication testing ([5ffc439](https://github.com/sg-app/AgricultureManager/commit/5ffc439a4b46d9555995c6b64e9a4d63b738b28a))
+
+# [1.2.0-beta.2](https://github.com/sg-app/AgricultureManager/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2025-08-02)
+
+
+### Bug Fixes
+
+* add TanProcess property to account commands ([97c7eba](https://github.com/sg-app/AgricultureManager/commit/97c7ebaa75fce0c7aa3cb3acdf5fa2ae62ac8047))
+
+# [1.2.0-beta.1](https://github.com/sg-app/AgricultureManager/compare/v1.1.1...v1.2.0-beta.1) (2025-08-02)
+
+
+### Features
+
+* **account:** add TanProcess column and update models ([1dc57a9](https://github.com/sg-app/AgricultureManager/commit/1dc57a95062594b08ea3bb7ce156b6a74c210892))
+
 ## [1.1.1](https://github.com/sg-app/AgricultureManager/compare/v1.1.0...v1.1.1) (2025-04-18)
 
 

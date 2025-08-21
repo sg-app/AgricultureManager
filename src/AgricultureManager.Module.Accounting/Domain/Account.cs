@@ -19,6 +19,7 @@ namespace AgricultureManager.Module.Accounting.Domain
         public string? HbciVersion { get; set; }
         public string Username { get; set; } = string.Empty;
         public string? Password { get; set; }
+        public int TanProcess { get; set; } = 946; // Default value for TAN process
         public DateTime? LatestSynchronisation { get; set; }
 
         public virtual ICollection<AccountMouvement> AccountMouvements { get; set; } = [];

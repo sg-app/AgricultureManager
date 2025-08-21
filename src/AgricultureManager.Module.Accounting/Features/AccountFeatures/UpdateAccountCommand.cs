@@ -21,6 +21,7 @@ namespace AgricultureManager.Module.Accounting.Features.AccountFeatures
         public string? HbciVersion { get; set; }
         public string Username { get; set; } = string.Empty;
         public string? Password { get; set; }
+        public int TanProcess { get; set; }
         public DateTime? LatestSynchronisation { get; set; }
     }
 
