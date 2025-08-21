@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/sg-app/AgricultureManager/compare/v1.2.1...v1.2.2) (2025-08-21)
+
+
+### Bug Fixes
+
+* improve version extraction logic in deployment workflow ([43362f9](https://github.com/sg-app/AgricultureManager/commit/43362f947c59bb7f5d3100b09070b9cd929cf77f))
+
 ## [1.2.1](https://github.com/sg-app/AgricultureManager/compare/v1.2.0...v1.2.1) (2025-08-21)
 
 
