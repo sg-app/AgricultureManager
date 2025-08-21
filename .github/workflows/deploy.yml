@@ -45,7 +45,6 @@ jobs:
           else
             echo "tags=type=raw,value=latest" >> $GITHUB_ENV
           fi
-          exit 1
           echo "Version: ${{ env.VERSION }}"
 
       - name: Docker meta
