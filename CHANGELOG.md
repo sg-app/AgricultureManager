@@ -1,3 +1,10 @@
+# [1.3.0-beta.6](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.5...v1.3.0-beta.6) (2025-10-31)
+
+
+### Bug Fixes
+
+* **ci:** remove unused new_tag output from semantic versioning step ([adbdaf9](https://github.com/sg-app/AgricultureManager/commit/adbdaf968af79d4b20a72611030bd74ab0e5de07))
+
 # [1.3.0-beta.5](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.4...v1.3.0-beta.5) (2025-10-31)
 
 
