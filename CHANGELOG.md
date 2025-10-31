@@ -1,3 +1,10 @@
+# [1.3.0-beta.3](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.2...v1.3.0-beta.3) (2025-10-31)
+
+
+### Features
+
+* **ci:** upgrade .NET SDK to version 9.0.x ([818070e](https://github.com/sg-app/AgricultureManager/commit/818070e11e5f316110785cdc76d1e2f06adfb480))
+
 # [1.3.0-beta.2](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.1...v1.3.0-beta.2) (2025-10-31)
 
 
