@@ -45,7 +45,6 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') && (startsWith(github.event.head_commit.message, 'fix') || startsWith(github.event.head_commit.message, 'feat') || startsWith(github.event.head_commit.message, 'breaking') || startsWith(github.event.head_commit.message, 'Merge')) }}
     outputs:
       new_version: ${{ steps.semantic-release.outputs.new_version }}
-      new_tag: ${{ steps.semantic-release.outputs.new_tag }}
     permissions:
       actions: read
       contents: write
@@ -72,9 +71,7 @@ jobs:
           npx semantic-release | tee release.log
           VERSION=$(cat release.log | grep -oP '(?<=next release version is )[\d\.]+(-beta\.\d+)?')
           echo "new_version=$VERSION" >> $GITHUB_OUTPUT
-          echo "new_tag=$TAG" >> $GITHUB_OUTPUT
           echo "New version: $VERSION"
-          echo "New tag: $TAG"
 
   deploy:
     name: Deploy to GitHub Container Registry
@@ -90,7 +87,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch all history for accurate versioning
-          ref: ${{ needs.semantic-version.outputs.new_tag }}
+          ref: ${{ needs.semantic-version.outputs.new_version }}
       - name: Extract Version from Tag
         id: extract-version
         run: |
