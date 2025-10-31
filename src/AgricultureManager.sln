@@ -22,8 +22,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Core.App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Core.Application.IntegrationTests", "AgricultureManager.Core.Application.IntegrationTests\AgricultureManager.Core.Application.IntegrationTests.csproj", "{C092368C-6DD9-4946-BC1F-AB82D0344E4D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.SharedComponents", "AgricultureManager.SharedComponents\AgricultureManager.SharedComponents.csproj", "{C39B422D-6984-433C-B7D6-AB67426F7692}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.CoreApp", "AgricultureManager.CoreApp\AgricultureManager.CoreApp.csproj", "{3C69B121-D54E-4D89-865B-E923AAF7464E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Module.Api", "AgricultureManager.Module.Api\AgricultureManager.Module.Api.csproj", "{A4C83F7B-8ADE-4B2C-A1E5-F0F5BDBA8AB8}"
@@ -64,10 +62,6 @@ Global
 		{C092368C-6DD9-4946-BC1F-AB82D0344E4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C092368C-6DD9-4946-BC1F-AB82D0344E4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C092368C-6DD9-4946-BC1F-AB82D0344E4D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C39B422D-6984-433C-B7D6-AB67426F7692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C39B422D-6984-433C-B7D6-AB67426F7692}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C39B422D-6984-433C-B7D6-AB67426F7692}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C39B422D-6984-433C-B7D6-AB67426F7692}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C69B121-D54E-4D89-865B-E923AAF7464E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3C69B121-D54E-4D89-865B-E923AAF7464E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C69B121-D54E-4D89-865B-E923AAF7464E}.Release|Any CPU.ActiveCfg = Release|Any CPU

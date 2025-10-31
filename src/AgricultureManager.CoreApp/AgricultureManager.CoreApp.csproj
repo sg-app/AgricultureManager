@@ -11,7 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Infrastructure.Persistence\AgricultureManager.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj" />
-    <ProjectReference Include="..\AgricultureManager.SharedComponents\AgricultureManager.SharedComponents.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Module.Pdf\AgricultureManager.Module.Pdf.csproj">

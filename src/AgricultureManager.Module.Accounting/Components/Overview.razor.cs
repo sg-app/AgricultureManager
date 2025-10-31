@@ -1,9 +1,9 @@
-﻿using AgricultureManager.Module.Accounting.Features.AccountMouvementsFeatures;
+﻿using AgricultureManager.Core.Application.Shared.Components.Dialogs;
+using AgricultureManager.Module.Accounting.Features.AccountMouvementsFeatures;
 using AgricultureManager.Module.Accounting.Features.BankingFeatures;
 using AgricultureManager.Module.Accounting.Models;
 using AgricultureManager.Module.Accounting.Store.Features.AccountStore;
 using AgricultureManager.Module.Accounting.Store.States;
-using AgricultureManager.SharedComponents.Dialogs;
 using AutoMapper;
 using Fluxor;
 using MediatR;
@@ -86,15 +86,18 @@ namespace AgricultureManager.Module.Accounting.Components
             var cmd = Mapper.Map<GetMouvementsFromAccountCommand>(AccountState.Value.SelectedAccount);
             cmd.StartDate = _startDate;
             cmd.EndDate = _endDate;
-            await RequestPasswordIfMissing(cmd);
+            var success = await RequestPasswordIfMissing(cmd);
 
-            var response = await Mediator.Send(cmd);
-            if (response.Success)
-                Dispatcher.Dispatch(new LoadAccountsDataAction());
+            if (success)
+            {
+                var response = await Mediator.Send(cmd);
+                if (response.Success)
+                    Dispatcher.Dispatch(new LoadAccountsDataAction());
+            }
             _isLoading = false;
         }
 
-        private async Task RequestPasswordIfMissing(GetMouvementsFromAccountCommand cmd)
+        private async Task<bool> RequestPasswordIfMissing(GetMouvementsFromAccountCommand cmd)
         {
             if (string.IsNullOrEmpty(cmd.Password))
             {
@@ -107,8 +110,12 @@ namespace AgricultureManager.Module.Accounting.Components
                     );
 
                 if (dialogResult is string password)
+                {
                     cmd.Password = password;
+                    return true;
+                }
             }
+            return false;
         }
     }
 }

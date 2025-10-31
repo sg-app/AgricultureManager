@@ -1,8 +1,8 @@
-﻿using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
+﻿using AgricultureManager.Core.Application.Shared.Components.Dialogs;
+using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Module.Accounting.Domain;
 using AgricultureManager.Module.Accounting.Persistence;
-using AgricultureManager.SharedComponents.Dialogs;
 using libfintx.FinTS;
 using libfintx.FinTS.Camt;
 using libfintx.FinTS.Data;

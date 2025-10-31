@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Interfaces\Services\**" />
-    <EmbeddedResource Remove="Interfaces\Services\**" />
-    <None Remove="Interfaces\Services\**" />
+    <SupportedPlatform Include="browser" />
   </ItemGroup>
 
   <ItemGroup>
