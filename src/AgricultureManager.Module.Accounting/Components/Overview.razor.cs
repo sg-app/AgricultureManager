@@ -40,6 +40,7 @@ namespace AgricultureManager.Module.Accounting.Components
 
         protected override async Task OnInitializedAsync()
         {
+            await base.OnInitializedAsync();
             _startDate = DateTime.Now.AddDays(-60).Date;
             _endDate = DateTime.Now.Date;
             await LoadDataAsync();

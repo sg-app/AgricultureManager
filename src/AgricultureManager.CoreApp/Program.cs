@@ -46,7 +46,7 @@ if (!app.Environment.IsDevelopment())
 app.InitializeApplication();
 //app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.MapStaticAssets();
 app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();

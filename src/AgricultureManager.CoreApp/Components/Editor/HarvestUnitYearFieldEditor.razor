@@ -86,11 +86,12 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        
+
     }
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         HarvestYearState.StateChanged += async (s, e) =>
         {
             await _grid.CollapseAll();

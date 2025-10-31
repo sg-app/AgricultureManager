@@ -11,6 +11,7 @@ namespace AgricultureManager.Module.Manager
 
             var masterdataTypes = AppDomain.CurrentDomain
                 .GetAssemblies()
+                .Where(a => a.GetName().Name?.StartsWith("AgricultureManager.") ?? false)
                 .SelectMany(m => m.GetTypes())
                 .Where(t => t.GetInterfaces().Contains(typeof(IMasterdata)));
 

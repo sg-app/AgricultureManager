@@ -29,7 +29,7 @@ namespace AgricultureManager.Core.Application.Tests
             var handler = new LoggingHandler<ITraceable, object>(_loggerFactoryMock.Object);
 
             // Act
-            await handler.Handle(request.Object, () => Task.FromResult(response), CancellationToken.None);
+            await handler.Handle(request.Object, (r) => Task.FromResult(response), CancellationToken.None);
 
             // Assert
             _loggerMock.VerifyLog(x => x.LogTrace(It.Is<string>(s => s.Contains("Handling request")), It.IsAny<object[]>()), Times.Once);
@@ -45,7 +45,7 @@ namespace AgricultureManager.Core.Application.Tests
             var handler = new LoggingHandler<ITraceable, object>(_loggerFactoryMock.Object);
 
             // Act
-            await handler.Handle(request.Object, () => Task.FromResult(response), CancellationToken.None);
+            await handler.Handle(request.Object, (r) => Task.FromResult(response), CancellationToken.None);
 
             // Assert
             _loggerMock.VerifyLog(x => x.LogTrace(It.Is<string>(s => s.Contains("Handling request")), It.Is<object[]>(o => o[0] is Guid)), Times.Once);
@@ -60,7 +60,7 @@ namespace AgricultureManager.Core.Application.Tests
             var handler = new LoggingHandler<ITraceable, object>(_loggerFactoryMock.Object);
 
             // Act
-            await handler.Handle(request.Object, () => Task.FromResult(response), CancellationToken.None);
+            await handler.Handle(request.Object, (r) => Task.FromResult(response), CancellationToken.None);
 
             // Assert
             _loggerMock.VerifyLog(x => x.LogTrace(It.Is<string>(s => s.Contains("Response for")), It.Is<object[]>(o => o[0] is Guid)), Times.Once);
@@ -75,7 +75,7 @@ namespace AgricultureManager.Core.Application.Tests
             var handler = new LoggingHandler<ITraceable, object>(_loggerFactoryMock.Object);
 
             // Act
-            await handler.Handle(request.Object, () => Task.FromResult(response), CancellationToken.None);
+            await handler.Handle(request.Object, (r) => Task.FromResult(response), CancellationToken.None);
 
             // Assert
             _loggerMock.VerifyLog(x => x.LogTrace(It.Is<string>(s => s.Contains("Handling request")), It.Is<object[]>(o => o[1].ToString() == nameof(ITraceable))), Times.Once);
@@ -90,7 +90,7 @@ namespace AgricultureManager.Core.Application.Tests
             var handler = new LoggingHandler<ITraceable, object>(_loggerFactoryMock.Object);
 
             // Act
-            await handler.Handle(request.Object, () => Task.FromResult(response), CancellationToken.None);
+            await handler.Handle(request.Object, (r) => Task.FromResult(response), CancellationToken.None);
 
             // Assert
             _loggerMock.VerifyLog(x => x.LogTrace(It.Is<string>(s => s.Contains("Response for")), It.Is<object[]>(o => o[1].ToString() == nameof(ITraceable))), Times.Once);

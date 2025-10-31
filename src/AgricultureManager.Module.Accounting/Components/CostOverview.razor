@@ -48,6 +48,7 @@ ValueChanged="OnHarvestYearChanged" />
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         if (HarvestYearState.Value.IsInitialized)
         {
             _harvestYear = HarvestYearState.Value.SelectedHarvestYear;
