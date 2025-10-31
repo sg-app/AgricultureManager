@@ -1,3 +1,10 @@
+# [1.3.0-beta.5](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.4...v1.3.0-beta.5) (2025-10-31)
+
+
+### Features
+
+* **ci:** enhance semantic versioning and deploy workflow with new tag extraction ([b282007](https://github.com/sg-app/AgricultureManager/commit/b2820078d234f077cf15a9a97a410d19e31b6fc3))
+
 # [1.3.0-beta.4](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.3...v1.3.0-beta.4) (2025-10-31)
 
 
