@@ -87,7 +87,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch all history for accurate versioning
-          ref: ${{ needs.semantic-version.outputs.new_version }}
+          ref: refs/tags/v${{ needs.semantic-version.outputs.new_version }}
       - name: Extract Version from Tag
         id: extract-version
         run: |
