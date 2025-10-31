@@ -1,3 +1,10 @@
+# [1.3.0-beta.7](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.6...v1.3.0-beta.7) (2025-10-31)
+
+
+### Bug Fixes
+
+* **ci:** update tag reference format for accurate versioning in deployment ([0ce46ac](https://github.com/sg-app/AgricultureManager/commit/0ce46ace277862ce97f75d79747f510daffa3137))
+
 # [1.3.0-beta.6](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.5...v1.3.0-beta.6) (2025-10-31)
 
 
