@@ -54,7 +54,6 @@ COPY ["AgricultureManager.Core.Application.Shared/AgricultureManager.Core.Applic
 COPY ["AgricultureManager.Core.Domain/AgricultureManager.Core.Domain.csproj", "AgricultureManager.Core.Domain/"]
 COPY ["AgricultureManager.Module.Manager/AgricultureManager.Module.Manager.csproj", "AgricultureManager.Module.Manager/"]
 COPY ["AgricultureManager.Module.Api/AgricultureManager.Module.Api.csproj", "AgricultureManager.Module.Api/"]
-COPY ["AgricultureManager.SharedComponents/AgricultureManager.SharedComponents.csproj", "AgricultureManager.SharedComponents/"]
 RUN dotnet restore "./AgricultureManager.CoreApp/AgricultureManager.CoreApp.csproj"
 
 # Copy Modules
