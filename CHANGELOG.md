@@ -1,3 +1,10 @@
+# [1.3.0-beta.4](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.3...v1.3.0-beta.4) (2025-10-31)
+
+
+### Features
+
+* **ci:** improve workflow branch handling and solution items ([ecae4d8](https://github.com/sg-app/AgricultureManager/commit/ecae4d8f55003478f69c81f8a880d666b57abae2))
+
 # [1.3.0-beta.3](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.2...v1.3.0-beta.3) (2025-10-31)
 
 
