@@ -1,3 +1,12 @@
+# [1.3.0-beta.1](https://github.com/sg-app/AgricultureManager/compare/v1.2.3...v1.3.0-beta.1) (2025-10-31)
+
+
+### Features
+
+* migrate shared components to Razor-based structure, fix cancel load mouvements ([4370a64](https://github.com/sg-app/AgricultureManager/commit/4370a64496cdd270a9a25410e8ae07039d89db3b))
+* upgrade to .NET 9.0 and update dependencies ([24598a1](https://github.com/sg-app/AgricultureManager/commit/24598a1da7ff4a0da4401ab79a34151a546c7751))
+* upgrade to .NET 9.0 and update QuestPDF package ([18c1ff1](https://github.com/sg-app/AgricultureManager/commit/18c1ff162556596b6d32e85c032da36ccb9ea9c9))
+
 ## [1.2.3](https://github.com/sg-app/AgricultureManager/compare/v1.2.2...v1.2.3) (2025-08-21)
 
 
