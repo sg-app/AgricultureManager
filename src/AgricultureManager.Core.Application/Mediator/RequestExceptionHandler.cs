@@ -2,7 +2,7 @@
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace AgricultureManager.Core.Application.Shared.Mediator
+namespace AgricultureManager.Core.Application.Mediator
 {
     public class RequestExceptionHandler<TRequest, TResponse, TException>(ILoggerFactory loggerFactory) : IRequestExceptionHandler<TRequest, TResponse, TException>
         where TResponse : class

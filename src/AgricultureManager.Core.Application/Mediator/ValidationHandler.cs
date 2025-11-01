@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace AgricultureManager.Core.Application.Shared.Mediator
+namespace AgricultureManager.Core.Application.Mediator
 {
     public class ValidationHandler<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators, ILoggerFactory loggerFactory) : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>

@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace AgricultureManager.Core.Application.Shared.Mediator
+namespace AgricultureManager.Core.Application.Mediator
 {
     /// <summary>  
     /// Pipeline behavior for logging requests and responses.  

@@ -21,6 +21,7 @@ namespace AgricultureManager.Core.Application.Shared.Extensions
 
             byte[] encrypted;
 
+#pragma warning disable CA1416 // Validate platform compatibility
             using (Aes aes = Aes.Create())
             {
                 aes.Key = DoExtendKey("AgricultureManager", 32);
@@ -33,6 +34,7 @@ namespace AgricultureManager.Core.Application.Shared.Extensions
                 cryptoStream.FlushFinalBlock();
                 encrypted = memoryStream.ToArray();
             }
+#pragma warning restore CA1416 // Validate platform compatibility
             return Convert.ToBase64String(encrypted);
         }
 
@@ -48,6 +50,7 @@ namespace AgricultureManager.Core.Application.Shared.Extensions
 
             string? plaintext = null;
 
+#pragma warning disable CA1416 // Validate platform compatibility
             using (Aes aes = Aes.Create())
             {
                 aes.Key = DoExtendKey("AgricultureManager", 32);
@@ -61,6 +64,7 @@ namespace AgricultureManager.Core.Application.Shared.Extensions
                 using var sr = new StreamReader(cryptoStream);
                 plaintext = sr.ReadToEnd();
             }
+#pragma warning restore CA1416 // Validate platform compatibility
             return plaintext;
         }
 
