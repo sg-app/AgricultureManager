@@ -1,7 +1,8 @@
-﻿using AgricultureManager.Module.Api.Interfaces;
+﻿using AgricultureManager.Core.Application.Shared.Interfaces;
 using AgricultureManager.Module.Manager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -22,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
-        public static WebApplication UsePlugins(this WebApplication app)
+        public static IHost UsePlugins(this WebApplication app)
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.FullName is not null && f.FullName.Contains("AgricultureManager.Module", StringComparison.OrdinalIgnoreCase));
             foreach (var assembly in assemblies)
@@ -44,7 +45,8 @@ namespace Microsoft.Extensions.DependencyInjection
             var assembliesFolder = new DirectoryInfo(assemblyPath);
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            var dlls = assembliesFolder.EnumerateFiles($"*.dll", SearchOption.AllDirectories);
+            //var dlls = assembliesFolder.EnumerateFiles($"*.dll", SearchOption.AllDirectories);
+            var dlls = assembliesFolder.EnumerateFiles("AgricultureManager.*.dll", SearchOption.AllDirectories);
 
             foreach (var dll in dlls)
             {

@@ -1,4 +1,4 @@
-﻿namespace AgricultureManager.Module.Api.Interfaces
+﻿namespace AgricultureManager.Core.Application.Shared.Interfaces
 {
     public interface IMasterdata
     {

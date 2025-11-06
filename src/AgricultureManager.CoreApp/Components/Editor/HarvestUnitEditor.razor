@@ -27,7 +27,7 @@
                     <RadzenLabel Text="Kultur" Component="CultureId" />
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="8">
-                    <RadzenDropDown Data="@CultureState.Value.Cultures" TextProperty="@(nameof(CultureVm.Name))" ValueProperty="@(nameof(CultureVm.Id))" Style="width: 100%;" Name="CultureId" @bind-Value=_editItem.CultureId />
+                    <RadzenDropDown Data="@(MasterdataService.Get<CultureVm>())" TextProperty="@(nameof(CultureVm.Name))" ValueProperty="@(nameof(CultureVm.Id))" Style="width: 100%;" Name="CultureId" @bind-Value=_editItem.CultureId />
                     <ValidationMessage For="@(() => _editItem.CultureId)" />
                 </RadzenColumn>
             </RadzenRow>
@@ -38,9 +38,8 @@
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public IMapper Mapper { get; set; } = default!;
-    [Inject] public IState<CultureState> CultureState { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
-
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
     [Parameter] public HarvestUnitVm HarvestUnit { get; set; } = default!;
 
     private HarvestUnitVm? _editItem;

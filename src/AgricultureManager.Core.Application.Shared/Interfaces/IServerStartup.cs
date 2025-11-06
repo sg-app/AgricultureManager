@@ -1,4 +1,8 @@
-﻿namespace AgricultureManager.Module.Api.Interfaces
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace AgricultureManager.Core.Application.Shared.Interfaces
 {
     public interface IServerStartup
     {
@@ -6,6 +10,6 @@
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         void ConfigureServices(IServiceCollection services, IConfiguration configuration);
 
-        void AddMiddleware(WebApplication app) { }
+        void AddMiddleware(IHost app) { }
     }
 }

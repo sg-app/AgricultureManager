@@ -1,5 +1,5 @@
-﻿using AgricultureManager.Module.Accounting.Persistence;
-using AgricultureManager.Module.Api.Interfaces;
+﻿using AgricultureManager.Core.Application.Shared.Interfaces;
+using AgricultureManager.Module.Accounting.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

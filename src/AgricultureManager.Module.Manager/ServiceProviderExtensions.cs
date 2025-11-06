@@ -1,5 +1,4 @@
-﻿using AgricultureManager.Module.Api.Interfaces;
-
+﻿using AgricultureManager.Core.Application.Shared.Interfaces;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

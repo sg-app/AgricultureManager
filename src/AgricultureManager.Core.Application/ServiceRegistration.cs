@@ -1,4 +1,5 @@
 ﻿using AgricultureManager.Core.Application.Services;
+using AgricultureManager.Core.Application.Shared.Interfaces.Services;
 using AgricultureManager.Core.Application.Shared.States;
 using Blazored.LocalStorage;
 using FluentValidation;
@@ -43,6 +44,8 @@ namespace AgricultureManager.Core.Application
             //services.AddScoped<AuthenticationStateProvider, MockAuthenticationStateProvider>();
 #endif
             services.AddBlazoredLocalStorage();
+
+            services.AddSingleton<IMasterdataService , MasterdataService>();
             return services;
         }
     }

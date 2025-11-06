@@ -13,7 +13,7 @@
             Kultur
         </div>
         <div>
-            @CultureState.Value.Cultures?.FirstOrDefault(f => f.Id == Item.CultureId)?.Name
+            @(MasterdataService.Get<CultureVm>()?.FirstOrDefault(f => f.Id == Item.CultureId)?.Name)
         </div>
     </div>
     <div class="pe-4">
@@ -120,6 +120,7 @@
     [Inject] public IState<SeedTechnologyState> SeedTechnologyState { get; set; } = default!;
     [Inject] public IState<SeedCategoryState> SeedCategoryState { get; set; } = default!;
     [Inject] public IState<UnitState> UnitState { get; set; } = default!;
-    [Inject] public IState<CultureState> CultureState { get; set; } = default!;
+    // [Inject] public IState<CultureState> CultureState { get; set; } = default!;
     [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 }

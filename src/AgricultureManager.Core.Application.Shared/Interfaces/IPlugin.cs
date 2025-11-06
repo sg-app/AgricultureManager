@@ -1,4 +1,7 @@
-﻿namespace AgricultureManager.Module.Api.Interfaces
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace AgricultureManager.Core.Application.Shared.Interfaces
 {
     public interface IPlugin
     {

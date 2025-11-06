@@ -1,8 +1,8 @@
 ﻿using AgricultureManager.Core.Application.Features.CultureFeatures;
+using AgricultureManager.Core.Application.Shared.Interfaces;
+using AgricultureManager.Core.Application.Shared.Interfaces.Services;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Core.Application.Shared.States;
-using AgricultureManager.Core.Application.Store.Features.CultureStore;
-using AgricultureManager.Module.Api.Interfaces;
 using AutoMapper;
 using Fluxor;
 using MediatR;
@@ -18,9 +18,11 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
         [Inject] public IMapper Mapper { get; set; } = default!;
         [Inject] public DialogService DialogService { get; set; } = default!;
         [Inject] public IDispatcher Dispatcher { get; set; } = default!;
-        [Inject] public IState<CultureState> CultureState { get; set; } = default!;
+        //[Inject] public IState<CultureState> CultureState { get; set; } = default!;
+        [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
         private RadzenDataGrid<CultureVm> _grid = default!;
+        private List<CultureVm>? Data => MasterdataService.Get<CultureVm>();
         private CultureVm? _itemToEditOriginal;
         public string Title => "Kultur";
 
@@ -32,10 +34,10 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
 
             var response = await Mediator.Send(new RemoveCultureCommand { Id = item.Id });
             if (response.Success)
-                Dispatcher.Dispatch(new RemoveCultureAction(item.Id));
-            else
-                _grid.CancelEditRow(item);
-            await _grid.Reload();
+            {
+                await _grid.Reload();
+                await MasterdataService.ReloadAsync<CultureVm>();
+            }
         }
 
         private async Task InsertRow() =>
@@ -64,9 +66,10 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             var response = await Mediator.Send(cmd);
             if (!response.Success)
                 await _grid.Reload();
-            else if (response.Success && response.Data is not null)
-                Dispatcher.Dispatch(new UpdateCultureAction(response.Data));
+
             _itemToEditOriginal = null;
+
+            await MasterdataService.ReloadAsync<CultureVm>();
         }
         private async Task OnCreateRow(CultureVm item)
         {
@@ -76,8 +79,9 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             if (response.Success && response.Data is not null)
             {
                 item.Id = response.Data.Id;
-                Dispatcher.Dispatch(new AddCultureAction(response.Data));
+                await MasterdataService.ReloadAsync<CultureVm>();
             }
+
         }
     }
 }

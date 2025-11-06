@@ -13,7 +13,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Core.Application.Shared\AgricultureManager.Core.Application.Shared.csproj" />
-    <ProjectReference Include="..\AgricultureManager.Infrastructure.Persistence\AgricultureManager.Infrastructure.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 
 </Project>

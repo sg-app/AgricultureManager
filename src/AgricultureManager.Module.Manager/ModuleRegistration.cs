@@ -1,4 +1,4 @@
-﻿using AgricultureManager.Module.Api.Interfaces;
+﻿using AgricultureManager.Core.Application.Shared.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 

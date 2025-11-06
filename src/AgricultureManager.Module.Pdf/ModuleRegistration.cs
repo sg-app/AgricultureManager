@@ -1,4 +1,4 @@
-﻿using AgricultureManager.Module.Api.Interfaces;
+﻿using AgricultureManager.Core.Application.Shared.Interfaces;
 using AgricultureManager.Module.Pdf.Documents.Documentation;
 using AgricultureManager.Module.Pdf.Documents.Planing;
 using AgricultureManager.Module.Pdf.Documents.Statistics;

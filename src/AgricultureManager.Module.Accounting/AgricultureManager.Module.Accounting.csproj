@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Core.Application.Shared\AgricultureManager.Core.Application.Shared.csproj" />
-    <ProjectReference Include="..\AgricultureManager.Module.Api\AgricultureManager.Module.Api.csproj" />
   </ItemGroup>
 
 </Project>

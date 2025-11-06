@@ -1,9 +1,9 @@
 ﻿using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures;
+using AgricultureManager.Core.Application.Shared.Interfaces;
 using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Core.Application.Shared.States;
 using AgricultureManager.Core.Application.Store.Features.FertilizerDetailStore;
-using AgricultureManager.Module.Api.Interfaces;
 using AutoMapper;
 using Fluxor;
 using MediatR;

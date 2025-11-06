@@ -26,8 +26,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Core.App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.CoreApp", "AgricultureManager.CoreApp\AgricultureManager.CoreApp.csproj", "{3C69B121-D54E-4D89-865B-E923AAF7464E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Module.Api", "AgricultureManager.Module.Api\AgricultureManager.Module.Api.csproj", "{A4C83F7B-8ADE-4B2C-A1E5-F0F5BDBA8AB8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureManager.Module.Manager", "AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj", "{AA01DB00-25BD-43EB-B521-C4DE28724104}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgricultureManager.Module.Pdf", "AgricultureManager.Module.Pdf\AgricultureManager.Module.Pdf.csproj", "{E2531D90-6569-4C67-B96B-B613344E5AC5}"
@@ -68,10 +66,6 @@ Global
 		{3C69B121-D54E-4D89-865B-E923AAF7464E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C69B121-D54E-4D89-865B-E923AAF7464E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C69B121-D54E-4D89-865B-E923AAF7464E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4C83F7B-8ADE-4B2C-A1E5-F0F5BDBA8AB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4C83F7B-8ADE-4B2C-A1E5-F0F5BDBA8AB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4C83F7B-8ADE-4B2C-A1E5-F0F5BDBA8AB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4C83F7B-8ADE-4B2C-A1E5-F0F5BDBA8AB8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AA01DB00-25BD-43EB-B521-C4DE28724104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AA01DB00-25BD-43EB-B521-C4DE28724104}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA01DB00-25BD-43EB-B521-C4DE28724104}.Release|Any CPU.ActiveCfg = Release|Any CPU
