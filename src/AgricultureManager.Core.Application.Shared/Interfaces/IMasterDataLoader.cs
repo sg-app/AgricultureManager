@@ -2,9 +2,8 @@
 
 namespace AgricultureManager.Core.Application.Shared.Interfaces
 {
-    public interface IMasterDataLoader
+    public interface IMasterDataLoader<TViewModel>
     {
-        Type ViewModelType { get; }
-        Task<object> LoadDataAsync();
+        Task<List<TViewModel>> LoadDataAsync();
     }
 }

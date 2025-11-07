@@ -39,7 +39,6 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var masterdataService = scope.ServiceProvider.GetRequiredService<IMasterdataService>();
 await masterdataService.InitializeAsync();
-await masterdataService.InitializePluginsAsync();
 
 if (!app.Environment.IsDevelopment())
 {

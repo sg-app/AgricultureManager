@@ -6,11 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AgricultureManager.Module.Accounting.Services
 {
-    public class TaxRateLoader(IAccountingDbContextFactory dbContextFactory, IMapper mapper) : IMasterDataLoader
+    public class TaxRateLoader(IAccountingDbContextFactory dbContextFactory, IMapper mapper) : IMasterDataLoader<TaxRateVm>
     {
-        public Type ViewModelType => typeof(TaxRateVm);
-
-        public async Task<object> LoadDataAsync()
+        public async Task<List<TaxRateVm>> LoadDataAsync()
         {
             var dbContext = dbContextFactory.CreateDbContext();
             var entities = await dbContext.TaxRate.ToListAsync();
