@@ -1,10 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Services;
 using AgricultureManager.Core.Application.Shared.Interfaces.Services;
-using AgricultureManager.Core.Application.Shared.States;
 using Blazored.LocalStorage;
 using FluentValidation;
-using Fluxor;
-using Fluxor.Blazor.Web.ReduxDevTools;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,20 +21,6 @@ namespace AgricultureManager.Core.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-//            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.FullName is not null && f.FullName.Contains("AgricultureManager.Module", StringComparison.OrdinalIgnoreCase)).ToList();
-//            assemblies.Add(Assembly.GetAssembly(typeof(HarvestYearState))!);
-
-//            services.AddFluxor(config =>
-//            {
-//                config.ScanAssemblies(
-//                    Assembly.GetExecutingAssembly(),
-//                    [
-//                        ..assemblies
-//                    ]);
-//#if DEBUG
-//                config.UseReduxDevTools();
-//#endif
-//            });
 
             services.AddScoped<AuthenticationStateProvider, AmAuthenticationStateProvider>();
 #if DEBUG

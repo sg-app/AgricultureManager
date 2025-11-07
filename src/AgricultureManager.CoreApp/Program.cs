@@ -1,16 +1,12 @@
 using AgricultureManager.Core.Application;
 using AgricultureManager.Core.Application.Services;
-using AgricultureManager.Core.Application.Shared.States;
 using AgricultureManager.CoreApp.Components;
+using AgricultureManager.CoreApp.Configuration;
 using AgricultureManager.Infrastructure.Persistence;
 using AgricultureManager.Module.Manager;
-using Fluxor;
-using Fluxor.Blazor.Web.ReduxDevTools;
-using LiveChartsCore;
 using Microsoft.EntityFrameworkCore;
 using NLog.Extensions.Logging;
 using Radzen;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +15,6 @@ builder.Logging.AddNLog();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
-
-var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.FullName is not null && f.FullName.Contains("AgricultureManager.Module", StringComparison.OrdinalIgnoreCase)).ToList();
-assemblies.Add(Assembly.GetAssembly(typeof(HarvestYearState))!);
-
 
 builder.Services.AddRadzenComponents();
 builder.Services.AddPlugins(builder.Configuration);
@@ -37,17 +28,7 @@ builder.Services.AddAuthentication("Negotiate")
 
 builder.Services.AddAuthorizationCore();
 
-builder.Services.AddFluxor(config =>
-{
-    config.ScanAssemblies(
-        Assembly.GetExecutingAssembly(),
-        [
-            ..assemblies
-        ]);
-#if DEBUG
-    config.UseReduxDevTools();
-#endif
-});
+builder.Services.AddFluxorRegistration();
 
 var app = builder.Build();
 
