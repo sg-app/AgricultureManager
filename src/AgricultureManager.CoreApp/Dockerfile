@@ -48,12 +48,12 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["AgricultureManager.CoreApp/AgricultureManager.CoreApp.csproj", "AgricultureManager.CoreApp/"]
+COPY ["AgricultureManager.Ui.Shared/AgricultureManager.Ui.Shared.csproj", "AgricultureManager.Ui.Shared/"]
 COPY ["AgricultureManager.Infrastructure.Persistence/AgricultureManager.Infrastructure.Persistence.csproj", "AgricultureManager.Infrastructure.Persistence/"]
 COPY ["AgricultureManager.Core.Application/AgricultureManager.Core.Application.csproj", "AgricultureManager.Core.Application/"]
 COPY ["AgricultureManager.Core.Application.Shared/AgricultureManager.Core.Application.Shared.csproj", "AgricultureManager.Core.Application.Shared/"]
 COPY ["AgricultureManager.Core.Domain/AgricultureManager.Core.Domain.csproj", "AgricultureManager.Core.Domain/"]
 COPY ["AgricultureManager.Module.Manager/AgricultureManager.Module.Manager.csproj", "AgricultureManager.Module.Manager/"]
-COPY ["AgricultureManager.Module.Api/AgricultureManager.Module.Api.csproj", "AgricultureManager.Module.Api/"]
 RUN dotnet restore "./AgricultureManager.CoreApp/AgricultureManager.CoreApp.csproj"
 
 # Copy Modules
