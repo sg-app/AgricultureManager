@@ -6,6 +6,7 @@ using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Core.Domain.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Radzen;
@@ -14,10 +15,11 @@ using System.Text.Json;
 
 namespace AgricultureManager.Core.Application.Services
 {
-    public class MasterdataService(IServiceProvider serviceProvider, ILogger<MasterdataService> logger) : IMasterdataService
+    public class MasterdataService(IServiceProvider serviceProvider, ILogger<MasterdataService> logger, IConfiguration configuration) : IMasterdataService
     {
         private readonly Dictionary<Type, Func<Task>> _entityLoaderMap = [];
         private readonly ConcurrentDictionary<Type, object> _data = [];
+        private int MaxDegreeOfParallelism => configuration.GetValue("MaxDegreeOfParallelismLoadMasterData", 10);
 
         public void Register<TEntity, TViewModel>()
             where TEntity : class
@@ -106,32 +108,45 @@ namespace AgricultureManager.Core.Application.Services
             RegisterCompany();
             RegisterPlugins();
 
-            var tasks = _entityLoaderMap
-                .Select(pair => pair.Value())
-                .ToList();
+            var semaphore = new SemaphoreSlim(MaxDegreeOfParallelism);
+            var tasks = _entityLoaderMap.Values.Select(async loader =>
+            {
+                await semaphore.WaitAsync();
+                try
+                {
+                    await loader();
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            }).ToList();
 
             await Task.WhenAll(tasks);
         }
 
         private void RegisterPlugins()
         {
-            var loaderTypes = AppDomain.CurrentDomain.GetAssemblies()
-               .SelectMany(a => a.GetTypes())
-               .Where(t => !t.IsAbstract && !t.IsInterface)
-               .SelectMany(t => t.GetInterfaces()
-                   .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMasterDataLoader<>))
-                   .Select(i => new { ImplementationType = t, InterfaceType = i }))
-               .ToList();
+            var pluginLoaderTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes())
+                .Where(t => !t.IsAbstract && !t.IsInterface)
+                .SelectMany(t => t.GetInterfaces()
+                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMasterDataLoader<>))
+                    .Select(i => i.GetGenericArguments()[0]))
+                .Distinct()
+                .ToList();
 
-            foreach (var loader in loaderTypes)
+            foreach (var viewModelType in pluginLoaderTypes)
             {
-                var viewModelType = loader.InterfaceType.GenericTypeArguments[0];
-                var registerMethod = typeof(MasterdataService).GetMethod("RegisterPluginLoader")?.MakeGenericMethod(viewModelType);
+                var registerMethod = typeof(MasterdataService)
+                    .GetMethod(nameof(RegisterPluginLoader), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    ?.MakeGenericMethod(viewModelType);
                 registerMethod?.Invoke(this, null);
             }
+
         }
 
-        public async Task LoadPluginMasterdataAsync<TViewModel>()
+        private async Task LoadPluginMasterdataAsync<TViewModel>()
             where TViewModel : class
         {
             using var scope = serviceProvider.CreateScope();
@@ -140,7 +155,7 @@ namespace AgricultureManager.Core.Application.Services
             Set(data);
         }
 
-        public void RegisterPluginLoader<TViewModel>()
+        private void RegisterPluginLoader<TViewModel>()
             where TViewModel : class
         {
             _entityLoaderMap[typeof(TViewModel)] = () => LoadPluginMasterdataAsync<TViewModel>();
