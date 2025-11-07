@@ -1,7 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Keys;
 using AgricultureManager.Core.Application.Shared.Models;
-using AgricultureManager.Core.Application.Store.Features.HarvestUnitStore;
+using AgricultureManager.CoreApp.Store.Features.HarvestUnitStore;
 using AgricultureManager.Core.Domain.Entities;
 using Fluxor;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 
 
-namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
+namespace AgricultureManager.CoreApp.Store.Features.HarvestYearStore
 {
     public class HarvestYearEffects(IServiceProvider serviceProvider)
     {

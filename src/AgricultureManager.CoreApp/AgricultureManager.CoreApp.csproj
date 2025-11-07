@@ -9,8 +9,8 @@
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AgricultureManager.Infrastructure.Persistence\AgricultureManager.Infrastructure.Persistence.csproj"/>
-    <ProjectReference Include="..\AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj"/>
+    <ProjectReference Include="..\AgricultureManager.Infrastructure.Persistence\AgricultureManager.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\AgricultureManager.Module.Manager\AgricultureManager.Module.Manager.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Module.Pdf\AgricultureManager.Module.Pdf.csproj">
@@ -19,16 +19,17 @@
     <ProjectReference Include="..\AgricultureManager.Module.Accounting\AgricultureManager.Module.Accounting.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
+    <ProjectReference Include="..\AgricultureManager.Ui.Shared\AgricultureManager.Ui.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="wwwroot\bootstrap\"/>
+    <Folder Include="wwwroot\bootstrap\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1"/>
-    <PackageReference Include="NLog.Extensions.Logging" Version="6.0.5"/>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="6.0.5" />
   </ItemGroup>
 </Project>

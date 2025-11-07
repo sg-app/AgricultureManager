@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgricultureManager.Core.Application.Shared\AgricultureManager.Core.Application.Shared.csproj" />
+    <ProjectReference Include="..\AgricultureManager.Ui.Shared\AgricultureManager.Ui.Shared.csproj" />
   </ItemGroup>
 
 </Project>

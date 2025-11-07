@@ -24,20 +24,20 @@ namespace AgricultureManager.Core.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.FullName is not null && f.FullName.Contains("AgricultureManager.Module", StringComparison.OrdinalIgnoreCase)).ToList();
-            assemblies.Add(Assembly.GetAssembly(typeof(HarvestYearState))!);
+//            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.FullName is not null && f.FullName.Contains("AgricultureManager.Module", StringComparison.OrdinalIgnoreCase)).ToList();
+//            assemblies.Add(Assembly.GetAssembly(typeof(HarvestYearState))!);
 
-            services.AddFluxor(config =>
-            {
-                config.ScanAssemblies(
-                    Assembly.GetExecutingAssembly(),
-                    [
-                        ..assemblies
-                    ]);
-#if DEBUG
-                config.UseReduxDevTools();
-#endif
-            });
+//            services.AddFluxor(config =>
+//            {
+//                config.ScanAssemblies(
+//                    Assembly.GetExecutingAssembly(),
+//                    [
+//                        ..assemblies
+//                    ]);
+//#if DEBUG
+//                config.UseReduxDevTools();
+//#endif
+//            });
 
             services.AddScoped<AuthenticationStateProvider, AmAuthenticationStateProvider>();
 #if DEBUG

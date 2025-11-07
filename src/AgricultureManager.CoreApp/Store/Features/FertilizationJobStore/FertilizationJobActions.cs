@@ -1,7 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Fluxor;
 using AgricultureManager.Core.Application.Shared.Models;
 
-namespace AgricultureManager.Core.Application.Store.Features.FertilizationJobStore
+namespace AgricultureManager.CoreApp.Store.Features.FertilizationJobStore
 {
     public record LoadFertilizationJobDataAction(Guid HarvestUnitId) : ILoadDataAction { }
     public record LoadFertilizationJobDataResultAction(IEnumerable<FertilizationVm> Fertilizations);

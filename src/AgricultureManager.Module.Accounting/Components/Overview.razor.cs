@@ -1,9 +1,9 @@
-﻿using AgricultureManager.Core.Application.Shared.Components.Dialogs;
-using AgricultureManager.Module.Accounting.Features.AccountMouvementsFeatures;
+﻿using AgricultureManager.Module.Accounting.Features.AccountMouvementsFeatures;
 using AgricultureManager.Module.Accounting.Features.BankingFeatures;
 using AgricultureManager.Module.Accounting.Models;
 using AgricultureManager.Module.Accounting.Store.Features.AccountStore;
 using AgricultureManager.Module.Accounting.Store.States;
+using AgricultureManager.Ui.Shared.Components.Dialogs;
 using AutoMapper;
 using Fluxor;
 using MediatR;

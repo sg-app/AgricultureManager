@@ -1,7 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Fluxor;
 using AgricultureManager.Core.Application.Shared.Models;
 
-namespace AgricultureManager.Core.Application.Store.Features.SeedJobStore
+namespace AgricultureManager.CoreApp.Store.Features.SeedJobStore
 {
     public record LoadSeedJobDataAction(Guid HarvestUnitId) : ILoadDataAction { }
     public record LoadSeedJobDataResultAction(IEnumerable<SeedVm> Seeds);

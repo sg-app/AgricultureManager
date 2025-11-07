@@ -1,6 +1,6 @@
 ﻿using AgricultureManager.Core.Application.Shared.Models;
 
-namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
+namespace AgricultureManager.CoreApp.Store.Features.HarvestYearStore
 {
     public record GetCurrentHarvestYearAction();
     public record SetSelectedHarvestYearAction(HarvestYearVm SelectedHarvestYear);

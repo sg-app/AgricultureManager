@@ -1,7 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Shared.States;
 using Fluxor;
 
-namespace AgricultureManager.Core.Application.Store.Features.FertilizationJobStore
+namespace AgricultureManager.CoreApp.Store.Features.FertilizationJobStore
 {
     public static class FertilizationJobReducers
     {

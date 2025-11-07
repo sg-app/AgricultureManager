@@ -2,7 +2,7 @@
 using Fluxor;
 using MediatR;
 
-namespace AgricultureManager.Core.Application.Store.Features.PlantProtectionJobStore
+namespace AgricultureManager.CoreApp.Store.Features.PlantProtectionJobStore
 {
     public class PlantProtectionEffects(IMediator mediator)
     {

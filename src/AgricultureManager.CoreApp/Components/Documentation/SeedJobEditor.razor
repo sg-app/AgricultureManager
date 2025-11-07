@@ -5,7 +5,7 @@
 @using AgricultureManager.Core.Application.Features.SeedTechnologyFeatures
 @using AgricultureManager.Core.Application.Features.UnitFeatures
 @using AgricultureManager.Core.Application.Shared.Models.EditorModels
-@using AgricultureManager.Core.Application.Store.Features.SeedJobStore
+@using AgricultureManager.CoreApp.Store.Features.SeedJobStore
 @if (_item is not null && _item.Details.Count > 0)
 {
     <RadzenTemplateForm TItem="EditSeedVm" Data="_item" EditContext="@_editContexts[0]">

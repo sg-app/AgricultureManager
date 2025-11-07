@@ -1,7 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Shared.States;
 using Fluxor;
 
-namespace AgricultureManager.Core.Application.Store.Features.HarvestUnitStore
+namespace AgricultureManager.CoreApp.Store.Features.HarvestUnitStore
 {
     public static class HarvestUnitReducers
     {

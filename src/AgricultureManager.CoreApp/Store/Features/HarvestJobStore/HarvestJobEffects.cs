@@ -2,7 +2,7 @@
 using Fluxor;
 using MediatR;
 
-namespace AgricultureManager.Core.Application.Store.Features.HarvestJobStore
+namespace AgricultureManager.CoreApp.Store.Features.HarvestJobStore
 {
     public class HarvestJobEffects(IMediator mediator)
     {

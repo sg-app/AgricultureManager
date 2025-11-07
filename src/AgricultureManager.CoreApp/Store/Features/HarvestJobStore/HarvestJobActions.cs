@@ -1,7 +1,7 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Fluxor;
 using AgricultureManager.Core.Application.Shared.Models;
 
-namespace AgricultureManager.Core.Application.Store.Features.HarvestJobStore
+namespace AgricultureManager.CoreApp.Store.Features.HarvestJobStore
 {
     public record LoadHarvestJobDataAction(Guid HarvestUnitId) : ILoadDataAction { }
     public record LoadHarvestJobDataResultAction(IEnumerable<HarvestVm> Harvests);

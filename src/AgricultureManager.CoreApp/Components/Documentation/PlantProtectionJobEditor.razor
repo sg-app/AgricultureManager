@@ -4,7 +4,7 @@
 @using AgricultureManager.Core.Application.Features.PlantProtectionFeatures
 @using AgricultureManager.Core.Application.Features.UnitFeatures
 @using AgricultureManager.Core.Application.Shared.Models.EditorModels
-@using AgricultureManager.Core.Application.Store.Features.PlantProtectionJobStore
+@using AgricultureManager.CoreApp.Store.Features.PlantProtectionJobStore
 @if (_item is not null && _item.Details.Count > 0)
 {
     <RadzenTemplateForm TItem="EditPlantProtectionVm" Data="_item" EditContext="@_editContexts[0]">

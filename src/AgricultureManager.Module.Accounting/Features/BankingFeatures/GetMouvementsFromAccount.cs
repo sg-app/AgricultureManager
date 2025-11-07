@@ -1,4 +1,4 @@
-﻿using AgricultureManager.Core.Application.Shared.Components.Dialogs;
+﻿using AgricultureManager.Ui.Shared.Components.Dialogs;
 using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Module.Accounting.Domain;
