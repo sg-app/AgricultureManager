@@ -1,9 +1,10 @@
 ﻿@page "/accounting/costoverview"
+@using AgricultureManager.Core.Application.Shared.Interfaces.Services
 @using AgricultureManager.Module.Accounting.Features.CostOverviewFeatures
 @inherits FluxorComponent
 <RadzenDropDown TValue="HarvestYearVm"
 Value="@_harvestYear"
-Data="@HarvestYearState.Value.HarvestYears"
+Data="@(MasterdataService.Get<HarvestYearVm>().OrderByDescending(x=>x.Year))"
 TextProperty="@(nameof(HarvestYearVm.Year))"
 ValueChanged="OnHarvestYearChanged" />
 
@@ -42,6 +43,7 @@ ValueChanged="OnHarvestYearChanged" />
     [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public IMediator Mediator { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
     private HarvestYearVm? _harvestYear;
     private IEnumerable<CostOverviewVm>? _costOverviews;

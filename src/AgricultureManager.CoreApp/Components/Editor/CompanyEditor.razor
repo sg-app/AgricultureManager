@@ -1,6 +1,5 @@
 ﻿@inherits FluxorComponent
 @using AgricultureManager.Core.Application.Features.CompanyFeatures
-@using AgricultureManager.Core.Application.Store.Features.CompanyStore
 @rendermode InteractiveAuto
 
 <h3>Betrieb</h3>
@@ -88,50 +87,22 @@
 }
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
-    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
-    [Inject] public IState<CompanyState> CompanyState { get; set; } = default!;
-
-    private CompanyVm? _data => CompanyState.Value.Company;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
+    private CompanyVm? _data => MasterdataService.GetCompany();
 
     async Task Submit(CompanyVm arg)
     {
-
-        if (_data is not null)
+        var responseUpdate = await Mediator.Send(new UpdateCompanyCommand()
         {
-            if (_data.Id == Guid.Empty)
-            {
-                var responseAdd = await Mediator.Send(new AddCompanyCommand()
-                    {
-                        CompanyNumber = arg.CompanyNumber,
-                        CompanyName = arg.CompanyName,
-                        FirstName = arg.FirstName,
-                        LastName = arg.LastName,
-                        Street = arg.Street,
-                        Housenumber = arg.Housenumber,
-                        Plz = arg.Plz,
-                        City = arg.City
-                    });
-                if (responseAdd.Success)
-                    Dispatcher.Dispatch(new UpdateCompanyAction(arg));
-            }
-            else
-            {
-                var responseUpdate = await Mediator.Send(new UpdateCompanyCommand()
-                    {
-                        CompanyNumber = arg.CompanyNumber,
-                        CompanyName = arg.CompanyName,
-                        FirstName = arg.FirstName,
-                        LastName = arg.LastName,
-                        Street = arg.Street,
-                        Housenumber = arg.Housenumber,
-                        Plz = arg.Plz,
-                        City = arg.City
-                    });
-                    if(responseUpdate.Success)
-                    Dispatcher.Dispatch(new UpdateCompanyAction(arg));
-            }
-            Dispatcher.Dispatch(new LoadCompanyDataAction());
-        }
+            CompanyNumber = arg.CompanyNumber,
+            CompanyName = arg.CompanyName,
+            FirstName = arg.FirstName,
+            LastName = arg.LastName,
+            Street = arg.Street,
+            Housenumber = arg.Housenumber,
+            Plz = arg.Plz,
+            City = arg.City
+        });
+        await MasterdataService.ReloadAsync<CompanyVm>();
     }
-
 }

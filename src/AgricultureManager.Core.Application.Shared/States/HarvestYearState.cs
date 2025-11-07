@@ -10,14 +10,11 @@ namespace AgricultureManager.Core.Application.Shared.States
         public bool IsLoading { get; init; }
         public bool IsInitialized { get; init; }
         public HarvestYearVm? SelectedHarvestYear { get; init; }
-        public IEnumerable<HarvestYearVm> HarvestYears { get; init; } = [];
-        public IEnumerable<HarvestYearVm> HarvestYearsDropdown { get; init; } = [];
         private HarvestYearState() { }
-        public HarvestYearState(bool isLoading, HarvestYearVm selectedHarvestYear, IEnumerable<HarvestYearVm> harvestYears)
+        public HarvestYearState(bool isLoading, HarvestYearVm selectedHarvestYear)
         {
             IsLoading = isLoading;
             SelectedHarvestYear = selectedHarvestYear;
-            HarvestYears = harvestYears;
         }
     }
 }

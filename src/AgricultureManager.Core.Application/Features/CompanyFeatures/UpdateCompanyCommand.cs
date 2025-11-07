@@ -23,13 +23,26 @@ namespace AgricultureManager.Core.Application.Features.CompanyFeatures
         public async Task<Response<CompanyVm>> Handle(UpdateCompanyCommand request, CancellationToken cancellationToken)
         {
 
-            var keyValue = new UpdateParameterCommand
+            var existingCompanyResponse = await mediator.Send(new GetCompanyCommand(), cancellationToken);
+            IReq<ParameterVm> requestKeyValue;
+            if (existingCompanyResponse.Success)
             {
-                Key = ParameterKeys.Company,
-                Value = JsonSerializer.Serialize(request)
-            };
+                requestKeyValue = new UpdateParameterCommand
+                {
+                    Key = ParameterKeys.Company,
+                    Value = JsonSerializer.Serialize(request)
+                };
+            }
+            else
+            {
+                requestKeyValue = new AddParameterCommand
+                {
+                    Key = ParameterKeys.Company,
+                    Value = JsonSerializer.Serialize(request)
+                };
+            }
 
-            var response = await mediator.Send(keyValue, cancellationToken);
+            var response = await mediator.Send(requestKeyValue, cancellationToken);
             if (response.Data is null)
                 return Response.Fail<CompanyVm>("Keine Daten von Datenbank erhalten.");
 

@@ -6,7 +6,7 @@
 
 <InsertButton InsertRow="InsertRow" />
 <RadzenDataGrid @ref="_grid"
-                Data="@HarvestYearState.Value.HarvestYears"
+                Data="@(MasterdataService.Get<HarvestYearVm>())"
                 TItem="HarvestYearVm"
                 RowCreate="@OnCreateRow"
                 EmptyText="Keine Daten gefunden."
@@ -27,7 +27,7 @@
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
-    [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
     private RadzenDataGrid<HarvestYearVm> _grid = default!;
     public string Title => "Erntejahr";
@@ -41,7 +41,7 @@
         var response = await Mediator.Send(new RemoveHarvestYearCommand { Id = item.Id });
         if (response.Success)
         {
-            Dispatcher.Dispatch(new RemoveHarvestYearAction(item.Id));
+            await MasterdataService.ReloadAsync<HarvestYearVm>();
             Dispatcher.Dispatch(new GetCurrentHarvestYearAction());
         }
         else
@@ -67,7 +67,7 @@
         if (response.Success && response.Data is not null)
         {
             item.Id = response.Data.Id;
-            Dispatcher.Dispatch(new AddHarvestYearAction(response.Data));
+            await MasterdataService.ReloadAsync<HarvestYearVm>();
         }
     }
 }

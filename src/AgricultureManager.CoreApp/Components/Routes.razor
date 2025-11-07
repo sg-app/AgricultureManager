@@ -1,5 +1,4 @@
 ﻿@using AgricultureManager.Core.Application.Shared.Interfaces.Services
-@using AgricultureManager.Core.Application.Store.Features.CompanyStore
 @using System.Reflection
 @using AgricultureManager.Module.Manager
 <Fluxor.Blazor.Web.StoreInitializer />
@@ -16,7 +15,6 @@
 </Router>
 
 @code {
-    [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public PluginAssemblyProvider pluginAssemblyProvider { get; set; } = default!;
     [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
@@ -25,12 +23,7 @@
     {
         await base.OnInitializedAsync();
         await MasterdataService.InitializeAsync();
-    }
-
-    protected override void OnInitialized()
-    {
-        Dispatcher.Dispatch(new LoadCompanyDataAction());
-
         _assemblies = pluginAssemblyProvider.AdditionalPluginAssembliesWithRoutes;
     }
+
 }

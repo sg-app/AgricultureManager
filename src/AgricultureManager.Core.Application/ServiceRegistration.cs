@@ -25,7 +25,7 @@ namespace AgricultureManager.Core.Application
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.FullName is not null && f.FullName.Contains("AgricultureManager.Module", StringComparison.OrdinalIgnoreCase)).ToList();
-            assemblies.Add(Assembly.GetAssembly(typeof(CompanyState))!);
+            assemblies.Add(Assembly.GetAssembly(typeof(HarvestYearState))!);
 
             services.AddFluxor(config =>
             {

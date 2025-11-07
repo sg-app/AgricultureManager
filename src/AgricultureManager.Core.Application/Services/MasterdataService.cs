@@ -1,10 +1,13 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Interfaces.Services;
+using AgricultureManager.Core.Application.Shared.Keys;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Core.Domain.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Radzen;
+using System.Text.Json;
 
 namespace AgricultureManager.Core.Application.Services
 {
@@ -42,6 +45,24 @@ namespace AgricultureManager.Core.Application.Services
             Set(viewModels);
         }
 
+        private async Task LoadCompanyAsync()
+        {
+            using var scope = serviceProvider.CreateScope();
+            var dbContextFactory = scope.ServiceProvider.GetRequiredService<IAppDbContextFactory>();
+            var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+
+            using var dbContext = dbContextFactory.CreateDbContext();
+            var data = await dbContext.Parameter.FirstOrDefaultAsync(p => p.Key == ParameterKeys.Company);
+            if (data == null || string.IsNullOrEmpty(data.Value))
+                return;
+
+            var company = JsonSerializer.Deserialize<CompanyVm>(data.Value);
+            if (company == null)
+                return;
+            _data.Remove(typeof(CompanyVm));
+            _data.Add(typeof(CompanyVm), company);
+        }
+
         private void Set<T>(List<T> value) where T : class
         {
             Type keyType = typeof(T);
@@ -61,11 +82,13 @@ namespace AgricultureManager.Core.Application.Services
             Register<FertilizerToDetail, FertilizerToDetailVm>();
             Register<FertilizerDetail, FertilizerDetailVm>();
             Register<PlantProtectant, PlantProtectantVm>();
-
+            Register<HarvestYear, HarvestYearVm>();
+            _entityLoaderMap[typeof(CompanyVm)] = () => LoadCompanyAsync();
 
             var tasks = _entityLoaderMap
                 .Select(pair => pair.Value())
                 .ToList();
+
             await Task.WhenAll(tasks);
         }
 
@@ -73,6 +96,14 @@ namespace AgricultureManager.Core.Application.Services
         {
             var task = _entityLoaderMap[typeof(T)]();
             await task;
+        }
+
+        public CompanyVm GetCompany()
+        {
+            if(_data.TryGetValue(typeof(CompanyVm), out var data))
+                return data as CompanyVm ?? default!;
+
+            return default!;
         }
     }
 }

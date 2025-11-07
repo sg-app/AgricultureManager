@@ -16,17 +16,17 @@ ValueChanged="HarvestYearChangedHandler" />
     [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
     private IList<HarvestYearVm> _harvestYears = [];
     private RadzenDropDown<HarvestYearVm> _ref = default!;
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Dispatcher.Dispatch(new LoadHarvestYearsAction());
         Dispatcher.Dispatch(new GetCurrentHarvestYearAction());
         HarvestYearState.StateChanged += (s, e) =>
         {
-            _harvestYears = HarvestYearState.Value.HarvestYears.ToList();
+            _harvestYears = MasterdataService.Get<HarvestYearVm>().OrderByDescending(x=>x.Year).ToList();
             _harvestYears.Insert(0, CustomItems.CreateNewYearItem);
             StateHasChanged();
         };
@@ -54,7 +54,8 @@ ValueChanged="HarvestYearChangedHandler" />
             var response = await Mediator.Send(new AddHarvestYearCommand() { Year = year });
             if (response.Success && response.Data is not null)
             {
-                Dispatcher.Dispatch(new AddHarvestYearAction(response.Data));
+                // Dispatcher.Dispatch(new AddHarvestYearAction(response.Data));
+                await MasterdataService.ReloadAsync<HarvestYearVm>();
                 Dispatcher.Dispatch(new SaveSelectedHarvestYearAction(response.Data));
             }
         }

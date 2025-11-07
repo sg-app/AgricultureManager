@@ -10,6 +10,7 @@ namespace AgricultureManager.Core.Application.Shared.Interfaces.Services
     public interface IMasterdataService
     {
         List<T> Get<T>() where T: class;
+        CompanyVm GetCompany();
         Task InitializeAsync();
         Task ReloadAsync<T>() where T : class;
     }

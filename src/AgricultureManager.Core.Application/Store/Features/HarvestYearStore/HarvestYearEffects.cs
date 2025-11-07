@@ -1,11 +1,9 @@
-﻿using AgricultureManager.Core.Application.Features.HarvestYearFeatures;
-using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
+﻿using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
 using AgricultureManager.Core.Application.Shared.Keys;
 using AgricultureManager.Core.Application.Shared.Models;
 using AgricultureManager.Core.Application.Store.Features.HarvestUnitStore;
 using AgricultureManager.Core.Domain.Entities;
 using Fluxor;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
@@ -13,16 +11,8 @@ using System.Text.Json;
 
 namespace AgricultureManager.Core.Application.Store.Features.HarvestYearStore
 {
-    public class HarvestYearEffects(IServiceProvider serviceProvider, IMediator mediator)
+    public class HarvestYearEffects(IServiceProvider serviceProvider)
     {
-
-        [EffectMethod(typeof(LoadHarvestYearsAction))]
-        public async Task HandleLoadHarvestYearsAction(IDispatcher dispatcher)
-        {
-            var response = await mediator.Send(new GetHarvestYearsCommand());
-            if (response.Success && response.Data is not null)
-                dispatcher.Dispatch(new LoadHarvestYearsResultAction(response.Data));
-        }
 
         [EffectMethod(typeof(GetCurrentHarvestYearAction))]
         public async Task HandleGetCurrentHarvestYearAction(IDispatcher dispatcher)
