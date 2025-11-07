@@ -1,3 +1,10 @@
+# [1.3.0-beta.8](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.7...v1.3.0-beta.8) (2025-11-07)
+
+
+### Features
+
+* enhance MasterdataService with logging and thread safety ([770b17e](https://github.com/sg-app/AgricultureManager/commit/770b17eb30d3f9abeff3d7f0a9f5e3cf0280f4d0))
+
 # [1.3.0-beta.7](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.6...v1.3.0-beta.7) (2025-10-31)
 
 
