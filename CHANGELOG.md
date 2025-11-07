@@ -1,3 +1,10 @@
+# [1.3.0-beta.9](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.8...v1.3.0-beta.9) (2025-11-07)
+
+
+### Features
+
+* **dockerfile:** update build process ([2712454](https://github.com/sg-app/AgricultureManager/commit/2712454cd66998e0786163a14017ef98b9f71478))
+
 # [1.3.0-beta.8](https://github.com/sg-app/AgricultureManager/compare/v1.3.0-beta.7...v1.3.0-beta.8) (2025-11-07)
 
 
