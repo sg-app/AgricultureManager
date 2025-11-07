@@ -1,5 +1,6 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces;
 using AgricultureManager.Module.Accounting.Persistence;
+using AgricultureManager.Module.Accounting.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,8 @@ namespace AgricultureManager.Module.Accounting
             services.AddScoped<IAccountingDbContextFactory, AccountingDbContextFactory>();
 
             services.AddSingleton<IMenuItem, AccountingMenuItem>();
+            services.AddTransient<IMasterDataLoader, TaxRateLoader>();
+            services.AddTransient<IMasterDataLoader, BookingTypeLoader>();
         }
     }
 

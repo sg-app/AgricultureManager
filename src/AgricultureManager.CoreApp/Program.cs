@@ -1,10 +1,12 @@
 using AgricultureManager.Core.Application;
 using AgricultureManager.Core.Application.Services;
+using AgricultureManager.Core.Application.Shared.Interfaces.Services;
 using AgricultureManager.CoreApp.Components;
 using AgricultureManager.CoreApp.Configuration;
 using AgricultureManager.Infrastructure.Persistence;
 using AgricultureManager.Module.Manager;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using NLog.Extensions.Logging;
 using Radzen;
 
@@ -34,6 +36,11 @@ var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
+using var scope = app.Services.CreateScope();
+var masterdataService = scope.ServiceProvider.GetRequiredService<IMasterdataService>();
+await masterdataService.InitializeAsync();
+await masterdataService.InitializePluginsAsync();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -41,7 +48,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 
     // Apply migrations at startup
-    using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.Migrate();
     app.MigratePluginDatabase();

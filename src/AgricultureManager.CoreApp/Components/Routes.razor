@@ -1,5 +1,4 @@
-﻿@using AgricultureManager.Core.Application.Shared.Interfaces.Services
-@using System.Reflection
+﻿@using System.Reflection
 @using AgricultureManager.Module.Manager
 <Fluxor.Blazor.Web.StoreInitializer />
 <Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="@_assemblies">
@@ -16,13 +15,11 @@
 
 @code {
     [Inject] public PluginAssemblyProvider pluginAssemblyProvider { get; set; } = default!;
-    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
     private IEnumerable<Assembly> _assemblies = [];
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await MasterdataService.InitializeAsync();
         _assemblies = pluginAssemblyProvider.AdditionalPluginAssembliesWithRoutes;
     }
 
