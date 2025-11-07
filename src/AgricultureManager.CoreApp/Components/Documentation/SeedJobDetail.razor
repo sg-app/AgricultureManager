@@ -1,5 +1,4 @@
-﻿@inherits FluxorComponent
-<div class="d-flex flex-wrap flex-row">
+﻿<div class="d-flex flex-wrap flex-row">
     <div class="pe-4">
         <div class="fw-bold">
             Datum
@@ -21,7 +20,7 @@
             Saatstärke
         </div>
         <div>
-            @Item.Quantity.ToString("N2") @UnitState.Value.Units?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name
+            @Item.Quantity.ToString("N2") @(MasterdataService.Get<UnitVm>().FirstOrDefault(f => f.Id == Item.UnitId)?.Name)
         </div>
     </div>
 </div>
@@ -31,7 +30,7 @@
             Anwender
         </div>
         <div>
-            @PeopleState.Value.Peoples?.FirstOrDefault(f => f.Id == Item.PersonId)?.Displayname
+            @(MasterdataService.Get<PersonVm>().FirstOrDefault(f => f.Id == Item.PersonId)?.Displayname)
         </div>
     </div>
     <div class="pe-4">
@@ -71,7 +70,7 @@
                 Saatgutkategorie
             </div>
             <div>
-                @SeedCategoryState.Value.SeedCategories?.FirstOrDefault(f => f.Id == Item.SeedCategoryId)?.Name
+                @(MasterdataService.Get<SeedCategoryVm>().FirstOrDefault(f => f.Id == Item.SeedCategoryId)?.Name)
             </div>
         </div>
     }
@@ -82,7 +81,7 @@
                 Aussaattechnik
             </div>
             <div>
-                @SeedTechnologyState.Value.SeedTechnologies?.FirstOrDefault(f => f.Id == Item.SeedTechnologyId)?.Name
+                @(MasterdataService.Get<SeedTechnologyVm>().FirstOrDefault(f => f.Id == Item.SeedTechnologyId)?.Name)
             </div>
         </div>
     }
@@ -117,10 +116,5 @@
 
 @code {
     [Parameter] public SeedVm Item { get; set; } = default!;
-    [Inject] public IState<SeedTechnologyState> SeedTechnologyState { get; set; } = default!;
-    [Inject] public IState<SeedCategoryState> SeedCategoryState { get; set; } = default!;
-    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
-    // [Inject] public IState<CultureState> CultureState { get; set; } = default!;
-    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
     [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 }

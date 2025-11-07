@@ -1,10 +1,8 @@
 ﻿using AgricultureManager.Core.Application.Features.UnitFeatures;
 using AgricultureManager.Core.Application.Shared.Interfaces;
+using AgricultureManager.Core.Application.Shared.Interfaces.Services;
 using AgricultureManager.Core.Application.Shared.Models;
-using AgricultureManager.Core.Application.Shared.States;
-using AgricultureManager.Core.Application.Store.Features.UnitStore;
 using AutoMapper;
-using Fluxor;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Radzen;
@@ -17,8 +15,7 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IMapper Mapper { get; set; } = default!;
         [Inject] public DialogService DialogService { get; set; } = default!;
-        [Inject] public IDispatcher Dispatcher { get; set; } = default!;
-        [Inject] public IState<UnitState> UnitState { get; set; } = default!;
+        [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
         private RadzenDataGrid<UnitVm> _grid = default!;
         private UnitVm? _itemToEditOriginal;
@@ -32,7 +29,7 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
 
             var response = await Mediator.Send(new RemoveUnitCommand { Id = item.Id });
             if (response.Success)
-                Dispatcher.Dispatch(new RemoveUnitAction(item.Id));
+                await MasterdataService.ReloadAsync<UnitVm>();
             else
                 _grid.CancelEditRow(item);
             await _grid.Reload();
@@ -65,7 +62,7 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             if (!response.Success)
                 await _grid.Reload();
             else if (response.Success && response.Data is not null)
-                Dispatcher.Dispatch(new UpdateUnitAction(response.Data));
+                await MasterdataService.ReloadAsync<UnitVm>();
             _itemToEditOriginal = null;
         }
         private async Task OnCreateRow(UnitVm item)
@@ -76,7 +73,7 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             if (response.Success && response.Data is not null)
             {
                 item.Id = response.Data.Id;
-                Dispatcher.Dispatch(new AddUnitAction(response.Data));
+                await MasterdataService.ReloadAsync<UnitVm>();
             }
         }
     }

@@ -17,7 +17,7 @@
             </div>
             <div class="px-2">
                 <label for="Person" class="form-label">Anwender</label>
-                <RadzenDropDown class="form-control" id="Person" TValue="Guid?" Data="@PeopleState.Value.Peoples" TextProperty="DisplayName" ValueProperty="Id" @bind-Value="_item.PersonId" />
+                <RadzenDropDown class="form-control" id="Person" TValue="Guid?" Data="@(MasterdataService.Get<PersonVm>())" TextProperty="DisplayName" ValueProperty="Id" @bind-Value="_item.PersonId" />
             </div>
         </div>
         <div class="d-flex flex-row flex-wrap align-items-center">
@@ -34,11 +34,11 @@
         <div class="d-flex flex-row flex-wrap">
             <div class="px-2">
                 <label for="SeedTechnology" class="form-label">Saattechnologie</label>
-                <RadzenDropDown class="form-control" id="SeedTechnology" TValue="Guid?" Data="@SeedTechnologyState.Value.SeedTechnologies" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.SeedTechnologyId" />
+                <RadzenDropDown class="form-control" id="SeedTechnology" TValue="Guid?" Data="@(MasterdataService.Get<SeedTechnologyVm>())" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.SeedTechnologyId" />
             </div>
             <div class="px-2">
                 <label for="DosageUnit" class="form-label">Einheit Dosierung</label>
-                <RadzenDropDown class="form-control" id="DosageUnit" TValue="Guid?" Data="@UnitState.Value.Units" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.UnitId" />
+                <RadzenDropDown class="form-control" id="DosageUnit" TValue="Guid?" Data="@(MasterdataService.Get<UnitVm>())" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.UnitId" />
             </div>
 
         </div>
@@ -67,7 +67,7 @@
                 </div>
                 <div class="px-2">
                     <label for="@($"SeedCategoryId{i}")" class="form-label">Saatgutkategorie</label>
-                    <RadzenDropDown class="form-control" id="@($"SeedCategoryId{i}")" TValue="Guid?" Data="@SeedCategoryState.Value.SeedCategories" TextProperty="Name" ValueProperty="Id" @bind-Value="item.SeedCategoryId" />
+                    <RadzenDropDown class="form-control" id="@($"SeedCategoryId{i}")" TValue="Guid?" Data="@(MasterdataService.Get<SeedCategoryVm>())" TextProperty="Name" ValueProperty="Id" @bind-Value="item.SeedCategoryId" />
                 </div>
             </div>
             <div class="d-flex flex-row flex-wrap">
@@ -102,11 +102,6 @@
     [Inject] public DialogService DialogService { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
-    [Inject] public IState<SeedTechnologyState> SeedTechnologyState { get; set; } = default!;
-    [Inject] public IState<SeedCategoryState> SeedCategoryState { get; set; } = default!;
-    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
-    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
-
     [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
     [Parameter] public SeedVm? Item { get; set; }
@@ -167,8 +162,8 @@
         _item = new EditSeedVm
         {
             Date = DateTime.UtcNow,
-            UnitId = UnitState.Value.Units?.Where(f => f.Name == "kg/ha").FirstOrDefault()?.Id,
-            SeedTechnologyId = SeedTechnologyState.Value.SeedTechnologies?.Where(f => f.Name == "konventionell").FirstOrDefault()?.Id,
+            UnitId = MasterdataService.Get<UnitVm>().Where(f => f.Name == "kg/ha").FirstOrDefault()?.Id,
+            SeedTechnologyId = MasterdataService.Get<SeedTechnologyVm>().Where(f => f.Name == "konventionell").FirstOrDefault()?.Id,
         };
         _editContexts.Add(new EditContext(_item));
 

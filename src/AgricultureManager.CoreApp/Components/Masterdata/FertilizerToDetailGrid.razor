@@ -16,7 +16,7 @@
                 @item.FertilizerDetail.Name
             </Template>
             <EditTemplate Context="item">
-                <RadzenDropDown @bind-Value="item.FertilizerDetail" Data="@FertilizerDetailState.Value.FertilizerDetails" TextProperty="@(nameof(FertilizerDetailVm.Name))" />
+                <RadzenDropDown @bind-Value="item.FertilizerDetail" Data="@(MasterdataService.Get<FertilizerDetailVm>())" TextProperty="@(nameof(FertilizerDetailVm.Name))" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="FertilizerToDetailVm" Property="@(nameof(FertilizerToDetailVm.Quantity))" Title="Anteil">
@@ -36,13 +36,24 @@
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public IMapper Mapper { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
-    [Inject] public IState<FertilizerDetailState> FertilizerDetailState { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
     [Parameter] public FertilizerVm Fertilizer { get; set; } = default!;
 
-    private ICollection<FertilizerToDetailVm>? _data => Fertilizer.FertilizerToDetails;
+    private ICollection<FertilizerToDetailVm>? _data;
     private RadzenDataGrid<FertilizerToDetailVm> _grid = default!;
     private FertilizerToDetailVm? _itemToEditOriginal;
+
+
+    protected override Task OnParametersSetAsync()
+    {
+        _data = MasterdataService.Get<FertilizerToDetailVm>().Where(f => f.FertilizerId == Fertilizer.Id).ToList();
+        foreach (var ftd in _data)
+        {
+            ftd.FertilizerDetail = MasterdataService.Get<FertilizerDetailVm>().FirstOrDefault(fd => fd.Id == ftd.FertilizerDetailId)!;
+        }
+        return base.OnParametersSetAsync();
+    }
 
     private async Task DeleteRow(FertilizerToDetailVm item)
     {
@@ -52,14 +63,17 @@
 
         var response = await Mediator.Send(new RemoveFertilizerToDetailCommand { FertilizerId = item.FertilizerId, FertilizerDetailId = item.FertilizerDetailId });
         if (response.Success && _data is not null)
+        {
             _data.Remove(item);
+            await MasterdataService.ReloadAsync<FertilizerToDetailVm>();
+        }
         else
             _grid.CancelEditRow(item);
         await _grid.Reload();
     }
 
     private async Task InsertRow() =>
-        await _grid.InsertRow(new());
+        await _grid.InsertRow(new() { Fertilizer = Fertilizer, FertilizerId = Fertilizer.Id });
 
     private async Task EditRow(FertilizerToDetailVm item)
     {
@@ -84,16 +98,18 @@
         var response = await Mediator.Send(cmd);
         if (!response.Success)
             await _grid.Reload();
+        await MasterdataService.ReloadAsync<FertilizerToDetailVm>();
         _itemToEditOriginal = null;
     }
 
     private async Task OnCreateRow(FertilizerToDetailVm item)
     {
-        var response = await Mediator.Send(new AddFertilizerToDetailCommand{FertilizerId = Fertilizer.Id, FertilizerDetailId = item.FertilizerDetail.Id, Quantity = item.Quantity});
+        var response = await Mediator.Send(new AddFertilizerToDetailCommand { FertilizerId = Fertilizer.Id, FertilizerDetailId = item.FertilizerDetail.Id, Quantity = item.Quantity });
         if (response.Success && response.Data is not null)
         {
             item.FertilizerId = response.Data.FertilizerId;
             item.FertilizerDetailId = response.Data.FertilizerDetailId;
+            await MasterdataService.ReloadAsync<FertilizerToDetailVm>();
         }
     }
 

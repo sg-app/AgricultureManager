@@ -20,9 +20,12 @@ namespace AgricultureManager.Core.Application.Services
             _entityLoaderMap[typeof(TViewModel)] = () => LoadAsync<TEntity, TViewModel>();
         }
 
-        public List<T>? Get<T>() where T : class
+        public List<T> Get<T>() where T : class
         {
-            return _data.TryGetValue(typeof(T), out var data) ? data as List<T> : default;
+            if (_data.TryGetValue(typeof(T), out var data))
+                return data as List<T> ?? default!;
+
+            return default!;
         }
 
         private async Task LoadAsync<TEntity, TViewModel>() where TEntity : class where TViewModel : class
@@ -49,12 +52,13 @@ namespace AgricultureManager.Core.Application.Services
         public async Task InitializeAsync()
         {
             Register<Field, FieldVm>();
-            Register<Domain.Entities.Culture, Shared.Models.CultureVm>();
-            Register<Domain.Entities.SeedCategory, Shared.Models.SeedCategoryVm>();
-            Register<Domain.Entities.SeedTechnology, Shared.Models.SeedTechnologyVm>();
-            Register<Domain.Entities.Unit, Shared.Models.UnitVm>();
-            Register<Domain.Entities.Person, Shared.Models.PersonVm>();
-            Register<Domain.Entities.Fertilizer, Shared.Models.FertilizerVm>();
+            Register<Culture, CultureVm>();
+            Register<SeedCategory, SeedCategoryVm>();
+            Register<SeedTechnology, SeedTechnologyVm>();
+            Register<Unit, UnitVm>();
+            Register<Person, PersonVm>();
+            Register<Fertilizer, FertilizerVm>();
+            Register<FertilizerToDetail, FertilizerToDetailVm>();
             Register<FertilizerDetail, FertilizerDetailVm>();
             Register<PlantProtectant, PlantProtectantVm>();
 

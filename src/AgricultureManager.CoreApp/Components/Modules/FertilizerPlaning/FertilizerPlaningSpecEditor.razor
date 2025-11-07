@@ -12,7 +12,7 @@
     <RadzenStack class="pt-3" Gap="1rem">
         @foreach (var item in _items)
         {
-            var detail = FertilizerDetailState.Value.FertilizerDetails.First(f => f.Id == item.FertilizerDetailId);
+            var detail = MasterdataService.Get<FertilizerDetailVm>().First(f => f.Id == item.FertilizerDetailId);
             <RadzenRow AlignItems="AlignItems.Center">
                 <RadzenColumn Size="12" SizeMD="1">
                     <RadzenLabel Text="@detail.Name" Component="@($"Componente_{detail.Name}")" />
@@ -33,7 +33,7 @@
 @code {
     [Inject] public IMediator Mediator { get; set; } = default!;
     [Inject] public DialogService DialogService { get; set; } = default!;
-    [Inject] public IState<FertilizerDetailState> FertilizerDetailState { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
     [Parameter] public Guid HarvestUnitId { get; set; } = default!;
 
     private ICollection<FertilizerPlaningSpecificationVm>? _items;
@@ -43,7 +43,7 @@
         if (_items is null) return [];
 
         var assignedIds = _items.Select(f => f.FertilizerDetailId).ToHashSet();
-        return FertilizerDetailState.Value.FertilizerDetails.Where(f => !assignedIds.Contains(f.Id));
+        return MasterdataService.Get<FertilizerDetailVm>().Where(f => !assignedIds.Contains(f.Id));
     }
 
     protected override async Task OnParametersSetAsync()

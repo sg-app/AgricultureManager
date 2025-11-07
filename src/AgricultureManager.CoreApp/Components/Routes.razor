@@ -1,13 +1,5 @@
 ﻿@using AgricultureManager.Core.Application.Shared.Interfaces.Services
 @using AgricultureManager.Core.Application.Store.Features.CompanyStore
-@using AgricultureManager.Core.Application.Store.Features.FertilizerDetailStore
-@using AgricultureManager.Core.Application.Store.Features.FertilizerStore
-@using AgricultureManager.Core.Application.Store.Features.FieldStore
-@using AgricultureManager.Core.Application.Store.Features.PeopleStore
-@using AgricultureManager.Core.Application.Store.Features.PlantProtectantStore
-@using AgricultureManager.Core.Application.Store.Features.SeedCategoryStore
-@using AgricultureManager.Core.Application.Store.Features.SeedTechnologyStore
-@using AgricultureManager.Core.Application.Store.Features.UnitStore
 @using System.Reflection
 @using AgricultureManager.Module.Manager
 <Fluxor.Blazor.Web.StoreInitializer />
@@ -38,14 +30,6 @@
     protected override void OnInitialized()
     {
         Dispatcher.Dispatch(new LoadCompanyDataAction());
-        Dispatcher.Dispatch(new LoadFieldsDataAction());
-        Dispatcher.Dispatch(new LoadSeedCategoriesDataAction());
-        Dispatcher.Dispatch(new LoadSeedTechnologiesDataAction());
-        Dispatcher.Dispatch(new LoadUnitsDataAction());
-        Dispatcher.Dispatch(new LoadPeoplesDataAction());
-        Dispatcher.Dispatch(new LoadFertilizersDataAction());
-        Dispatcher.Dispatch(new LoadFertilizerDetailsDataAction());
-        Dispatcher.Dispatch(new LoadPlantProtectantsDataAction());
 
         _assemblies = pluginAssemblyProvider.AdditionalPluginAssembliesWithRoutes;
     }

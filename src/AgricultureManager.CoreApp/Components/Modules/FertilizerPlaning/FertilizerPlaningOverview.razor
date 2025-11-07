@@ -42,10 +42,10 @@
                 <Columns>
                     <RadzenDataGridColumn TItem="FertilizerPlaningVm" Property="@(nameof(FertilizerPlaningVm.FertilizerId))" Title="Dünger">
                         <Template Context="data">
-                            @FertilizerState.Value.Fertilizers.FirstOrDefault(x => x.Id == data.FertilizerId)?.Name
+                            @(MasterdataService.Get<FertilizerVm>()?.FirstOrDefault(x => x.Id == data.FertilizerId)?.Name)
                         </Template>
                         <EditTemplate Context="data">
-                            <RadzenDropDown TValue="Guid" Data="@FertilizerState.Value.Fertilizers" TextProperty="Name" ValueProperty="Id" @bind-Value="data.FertilizerId" />
+                            <RadzenDropDown TValue="Guid" Data="@(MasterdataService.Get<FertilizerVm>())" TextProperty="Name" ValueProperty="Id" @bind-Value="data.FertilizerId" />
                         </EditTemplate>
                         <FooterTemplate>
                             <RadzenRow>
@@ -71,7 +71,7 @@
                                             .OrderBy(x => SystemEntryKeys.FertilizerDetailKeys.Contains(x.FertilizerDetailId) ? SystemEntryKeys.FertilizerDetailKeys.ToList().IndexOf(x.FertilizerDetailId) : int.MaxValue)
                                             .ThenBy(x => x.FertilizerDetail.Name))
                     {
-                        var detail = FertilizerDetailState.Value.FertilizerDetails.First(f => f.Id == spec.FertilizerDetailId);
+                        var detail = MasterdataService.Get<FertilizerDetailVm>().First(f => f.Id == spec.FertilizerDetailId);
                         <RadzenDataGridColumn Title="@detail.Name" Width="50px">
                             <Template>
                                 @GetRowCalc(detail, context.FertilizerId, context.Dosage)
@@ -123,9 +123,7 @@
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public IState<HarvestYearState> HarvestYearState { get; set; } = default!;
     [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
-    [Inject] public IState<FertilizerState> FertilizerState { get; set; } = default!;
-    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
-    [Inject] public IState<FertilizerDetailState> FertilizerDetailState { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
     private IList<EditFertilizerPlaningVm> _fertilizerPlanings = [];
     private ICollection<FertilizerPlaningSpecificationVm> _fertilizerPlaningSpecifications = [];
@@ -151,7 +149,7 @@
         var responseSpec = await Mediator.Send(new GetFertilizerPlaningSpecificationCommand(_selecteHarvestUnit.Id));
         _fertilizerPlaningSpecifications = responseSpec.Data ?? [];
 
-         var fertilizerDetails = FertilizerDetailState.Value.FertilizerDetails.ToDictionary(f => f.Id);
+        var fertilizerDetails = MasterdataService.Get<FertilizerDetailVm>()!.ToDictionary(f => f.Id);
         foreach (var spec in _fertilizerPlaningSpecifications)
         {
             if (fertilizerDetails.TryGetValue(spec.FertilizerDetailId, out var detail))
@@ -170,7 +168,11 @@
     private int GetSummary(FertilizerDetailVm fertilizerDetail)
     {
         var summary = 0.0;
-        var fertilizerDetails = FertilizerState.Value.Fertilizers.ToDictionary(f => f.Id);
+        var fertilizerDetails = MasterdataService.Get<FertilizerVm>().ToDictionary(f => f.Id);
+        foreach(var fert in fertilizerDetails)
+        {
+            fert.Value.FertilizerToDetails = MasterdataService.Get<FertilizerToDetailVm>().Where(f => f.FertilizerId == fert.Key).ToList();
+        }
         foreach (var planing in _fertilizerPlanings)
         {
             if (fertilizerDetails.TryGetValue(planing.FertilizerId, out var fertilizer))
@@ -184,8 +186,11 @@
 
     private int GetRowCalc(FertilizerDetailVm fertilizerDetail, Guid fertilizerId, float dosage)
     {
-        var fertilizer = FertilizerState.Value.Fertilizers.FirstOrDefault(f => f.Id == fertilizerId);
+        var fertilizer = MasterdataService.Get<FertilizerVm>().FirstOrDefault(f => f.Id == fertilizerId);
+
         if (fertilizer is null) return 0;
+        fertilizer.FertilizerToDetails = MasterdataService.Get<FertilizerToDetailVm>().Where(f => f.FertilizerId == fertilizer.Id).ToList();
+        
         var fertilizerValue = fertilizer.FertilizerToDetails.FirstOrDefault(f => f.FertilizerDetailId == fertilizerDetail.Id)?.Quantity ?? 0;
         var calc = fertilizerValue * dosage;
         return (int)Math.Floor(calc);

@@ -1,5 +1,4 @@
-﻿@inherits FluxorComponent
-<div class="d-flex flex-wrap flex-row">
+﻿<div class="d-flex flex-wrap flex-row">
     <div class="pe-4">
         <div class="fw-bold">
             Datum
@@ -13,7 +12,7 @@
             Dünger
         </div>
         <div>
-            @FertilizerState.Value.Fertilizers?.FirstOrDefault(f => f.Id == Item.FertilizerId)?.Name
+            @(MasterdataService.Get<FertilizerVm>()?.FirstOrDefault(f => f.Id == Item.FertilizerId)?.Name)
         </div>
     </div>
     <div class="pe-4">
@@ -21,7 +20,7 @@
             Dosierung
         </div>
         <div>
-            @Item.Dosage.ToString("N2") @UnitState.Value.Units?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name
+            @Item.Dosage.ToString("N2") @(MasterdataService.Get<UnitVm>()?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name)
         </div>
     </div>
 </div>
@@ -31,7 +30,7 @@
             Anwender
         </div>
         <div>
-            @PeopleState.Value.Peoples?.FirstOrDefault(f => f.Id == Item.PersonId)?.Displayname
+            @(MasterdataService.Get<PersonVm>()?.FirstOrDefault(f => f.Id == Item.PersonId)?.Displayname)
         </div>
     </div>
     @if (!string.IsNullOrEmpty(Item.BBCH))
@@ -52,7 +51,7 @@
             Werte
         </div>
         <div>
-            @FertilizerState.Value.Fertilizers?.FirstOrDefault(f => f.Id == Item.FertilizerId)?.Details
+            @(MasterdataService.Get<FertilizerVm>()?.FirstOrDefault(f => f.Id == Item.FertilizerId)?.Details)
         </div>
     </div>
 </div>
@@ -84,7 +83,5 @@
 </div>
 @code {
     [Parameter] public FertilizationVm Item { get; set; } = default!;
-    [Inject] public IState<FertilizerState> FertilizerState { get; set; } = default!;
-    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
-    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 }

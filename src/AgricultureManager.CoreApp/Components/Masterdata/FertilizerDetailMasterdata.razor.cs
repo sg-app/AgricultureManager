@@ -1,11 +1,9 @@
 ﻿using AgricultureManager.Core.Application.Features.FertilizerDetailFeatures;
 using AgricultureManager.Core.Application.Shared.Interfaces;
 using AgricultureManager.Core.Application.Shared.Interfaces.Persistence;
+using AgricultureManager.Core.Application.Shared.Interfaces.Services;
 using AgricultureManager.Core.Application.Shared.Models;
-using AgricultureManager.Core.Application.Shared.States;
-using AgricultureManager.Core.Application.Store.Features.FertilizerDetailStore;
 using AutoMapper;
-using Fluxor;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Radzen;
@@ -18,8 +16,7 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IMapper Mapper { get; set; } = default!;
         [Inject] public DialogService DialogService { get; set; } = default!;
-        [Inject] public IDispatcher Dispatcher { get; set; } = default!;
-        [Inject] public IState<FertilizerDetailState> FertilizerDetailState { get; set; } = default!;
+        [Inject] public IMasterdataService MasterdataService { get; set; } = default!;
 
         private RadzenDataGrid<FertilizerDetailVm> _grid = default!;
         private FertilizerDetailVm? _itemToEditOriginal;
@@ -33,7 +30,7 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
 
             var response = await Mediator.Send(new RemoveFertilizerDetailCommand { Id = item.Id });
             if (response.Success)
-                Dispatcher.Dispatch(new RemoveFertilizerDetailAction(item.Id));
+                await MasterdataService.ReloadAsync<FertilizerDetailVm>();
             else
                 _grid.CancelEditRow(item);
             await _grid.Reload();
@@ -66,7 +63,7 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             if (!response.Success)
                 await _grid.Reload();
             else if (response.Success && response.Data is not null)
-                Dispatcher.Dispatch(new UpdateFertilizerDetailAction(response.Data));
+                await MasterdataService.ReloadAsync<FertilizerDetailVm>();
             _itemToEditOriginal = null;
         }
         private async Task OnCreateRow(FertilizerDetailVm item)
@@ -77,7 +74,7 @@ namespace AgricultureManager.CoreApp.Components.Masterdata
             if (response.Success && response.Data is not null)
             {
                 item.Id = response.Data.Id;
-                Dispatcher.Dispatch(new AddFertilizerDetailAction(response.Data));
+                await MasterdataService.ReloadAsync<FertilizerDetailVm>();
             }
         }
 

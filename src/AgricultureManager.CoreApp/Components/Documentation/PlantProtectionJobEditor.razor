@@ -16,13 +16,13 @@
             </div>
             <div class="px-2">
                 <label for="Person" class="form-label">Anwender</label>
-                <RadzenDropDown class="form-control" id="Person" TValue="Guid?" Data="@PeopleState.Value.Peoples" TextProperty="DisplayName" ValueProperty="Id" @bind-Value="_item.PersonId" />
+                <RadzenDropDown class="form-control" id="Person" TValue="Guid?" Data="@(MasterdataService.Get<PersonVm>())" TextProperty="DisplayName" ValueProperty="Id" @bind-Value="_item.PersonId" />
             </div>
         </div>
         <div class="d-flex flex-row flex-wrap align-items-center">
             <div class="px-2">
                 <label for="Culture" class="form-label">Dünger</label>
-                <RadzenDropDown class="form-control" id="Culture" TValue="Guid" Data="@PlantProtectantState.Value.PlantProtectants" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.PlantProtectantId" />
+                <RadzenDropDown class="form-control" id="Culture" TValue="Guid" Data="@(MasterdataService.Get<PlantProtectantVm>())" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.PlantProtectantId" />
                 <ValidationMessage For="@(()=>_item.PlantProtectantId)" />
             </div>
         </div>
@@ -78,9 +78,7 @@
     [Inject] public DialogService DialogService { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
-    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
-    [Inject] public IState<PlantProtectantState> PlantProtectantState { get; set; } = default!;
-    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
     [Parameter] public PlantProtectionVm? Item { get; set; }
 
@@ -136,7 +134,7 @@
         _item = new EditPlantProtectionVm
             {
                 Date = DateTime.UtcNow,
-                UnitId = UnitState.Value.Units?.Where(f => f.Name == "kg/ha").FirstOrDefault()?.Id,
+                UnitId = MasterdataService.Get<UnitVm>().Where(f => f.Name == "kg/ha").FirstOrDefault()?.Id,
             };
         _editContexts.Add(new EditContext(_item));
 

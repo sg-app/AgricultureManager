@@ -16,13 +16,13 @@
             </div>
             <div class="px-2">
                 <label for="Person" class="form-label">Anwender</label>
-                <RadzenDropDown class="form-control" id="Person" TValue="Guid?" Data="@PeopleState.Value.Peoples" TextProperty="DisplayName" ValueProperty="Id" @bind-Value="_item.PersonId" />
+                <RadzenDropDown class="form-control" id="Person" TValue="Guid?" Data="@(MasterdataService.Get<PersonVm>())" TextProperty="DisplayName" ValueProperty="Id" @bind-Value="_item.PersonId" />
             </div>
         </div>
         <div class="d-flex flex-row flex-wrap">
             <div class="px-2">
                 <label for="DosageUnit" class="form-label">Einheit</label>
-                <RadzenDropDown class="form-control" id="DosageUnit" TValue="Guid?" Data="@UnitState.Value.Units" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.UnitId" />
+                <RadzenDropDown class="form-control" id="DosageUnit" TValue="Guid?" Data="@(MasterdataService.Get<UnitVm>())" TextProperty="Name" ValueProperty="Id" @bind-Value="_item.UnitId" />
             </div>
 
         </div>
@@ -71,8 +71,7 @@
     [Inject] public DialogService DialogService { get; set; } = default!;
     [Inject] public IDispatcher Dispatcher { get; set; } = default!;
     [Inject] public IState<HarvestUnitState> HarvestUnitState { get; set; } = default!;
-    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
-    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
     [Parameter] public HarvestVm? Item { get; set; }
 
@@ -126,7 +125,7 @@
         _item = new EditHarvestVm
             {
                 Date = DateTime.UtcNow,
-                UnitId = UnitState.Value.Units?.Where(f => f.Name == "dt/ha").FirstOrDefault()?.Id,
+                UnitId = MasterdataService.Get<UnitVm>().Where(f => f.Name == "dt/ha").FirstOrDefault()?.Id,
             };
         _editContexts.Add(new EditContext(_item));
 

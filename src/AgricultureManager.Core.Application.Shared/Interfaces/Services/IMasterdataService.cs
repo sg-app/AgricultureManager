@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AgricultureManager.Core.Application.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace AgricultureManager.Core.Application.Shared.Interfaces.Services
 {
     public interface IMasterdataService
     {
-        List<T>? Get<T>() where T: class;
+        List<T> Get<T>() where T: class;
         Task InitializeAsync();
         Task ReloadAsync<T>() where T : class;
     }

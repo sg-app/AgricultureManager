@@ -12,7 +12,7 @@
             Pflanzenschutzmittel
         </div>
         <div>
-            @PlantProtectantState.Value.PlantProtectants?.FirstOrDefault(f => f.Id == Item.PlantProtectantId)?.Name
+            @(MasterdataService.Get<PlantProtectantVm>().FirstOrDefault(f => f.Id == Item.PlantProtectantId)?.Name)
         </div>
     </div>
     <div class="pe-4">
@@ -20,7 +20,7 @@
             Dosierung
         </div>
         <div>
-            @Item.Dosage.ToString("N") @UnitState.Value.Units?.FirstOrDefault(f => f.Id == Item.UnitId)?.Name
+            @Item.Dosage.ToString("N") @(MasterdataService.Get<UnitVm>().FirstOrDefault(f => f.Id == Item.UnitId)?.Name)
         </div>
     </div>
 </div>
@@ -30,7 +30,7 @@
             Anwender
         </div>
         <div>
-            @PeopleState.Value.Peoples?.FirstOrDefault(f => f.Id == Item.PersonId)?.Displayname
+            @(MasterdataService.Get<PersonVm>().FirstOrDefault(f => f.Id == Item.PersonId)?.Displayname)
         </div>
     </div>
     @if (!string.IsNullOrEmpty(Item.BBCH))
@@ -74,7 +74,5 @@
 
 @code {
     [Parameter] public PlantProtectionVm Item { get; set; } = default!;
-    [Inject] public IState<UnitState> UnitState { get; set; } = default!;
-    [Inject] public IState<PlantProtectantState> PlantProtectantState { get; set; } = default!;
-    [Inject] public IState<PeopleState> PeopleState { get; set; } = default!;
+    [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 }
