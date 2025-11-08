@@ -1,10 +1,8 @@
 ﻿using AgricultureManager.Core.Application.Shared.Interfaces;
+using AgricultureManager.Core.Application.Shared.Interfaces.Services;
 using AgricultureManager.Module.Accounting.Features.BookingTypeFeatures;
 using AgricultureManager.Module.Accounting.Models;
-using AgricultureManager.Module.Accounting.Store.Features.BookingTypeStore;
-using AgricultureManager.Module.Accounting.Store.States;
 using AutoMapper;
-using Fluxor;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Radzen;
@@ -17,19 +15,13 @@ namespace AgricultureManager.Module.Accounting.Components.Masterdata
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IMapper Mapper { get; set; } = default!;
         [Inject] public DialogService DialogService { get; set; } = default!;
-        [Inject] public IDispatcher Dispatcher { get; set; } = default!;
-        [Inject] public IState<BookingTypeState> BookingTypeState { get; set; } = default!;
+        [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
 
         private RadzenDataGrid<BookingTypeVm> _grid = default!;
         private BookingTypeVm? _itemToEditOriginal;
         public string Title => "Buchungstypen";
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            if (!BookingTypeState.Value.IsInitialized)
-                Dispatcher.Dispatch(new LoadBookingTypesDataAction());
-        }
+     
         private async Task DeleteRow(BookingTypeVm item)
         {
             var dialogResponse = await DialogService.Confirm("Soll der Datensatz wirklich gelöscht werden?", "Datensatz löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
@@ -38,7 +30,7 @@ namespace AgricultureManager.Module.Accounting.Components.Masterdata
 
             var response = await Mediator.Send(new RemoveBookingTypeCommand(item.Id));
             if (response.Success)
-                Dispatcher.Dispatch(new RemoveBookingTypeAction(item.Id));
+                await MasterdataService.ReloadAsync<BookingTypeVm>();
             else
                 _grid.CancelEditRow(item);
             await _grid.Reload();
@@ -71,7 +63,7 @@ namespace AgricultureManager.Module.Accounting.Components.Masterdata
             if (!response.Success)
                 await _grid.Reload();
             else if (response.Success && response.Data is not null)
-                Dispatcher.Dispatch(new UpdateBookingTypeAction(response.Data));
+                await MasterdataService.ReloadAsync<BookingTypeVm>();
             _itemToEditOriginal = null;
         }
         private async Task OnCreateRow(BookingTypeVm item)
@@ -82,7 +74,7 @@ namespace AgricultureManager.Module.Accounting.Components.Masterdata
             if (response.Success && response.Data is not null)
             {
                 item.Id = response.Data.Id;
-                Dispatcher.Dispatch(new AddBookingTypeAction(response.Data));
+                await MasterdataService.ReloadAsync<BookingTypeVm>();
             }
         }
     }

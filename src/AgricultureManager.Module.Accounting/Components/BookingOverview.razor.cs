@@ -1,10 +1,7 @@
-﻿using AgricultureManager.Module.Accounting.Features.BookingFeatures;
+﻿using AgricultureManager.Core.Application.Shared.Interfaces.Services;
+using AgricultureManager.Module.Accounting.Features.BookingFeatures;
 using AgricultureManager.Module.Accounting.Models;
-using AgricultureManager.Module.Accounting.Store.Features.BookingTypeStore;
-using AgricultureManager.Module.Accounting.Store.Features.TaxRateStore;
-using AgricultureManager.Module.Accounting.Store.States;
 using AutoMapper;
-using Fluxor;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 
@@ -15,9 +12,7 @@ namespace AgricultureManager.Module.Accounting.Components
     {
         [Inject] public IMediator Mediator { get; set; } = default!;
         [Inject] public IMapper Mapper { get; set; } = default!;
-        [Inject] public IDispatcher Dispatcher { get; set; } = default!;
-        [Inject] public IState<BookingTypeState> BookingTypeState { get; set; } = default!;
-        [Inject] public IState<TaxRateState> TaxRateState { get; set; } = default!;
+        [Inject] protected IMasterdataService MasterdataService { get; set; } = default!;
         [Parameter] public AccountMouvementVm AccountMouvement { get; set; } = default!;
 
         private ICollection<BookingVm> _bookings = [];
@@ -26,16 +21,7 @@ namespace AgricultureManager.Module.Accounting.Components
         private bool _isLoading = false;
         private decimal _amount;
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            if (!BookingTypeState.Value.IsInitialized)
-                Dispatcher.Dispatch(new LoadBookingTypesDataAction());
-            if (!TaxRateState.Value.IsInitialized)
-                Dispatcher.Dispatch(new LoadTaxRatesDataAction());
-
-        }
-
+       
         protected override async Task OnParametersSetAsync()
         {
             _isLoading = true;

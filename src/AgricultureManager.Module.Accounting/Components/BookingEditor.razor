@@ -1,5 +1,4 @@
-﻿@inherits FluxorComponent
-<div class="row">
+﻿<div class="row">
 	<div class="col">
 		Netto
 	</div>
@@ -22,10 +21,10 @@
 		<RadzenNumeric class="form-control" @bind-Value="@_booking.Amount" ShowUpDown="false" ReadOnly="@_amountReadOnly" Disabled="@_amountReadOnly" Format="C2" />
 	</div>
 	<div class="col">
-		<RadzenDropDown class="form-control" Data="@TaxRateState.Value.TaxRates" @bind-Value="@_booking.TaxRateId" TextProperty="DisplayName" ValueProperty="Id" Change="()=>StartCalculation()" />
+		<RadzenDropDown class="form-control" Data="@(MasterdataService.Get<TaxRateVm>())" @bind-Value="@_booking.TaxRateId" TextProperty="DisplayName" ValueProperty="Id" Change="()=>StartCalculation()" />
 	</div>
 	<div class="col">
-		<RadzenDropDown class="form-control" Data="@BookingTypeState.Value.BookingTypes" @bind-Value="@_booking.BookingTypeId" TextProperty="Name" ValueProperty="Id" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true" />
+		<RadzenDropDown class="form-control" Data="@(MasterdataService.Get<BookingTypeVm>())" @bind-Value="@_booking.BookingTypeId" TextProperty="Name" ValueProperty="Id" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true" />
 	</div>
 </div>
 <div class="row">
