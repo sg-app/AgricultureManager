@@ -1,5 +1,5 @@
 using AgricultureManager.Core.Application.Shared.Interfaces.Mediator;
-using AgricultureManager.Core.Application.Shared.Mediator;
+using AgricultureManager.Core.Application.Mediator;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
